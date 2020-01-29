@@ -1,6 +1,7 @@
 package com.example.dashboard;
 //Imports
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,6 +24,7 @@ import ListFigures.Util;
  * @version 3
  */
 public class MainActivity extends AppCompatActivity {
+    public static int MILISEGUNDOS_ESPERA = 5000;
     //Class Attributes--
     /*/Load and Save data
     private String nameFile;
@@ -35,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     //Edit and delete Figures
     private ImageView deleteFigures;
     private ImageView changeColor;
+    private ImageView menu;
     private int[] colour = {183, 149, 11};
     //Zoom Image
     private ImageView extendsImage;
@@ -42,8 +46,14 @@ public class MainActivity extends AppCompatActivity {
     private ImageView segmentation;
     //Layout for Image RX
     private LinearLayout layoutImageRx;
+    private LinearLayout menu_left;
+    private LinearLayout menu_right;
+    private ConstraintLayout frame;
     //View
     private ListFigure myListFigures;
+
+
+
     //--End Attributes of class
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +136,15 @@ public class MainActivity extends AppCompatActivity {
                 toast.show();
             }
         });
+
+       /* frame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                menu_left.setVisibility(View.VISIBLE);
+                menu_right.setVisibility(View.VISIBLE);
+                esperarYCerrar(MILISEGUNDOS_ESPERA);
+            }
+        });*/
     }
     /**
      * Method initial Properties Initializing Properties of Activity
@@ -145,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
         //--End Profile Image Circle
         //Initializing properties--
         extendsImage = findViewById(R.id.extendsImage);
+        menu = findViewById(R.id.menu);
         creatorCircles = findViewById(R.id.addCircle);
         creatorRectangles = findViewById(R.id.addRectangle);
         creatorLines = findViewById(R.id.addLine);
@@ -152,9 +172,25 @@ public class MainActivity extends AppCompatActivity {
         deleteFigures = findViewById(R.id.deleteFigures);
         changeColor = findViewById(R.id.changeColor);
         segmentation = findViewById(R.id.segmentation);
-        myListFigures = new ListFigure(this);
+        menu_left = findViewById(R.id.menu_left);
+        menu_right = findViewById(R.id.menu_right);
+        frame = findViewById(R.id.frame);
+        //NOTA NO PUEDO OCULTAR ELEMENTOS DE UN GRID LAYOUT ***********************
+        //menu_left.setVisibility(View.INVISIBLE);
+        //menu_right.setVisibility(View.INVISIBLE);
+        myListFigures = new ListFigure(this,menu_left,menu_right);
         layoutImageRx = findViewById(R.id.layoutImageRx);
         layoutImageRx.addView(myListFigures);
         //--End Initializing
     }//End Method
+    public void esperarYCerrar(int milisegundos) {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                System.out.println("test Time");
+                menu_left.setVisibility(View.INVISIBLE);
+                menu_right.setVisibility(View.INVISIBLE);
+            }
+        }, milisegundos);
+    }
 }//End Class
