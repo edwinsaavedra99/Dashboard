@@ -8,6 +8,9 @@ import android.graphics.Paint;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
+
+import androidx.cardview.widget.CardView;
+
 import java.util.ArrayList;
 import Figures.*;
 /**
@@ -21,15 +24,18 @@ public class ListSegmentation extends View {
     private ArrayList<Figure> segmentation;
     private int[] color = {183, 149, 11};
     private LinearLayout viewZoom;
+    private CardView cardView;
     private ListZoomSegmentation zoomList;
     /**
      * Class Constructor
      * @param context The View
      * @param viewZoom : layout zoom Image RX*/
-    public ListSegmentation (Context context, LinearLayout viewZoom){
+    public ListSegmentation (Context context, LinearLayout viewZoom,CardView cardView){
         super(context);
         this.viewZoom = viewZoom;
         this.viewZoom.setVisibility(INVISIBLE);
+        this.cardView = cardView;
+        this.cardView.setVisibility(GONE);
         segmentation = new ArrayList<>();
         zoomList = new ListZoomSegmentation(context);
         this.viewZoom.addView(zoomList);
@@ -122,6 +128,7 @@ public class ListSegmentation extends View {
                 float centerY = aux.getCenterY() - event.getY();
                 if (Math.sqrt(centerX  * centerX  + centerY * centerY) <= 40)
                     this.viewZoom.setVisibility(View.VISIBLE);
+                    this.cardView.setVisibility(VISIBLE);
             }
         }
         if (event.getAction() == MotionEvent.ACTION_MOVE) {
@@ -134,17 +141,20 @@ public class ListSegmentation extends View {
                 if (Math.sqrt(centerX * centerX + centerY*centerY) > 50 && Math.sqrt(centerX * centerX + centerY * centerY) < 60) {
                     drawS = true;
                     this.viewZoom.setVisibility(View.VISIBLE);
+                    this.cardView.setVisibility(VISIBLE);
                 }
                 if (drawS)
                     addCircleSegmentation(getX,getY,9); //9 is radius acceptable
             } else {
                 addCircleSegmentation(getX,getY,9);  //9 is radius acceptable
                 this.viewZoom.setVisibility(View.VISIBLE);
+                this.cardView.setVisibility(VISIBLE);
             }
             invalidate();
         }
         if(event.getAction() == MotionEvent.ACTION_UP){
             this.viewZoom.setVisibility(View.INVISIBLE);
+            this.cardView.setVisibility(GONE);
         }
         return true;
     }//End Method
