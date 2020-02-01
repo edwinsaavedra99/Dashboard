@@ -7,6 +7,7 @@ import androidx.cardview.widget.CardView;
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.drawable.BitmapDrawable;
@@ -34,10 +35,16 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import ListFigures.ListFigure;
 import ListFigures.ListSegmentation;
 import ListFigures.Util;
+
+import static org.opencv.core.Core.LUT;
+import static org.opencv.core.CvType.CV_8UC1;
+
 /**
  * This class define the Main Activity Image Ray-X editing space
  * @author Edwin Saavedra
@@ -94,6 +101,12 @@ public class MainActivity extends AppCompatActivity {
     private ImageView openCv1;
     private ImageView openCv2;
     private ImageView openCv3;
+    private ImageView openCv4;
+    private ImageView openCv5;
+    private ImageView openCv6;
+    private ImageView openCv7;
+    private ImageView openCv8;
+    private ImageView openCv9;
     //--End Attributes of class
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -288,10 +301,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-
-
-//Filter normal
+            //Filter normal
                 openCv3.setOnClickListener(new View.OnClickListener() {
                     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                     @Override
@@ -381,6 +391,154 @@ public class MainActivity extends AppCompatActivity {
                         layoutImageRx.setBackground(d);
                     }
                 });
+                openCv4.setOnClickListener(new View.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                    @Override
+                    public void onClick(View v) {
+                        Mat img = null;
+                        try{
+                            int d1 = R.drawable.rx_image_1;
+                            img = Utils.loadResource(getApplicationContext(),d1);
+
+                        }catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        Imgproc.applyColorMap(img,img,Imgproc.COLORMAP_SUMMER);
+                        Mat img_result = img.clone();
+                        Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(), img_result.rows(), Bitmap.Config.ARGB_8888);
+                        Utils.matToBitmap(img_result, img_bitmap);
+                        //result esta en img_bitamp
+                        Drawable d = new BitmapDrawable(getResources(),img_bitmap);
+                        layoutImageRx.setBackground(d);
+                    }
+                });
+            openCv5.setOnClickListener(new View.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                @Override
+                public void onClick(View v) {
+                    Mat img = null;
+                    try{
+                        int d1 = R.drawable.rx_image_1;
+                        img = Utils.loadResource(getApplicationContext(),d1);
+
+                    }catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Imgproc.applyColorMap(img,img,Imgproc.COLORMAP_PINK);
+                    Mat img_result = img.clone();
+                    Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(), img_result.rows(), Bitmap.Config.ARGB_8888);
+                    Utils.matToBitmap(img_result, img_bitmap);
+                    //result esta en img_bitamp
+                    Drawable d = new BitmapDrawable(getResources(),img_bitmap);
+                    layoutImageRx.setBackground(d);
+                }
+            });
+        openCv6.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onClick(View v) {
+                Mat img = null;
+                try{
+                    int d1 = R.drawable.rx_image_1;
+                    img = Utils.loadResource(getApplicationContext(),d1);
+
+                }catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Imgproc.cvtColor(img,img,Imgproc.COLOR_BGR2GRAY);
+                Mat img_result = img.clone();
+                img_result = reduceColorsGray(img_result, 5);
+                Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(), img_result.rows(), Bitmap.Config.ARGB_8888);
+                Utils.matToBitmap(img_result, img_bitmap);
+                //result esta en img_bitamp
+                Drawable d = new BitmapDrawable(getResources(),img_bitmap);
+                layoutImageRx.setBackground(d);
+            }
+        });
+        openCv7.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onClick(View v) {
+                Mat img = null;
+                try{
+                    int d1 = R.drawable.rx_image_1;
+                    img = Utils.loadResource(getApplicationContext(),d1);
+
+                }catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Imgproc.cvtColor(img,img,Imgproc.COLOR_BGR2GRAY);
+                Mat img_result = img.clone();
+                /**/
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inScaled = false; // Leaving it to true enlarges the decoded image size.
+                Bitmap original = BitmapFactory.decodeResource(getResources(), R.drawable.rx_image_1, options);
+                Mat img1 = new Mat();
+                Utils.bitmapToMat(original, img1);
+                img_result = reduceColors(img1, 80, 15, 10);
+                /**/
+                //img_result = reduceColors(img_result, 5,5,5);
+                Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(), img_result.rows(), Bitmap.Config.ARGB_8888);
+                Utils.matToBitmap(img_result, img_bitmap);
+                //result esta en img_bitamp
+                Drawable d = new BitmapDrawable(getResources(),img_bitmap);
+                layoutImageRx.setBackground(d);
+            }
+        });
+        openCv8.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onClick(View v) {
+                Mat img = null;
+                try{
+                    int d1 = R.drawable.rx_image_1;
+                    img = Utils.loadResource(getApplicationContext(),d1);
+
+                }catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Imgproc.cvtColor(img,img,Imgproc.COLOR_BGR2GRAY);
+                Mat img_result = img.clone();
+                Imgproc.adaptiveThreshold(img_result,img_result,255,
+                        Imgproc.ADAPTIVE_THRESH_MEAN_C,Imgproc.THRESH_BINARY,9,2);
+                Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(), img_result.rows(), Bitmap.Config.ARGB_8888);
+                Utils.matToBitmap(img_result, img_bitmap);
+                //result esta en img_bitamp
+                Drawable d = new BitmapDrawable(getResources(),img_bitmap);
+                layoutImageRx.setBackground(d);
+            }
+        });
+        openCv9.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onClick(View v) {
+                Mat img = null;
+                try{
+                    int d1 = R.drawable.rx_image_1;
+                    img = Utils.loadResource(getApplicationContext(),d1);
+
+                }catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Imgproc.cvtColor(img,img,Imgproc.COLOR_BGR2GRAY);
+                Mat img_result = img.clone();
+                //
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inScaled = false; // Leaving it to true enlarges the decoded image size.
+                Bitmap original = BitmapFactory.decodeResource(getResources(), R.drawable.rx_image_1, options);
+                Mat img1 = new Mat();
+                Utils.bitmapToMat(original, img1);
+                Imgproc.cvtColor(img1, img1, Imgproc.COLOR_BGRA2BGR);
+                img_result = cartoon(img1, 80, 15, 10);
+                //img_result = cartoon(img_result, 80, 15, 10);
+                //
+                Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(), img_result.rows(), Bitmap.Config.ARGB_8888);
+                Utils.matToBitmap(img_result, img_bitmap);
+                //result esta en img_bitamp
+                Drawable d = new BitmapDrawable(getResources(),img_bitmap);
+                layoutImageRx.setBackground(d);
+            }
+        });
 
     }
     /**
@@ -432,6 +590,12 @@ public class MainActivity extends AppCompatActivity {
         openCv1 = findViewById(R.id.openCV1);
         openCv2 = findViewById(R.id.openCV2);
         openCv3 = findViewById(R.id.openCV3);
+        openCv4 = findViewById(R.id.openCV4);
+        openCv5 = findViewById(R.id.openCV5);
+        openCv6 = findViewById(R.id.openCV6);
+        openCv7 = findViewById(R.id.openCV7);
+        openCv8 = findViewById(R.id.openCV8);
+        openCv9 = findViewById(R.id.openCV9);
         //--End Initializing
     }//End Method
     public void esperarYCerrar(int milisegundos) {
@@ -444,4 +608,66 @@ public class MainActivity extends AppCompatActivity {
             }
         }, milisegundos);
     }
+    public Mat createLUT(int numColors) {
+        // When numColors=1 the LUT will only have 1 color which is black.
+        if (numColors < 0 || numColors > 256) {
+            System.out.println("Invalid Number of Colors. It must be between 0 and 256 inclusive.");
+            return null;
+        }
+
+        Mat lookupTable = Mat.zeros(new Size(1, 256), CV_8UC1);
+
+        int startIdx = 0;
+        for (int x = 0; x < 256; x += 256.0 / numColors) {
+            lookupTable.put(x, 0, x);
+
+            for (int y = startIdx; y < x; y++) {
+                if (lookupTable.get(y, 0)[0] == 0) {
+                    lookupTable.put(y, 0, lookupTable.get(x, 0));
+                }
+            }
+            startIdx = x;
+        }
+        return lookupTable;
+    }
+    public Mat reduceColorsGray(Mat img, int numColors) {
+        Mat LUT = createLUT(numColors);
+        LUT(img, LUT, img);
+        return img;
+    }
+    public Mat reduceColors(Mat img, int numRed, int numGreen, int numBlue) {
+        Mat redLUT = createLUT(numRed);
+        Mat greenLUT = createLUT(numGreen);
+        Mat blueLUT = createLUT(numBlue);
+
+        List<Mat> BGR = new ArrayList<>(3);
+        //BGR.add(blueLUT);
+        //BGR.add(greenLUT);
+        //BGR.add(redLUT);
+        Core.split(img, BGR);
+
+        LUT(BGR.get(0), blueLUT, BGR.get(0));
+        LUT(BGR.get(1), greenLUT, BGR.get(1));
+        LUT(BGR.get(2), redLUT, BGR.get(2));
+
+        Core.merge(BGR, img);
+
+        return img;
+    }
+    public Mat cartoon(Mat img, int numRed, int numGreen, int numBlue) {
+        Mat reducedColorImage = reduceColors(img, numRed, numGreen, numBlue);
+
+        Mat result = new Mat();
+        Imgproc.cvtColor(img, result, Imgproc.COLOR_BGR2GRAY);
+        Imgproc.medianBlur(result, result, 15);
+
+        Imgproc.adaptiveThreshold(result, result, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, 15, 2);
+
+        Imgproc.cvtColor(result, result, Imgproc.COLOR_GRAY2BGR);
+
+        Core.bitwise_and(reducedColorImage, result, result);
+
+        return result;
+    }
+
 }//End Class

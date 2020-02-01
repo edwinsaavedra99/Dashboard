@@ -85,6 +85,52 @@ public class ListFigure  extends View {
             return true;
         }
     }
+    public void changeOrderList(float getX, float getY , int index){
+        for(int i = 0; i<myFigures.size();i++){
+            if(i!=index){
+                if(myFigures.get(i) instanceof  Point) {
+                    Point temp = (Point) myFigures.get(i);
+                    float distance = distancePoint_to_Point(getX, getY, temp.getCenterX(), temp.getCenterY());
+                    if(distance <= acceptDistance*2){
+                        myFigures.remove(i);
+                        myFigures.add(0,temp);
+                    }
+                }else if (myFigures.get(i) instanceof Circle) {
+                    Circle temp = (Circle) myFigures.get(i);
+                    float distance = distancePoint_to_Point(getX, getY, temp.getCenterX(), temp.getCenterY());
+                    if (distance <= temp.getRadius()) {
+                        myFigures.remove(i);
+                        myFigures.add(0,temp);
+                    }
+                } else if (myFigures.get(i) instanceof Rectangle) {
+                    Rectangle temp = (Rectangle) myFigures.get(i);
+                    if (getX <= temp.getRight() && getX >= temp.getLeft() && getY <= temp.getBottom() && getY >= temp.getTop()) {
+                        myFigures.remove(i);
+                        myFigures.add(0,temp);
+                    }
+                } else if (myFigures.get(i) instanceof Line) {
+                    Line temp = (Line) myFigures.get(i);
+                    float distanceFirstPoint = distancePoint_to_Point(getX,getY,temp.getStartX(),temp.getStartY());
+                    float distanceSecondPoint = distancePoint_to_Point(getX,getY,temp.getStopX(),temp.getStopY());
+                    if (temp.distancePoint_to_Line(getX, getY) <= acceptDistance
+                            &&distanceFirstPoint>acceptDistance && distanceSecondPoint>acceptDistance) {
+                        myFigures.remove(i);
+                        myFigures.add(0,temp);
+                    }
+                } else if (myFigures.get(i) instanceof Ellipse) {
+                    Ellipse temp = (Ellipse) myFigures.get(i);
+                    if(temp.pointEquationX1(getY) >= getX && temp.pointEquationX2(getY) <= getX
+                            && temp.pointEquationY1(getX) >= getY && temp.pointEquationY2(getX) <= getY){
+                        myFigures.remove(i);
+                        myFigures.add(0,temp);
+                    }
+                }
+            }
+        }
+        //myFigures
+    }
+
+
     /**
      * Method initialStyleFigure define the parameters initials of the pencil Paint
      */
@@ -277,6 +323,16 @@ public class ListFigure  extends View {
                 System.out.println("No Tips");
             }
         }
+    }//End Method
+    /**
+     * Method check check the dimensions of the figure Point in its container
+     * @param x
+     * @param y */
+    public boolean check(float x,float y){
+        return x< generalWidth &&
+                x>0 &&
+                y<generalHeight &&
+                y>0;
     }//End Method
 
     /**
@@ -538,6 +594,7 @@ public class ListFigure  extends View {
                         if(distance <= acceptDistance*2){ //Move
                             mode=2;
                             this.figureSelected = i;
+                            changeOrderList(getX,getY,i);
                         }
                     }else if (myFigures.get(i) instanceof Circle) {
                         //float acceptDistanceCircle = acceptDistance;
@@ -549,6 +606,7 @@ public class ListFigure  extends View {
                             if (distance <= temp.getRadius()) { //Move
                                 mode = 2;
                                 this.figureSelected = i;
+                                changeOrderList(getX,getY,i);
                             }
                             if (distance_ <= acceptDistance) { //Resize
                                 mode = 1;
@@ -564,6 +622,7 @@ public class ListFigure  extends View {
                             //Move
                             mode=2;
                             this.figureSelected = i;
+                            changeOrderList(getX,getY,i);
                         }
                         if(distanceFirstPoint<=acceptDistance||distanceSecondPoint<=acceptDistance){
                             //Resize
@@ -576,11 +635,11 @@ public class ListFigure  extends View {
                         float distanceFirstPoint = distancePoint_to_Point(getX,getY,temp.getStartX(),temp.getStartY());
                         //distance a the second point of interaction
                         float distanceSecondPoint = distancePoint_to_Point(getX,getY,temp.getStopX(),temp.getStopY());
-                        if (temp.distancePoint_to_Line(getX, getY) <= acceptDistance
-                        &&distanceFirstPoint>acceptDistance && distanceSecondPoint>acceptDistance) {
+                        if (temp.distancePoint_to_Line(getX, getY) <= acceptDistance) {
                             //Move
                             mode=2;
                             this.figureSelected = i;
+                            changeOrderList(getX,getY,i);
                         }
                         if(distanceFirstPoint<=acceptDistance || distanceSecondPoint <=acceptDistance){
                             //Resize
@@ -602,6 +661,7 @@ public class ListFigure  extends View {
                             //Move
                             mode=2;
                             this.figureSelected = i;
+                            changeOrderList(getX,getY,i);
                         }
                         if(distanceFirstPoint <= acceptDistance || distanceSecondPoint <= acceptDistance ||
                                 distanceThirstPoint <= acceptDistance || distanceFortyPoint <= acceptDistance){
@@ -639,12 +699,13 @@ public class ListFigure  extends View {
                     if(checkCircle(temp)){
                         if (mode==1) { //ReSize
                             // 80 is the radius acceptable
-                            if ((temp.getRadius()-(getPastX-getX)) >=80 ) {
+                            if ((temp.getRadius()-(getPastX-getX)) >=80 && check(getX,getY)) {
                                 temp.setRadius(temp.getRadius() + (getX - getPastX));
                                 invalidate();
                             }
                         }
                         if(mode==2){ //Move
+                            //changeOrderList(getX,getY,figureSelected);
                             temp.setCenterX(temp.getCenterX() - (getPastX - getX));
                             temp.setCenterY(temp.getCenterY() - (getPastY - getY));
                             invalidate();
@@ -660,7 +721,7 @@ public class ListFigure  extends View {
                     float distanceSecondPoint = distancePoint_to_Point(getX,getY,aux.getRight(),aux.getBottom());
                     //checkRectangle check dimensions of the Rectangle
                     if(checkRectangle(aux)){
-                        if(mode==1){ //Resize
+                        if(mode==1&& check(getX,getY)){ //Resize
                             if (distanceFirstPoint <= acceptDistance) {
                                 //100x100 is Dimension of Rectangle limit
                                 if(aux.getRight()-aux.getLeft()>100 && aux.getBottom()-aux.getTop()>100){
@@ -717,7 +778,7 @@ public class ListFigure  extends View {
                     //distance a the line
                     //float distanceToLine = temp.distancePoint_to_Line(getX,getY);
                     if(checkLine(temp)) {
-                        if(mode == 1){ //ReSize
+                        if(mode == 1&& check(getX,getY)){ //ReSize
                             if (distanceFirstPoint <= acceptDistance) {
                                 //50 is distance between points start and stop
                                 if(distancePoint_to_Point(temp.getStartX(),temp.getStartY(),temp.getStopX(),temp.getStopY())<=50){
@@ -771,7 +832,7 @@ public class ListFigure  extends View {
                     float widthEllipse= Math.abs(temp.getRight() - temp.getLeft());
                     float heightEllipse = Math.abs(temp.getBottom() - temp.getTop());
                     if (checkEllipse(temp)) {
-                        if(mode==1) { //Resize
+                        if(mode==1&& check(getX,getY)) { //Resize
                             if (distanceFirstPoint <= acceptDistance) {
                                 if (widthEllipse > 100) {
                                     temp.setLeft(getX);
