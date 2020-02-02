@@ -6,30 +6,23 @@ import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.LinearLayout;
-
-import androidx.annotation.NonNull;
-
 import java.util.ArrayList;
-import java.util.Scanner;
-
 import Figures.*;
 /**
  * This class Canvas defines a list of figures in a view
  * @author Edwin Saavedra
  * @version 3
  */
+@SuppressLint("ViewConstructor")
 public class ListFigure  extends View {
     //Class Attributes
     private int figureSelected;
     private ArrayList<Figure> myFigures;
     private Paint pencil;
-    private float globalX = 0;
-    private float globalY = 0;
     private int[] figureColour = {183, 149, 11};
     private float getPastX = 0;
     private float getPastY = 0;
@@ -41,11 +34,10 @@ public class ListFigure  extends View {
     private  LinearLayout layout;
     //Mode Touch
     private int modeTouch = 0; //Mode 0 is Normal ... Mode 1 es zoomMode
-    //PichToZoom
+    //PicToZoom
     private ScaleGestureDetector scaleGestureDetector;
     private float mScaleFactor = 1.0f;
-    private final float M_MIN_ZOOM = 0.5f;
-    private final float M_MAX_ZOOM = 3.0f;
+
     /**
      * Class Constructor
      * @param context The View*/
@@ -58,26 +50,37 @@ public class ListFigure  extends View {
         invalidate();
     }//Closing the class constructor
 
-    public void testLayout(){
+    /**
+     * Method changeModeTouch : change modeTouch if is 0 change to 1 else change to 0
+     * */
+    public void changeModeTouch(){
         if(modeTouch == 0){
             modeTouch =1;
         }else{
             modeTouch = 0;
         }
     }
+
+    /**
+     * Method getModeTouch
+     * @return modeTouch
+     * */
     public int getModeTouch(){
         return modeTouch;
     }
-
+    /**
+     * Class ScaleListener is custom setting of SimpleOnScaleGestureListener
+     ** */
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener{
         @Override
         public boolean onScale(ScaleGestureDetector scaleGestureDetector){
             mScaleFactor *= scaleGestureDetector.getScaleFactor();
-            mScaleFactor = Math.max(M_MIN_ZOOM,Math.min(mScaleFactor,M_MAX_ZOOM));
+            float m_MIN_ZOOM = 0.5f;
+            float m_MAX_ZOOM = 3.0f;
+            mScaleFactor = Math.max(m_MIN_ZOOM,Math.min(mScaleFactor, m_MAX_ZOOM));
             invalidate();
             layout.setScaleX(mScaleFactor);
             layout.setScaleY(mScaleFactor);
-
             return true;
         }
         @Override
@@ -85,6 +88,13 @@ public class ListFigure  extends View {
             return true;
         }
     }
+    /**
+     * Method changeOrderList : change a element in the list of figures
+     * if and only if the element is not the index entered as a parameter and getX and getY are inside
+     * @param getX x of point
+     * @param getY y of point
+     * @param index
+     * * */
     public void changeOrderList(float getX, float getY , int index){
         for(int i = 0; i<myFigures.size();i++){
             if(i!=index){
@@ -127,9 +137,7 @@ public class ListFigure  extends View {
                 }
             }
         }
-        //myFigures
     }
-
 
     /**
      * Method initialStyleFigure define the parameters initials of the pencil Paint
@@ -240,18 +248,18 @@ public class ListFigure  extends View {
         }
         return listJson+"]";
     }//End Method
-    /**
-     * Method clearList deleted the list
-     * */
-    public void clearList(){
-        this.myFigures.clear();
-    }//End Method
-    /**
-     * Method toUpdate reDraw the content - is invalidate method
-     * */
-    public void toUpdate() {
-        invalidate();
-    }//End Method
+    /*
+     Method clearList deleted the list
+     public void clearList(){
+     this.myFigures.clear();
+     }
+    */
+    /*Method toUpdate reDraw the content - is invalidate method
+     public void toUpdate() {
+     invalidate();
+    }
+    */
+
     /**
      * Method distancePoint to Point define tha distance between two points
      * @param pointX X Coordinate of the first point
@@ -269,6 +277,7 @@ public class ListFigure  extends View {
     /**
      * Method onDraw draw the figure geometric
      * @param canvas area of draw*/
+    @SuppressLint("CanvasSize")
     protected void onDraw(Canvas canvas) {
         generalWidth = canvas.getWidth();
         generalHeight = canvas.getHeight();
@@ -326,8 +335,8 @@ public class ListFigure  extends View {
     }//End Method
     /**
      * Method check check the dimensions of the figure Point in its container
-     * @param x
-     * @param y */
+     * @param x of point
+     * @param y of point */
     public boolean check(float x,float y){
         return x< generalWidth &&
                 x>0 &&
@@ -530,13 +539,13 @@ public class ListFigure  extends View {
             temp.setStartY(generalHeight - 1);
         }
     }//End Method
-
+    /*
     public float getXTouch(){
         return this.globalX;
     }
     public  float getYTouch(){
         return this.globalY;
-    }
+    }*/
     /**
      * Method onTouchEvent
      * @param event Events of touch*/
@@ -544,9 +553,8 @@ public class ListFigure  extends View {
     public boolean onTouchEvent(MotionEvent event) {
         float getX = event.getX();
         float getY = event.getY();
-        this.globalX = getX;
-        this.globalY = getY;
         int acct = event.getAction();
+        //Mode Zoom
         if(modeTouch == 1){
             scaleGestureDetector.onTouchEvent(event);
             invalidate();
@@ -581,6 +589,7 @@ public class ListFigure  extends View {
             getPastX=getX;
             return true;
         }
+        //Mode Figures
         if (acct == MotionEvent.ACTION_DOWN ) {
                 this.figureSelected = -1;
                 invalidate();

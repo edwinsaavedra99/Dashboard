@@ -1,25 +1,22 @@
 package ListFigures;
-
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 
-import java.util.ArrayList;
-
 public class Util {
-    public static int[] color1 = {183, 149, 11};
-    public static int[] color2 = {99, 57, 116};
-    public static int[] color3 = {31, 97, 141};
-    public static int[] color4 = {40, 116, 166};
-    public static int[] color5 = {20, 143, 119};
-    public static int[] color6 = {183, 149, 11};
-    public static int[] color7 = {186, 74, 0};
-    public static int[] color8 = {95, 106, 106};
-    public static int[] color9 = {46, 64, 83};
-    public static int[] color10 = {136, 78, 160};
-    public static int[][] collections = new int[10][];
+    private static int[] color1 = {183, 149, 11};
+    private static int[] color2 = {99, 57, 116};
+    private static int[] color3 = {31, 97, 141};
+    private static int[] color4 = {40, 116, 166};
+    private static int[] color5 = {20, 143, 119};
+    private static int[] color6 = {183, 149, 11};
+    private static int[] color7 = {186, 74, 0};
+    private static int[] color8 = {95, 106, 106};
+    private static int[] color9 = {46, 64, 83};
+    private static int[] color10 = {136, 78, 160};
+    private static int[][] collections = new int[10][];
 
     public static int[][] getCollections(){
-        collections[0] = color1;
+        collections[0]=color1;
         collections[1]=color2;
         collections[2]=color3;
         collections[3]=color4;
@@ -31,7 +28,7 @@ public class Util {
         collections[9]=color10;
         return collections;
     }
-    public static Paint Circle(int[] colour){
+    static Paint Circle(int[] colour){
         float[] intervals = new float[]{0.0f, 0.0f};
         float phase = 0;
         DashPathEffect dashPathEffect = new DashPathEffect(intervals, phase);
@@ -45,7 +42,7 @@ public class Util {
         return paint;
     }
 
-    public static Paint CircleTransparent(int[] colour){
+    static Paint CircleTransparent(int[] colour){
         float[] intervals = new float[]{5.0f, 5.0f};
         float phase = 0;
         DashPathEffect dashPathEffect = new DashPathEffect(intervals, phase);
@@ -58,7 +55,7 @@ public class Util {
         paint.setPathEffect(dashPathEffect);
         return paint;
     }
-    public static Paint CircleSmall(int[] colour){
+    static Paint CircleSmall(int[] colour){
         float[] intervals = new float[]{5.0f, 5.0f};
         float phase = 0;
         DashPathEffect dashPathEffect = new DashPathEffect(intervals, phase);

@@ -609,6 +609,20 @@
                             android:layout_height="25dp"
                             android:layout_marginBottom="15dp"
                             android:src="@drawable/detective_64px" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:text="Random"
+                            android:textColor="#FFFFFF"
+                            android:textSize="8sp" />
+                        <ImageView
+                            android:id="@+id/openCV10"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginBottom="15dp"
+                            android:src="@drawable/detective_64px" />
                     </LinearLayout>
                 </ScrollView>
             </LinearLayout>

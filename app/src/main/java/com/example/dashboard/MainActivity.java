@@ -3,47 +3,31 @@ package com.example.dashboard;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.drawable.BitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
-
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
-import org.opencv.core.Core;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.Size;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import ListFigures.ListFigure;
 import ListFigures.ListSegmentation;
 import ListFigures.Util;
-
-import static org.opencv.core.Core.LUT;
-import static org.opencv.core.CvType.CV_8UC1;
 
 /**
  * This class define the Main Activity Image Ray-X editing space
@@ -67,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
     //Edit and delete Figures
     private ImageView deleteFigures;
     private ImageView changeColor;
-    private ImageView load;
     private int[] colour = {183, 149, 11};
     //Zoom Image
     private ImageView extendsImage;
@@ -94,9 +77,9 @@ public class MainActivity extends AppCompatActivity {
     //Segments
     private ImageView deleteSegments;
     private ImageView changeColorSegments;
-    private CardView cardView;
     private LinearLayout zoomImageLayout;
     //Filters
+    private MyFilters myFilters;
     private ImageView openCv;
     private ImageView openCv1;
     private ImageView openCv2;
@@ -107,6 +90,9 @@ public class MainActivity extends AppCompatActivity {
     private ImageView openCv7;
     private ImageView openCv8;
     private ImageView openCv9;
+    private ImageView openCv10;
+    private Bitmap original; //img original format Bitmap
+    private Mat img;
     //--End Attributes of class
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -174,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
                 }else{
                     extendsImage.setColorFilter(Color.rgb(255, 255, 255)); //white
                 }
-                myListFigures.testLayout();
+                myListFigures.changeModeTouch();
             }
         });
         //Add Point
@@ -246,6 +232,7 @@ public class MainActivity extends AppCompatActivity {
                 toast.show();
             }
         });
+        //Delete the after segment
         deleteSegments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -253,6 +240,7 @@ public class MainActivity extends AppCompatActivity {
                 myListSegmentation.after();
             }
         });
+        //change color all segments
         changeColorSegments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -268,278 +256,113 @@ public class MainActivity extends AppCompatActivity {
                 toast.show();
             }
         });
+        //Layout forget touch
         zoomImageLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Toast toast;
-                toast = Toast.makeText(getApplicationContext(),"Touch",Toast.LENGTH_SHORT);
-                toast.show();
                 return true;
             }
         });
-        //filtre canny
+        //Filter canny borders
         openCv.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Mat img = null;
-                try{
-                    int d1 = R.drawable.rx_image_1;
-                    img = Utils.loadResource(getApplicationContext(),d1);
-
-                }catch (IOException e){
-                    e.printStackTrace();
-                }
-                Imgproc.cvtColor(img,img,Imgproc.COLOR_RGB2BGRA);
-                Mat img_result = img.clone();
-                Imgproc.Canny(img,img_result,80,90);
-                Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(),img_result.rows(),Bitmap.Config.ARGB_8888);
-                Utils.matToBitmap(img_result,img_bitmap);
-                //result esta en img_bitamp
-                Drawable d = new BitmapDrawable(getResources(),img_bitmap);
-                layoutImageRx.setBackground(d);
-
+            Drawable d = new BitmapDrawable(getResources(), myFilters.filterCanny());
+            layoutImageRx.setBackground(d);
             }
         });
-            //Filter normal
-                openCv3.setOnClickListener(new View.OnClickListener() {
+        //Filter RGB is image original
+        openCv3.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            public void onClick(View v) {
+                Drawable d = new BitmapDrawable(getResources(),myFilters.filterRGB());
+                layoutImageRx.setBackground(d);
+            }
+        });
+        //Filter morph
+        openCv2.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onClick(View v) {
+                Drawable d = new BitmapDrawable(getResources(), myFilters.filterMorph());
+                layoutImageRx.setBackground(d);
+            }
+        });
+        //Filter SEPIA
+        openCv1.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onClick(View v) {
+                Drawable d = new BitmapDrawable(getResources(),myFilters.filerSepia());
+                layoutImageRx.setBackground(d);
+            }
+        });
+        //filter summer
+        openCv4.setOnClickListener(new View.OnClickListener() {
                     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                     @Override
                     public void onClick(View v) {
-                        Mat img = null;
-                        try{
-                            int d1 = R.drawable.rx_image_1;
-                            img = Utils.loadResource(getApplicationContext(),d1);
-
-                        }catch (IOException e){
-                            e.printStackTrace();
-                        }
-                        //Imgproc.cvtColor(img,img,Imgproc.COLOR_RGB2BGRA);
-                        Mat img_result = img.clone();
-                        //Imgproc.Canny(img,img_result,80,90);
-                        Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(),img_result.rows(),Bitmap.Config.ARGB_8888);
-                        Utils.matToBitmap(img_result,img_bitmap);
-                        //result esta en img_bitamp
-                        Drawable d = new BitmapDrawable(getResources(),img_bitmap);
-                        layoutImageRx.setBackground(d);
-
-                    }
-                });
-
-
-
-                //Filter
-                openCv2.setOnClickListener(new View.OnClickListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-                    @Override
-                    public void onClick(View v) {
-                        Mat img = null;
-                        try{
-                            int d1 = R.drawable.rx_image_1;
-                            img = Utils.loadResource(getApplicationContext(),d1);
-
-                        }catch (IOException e){
-                            e.printStackTrace();
-                        }
-                        Imgproc.cvtColor(img,img,Imgproc.COLOR_RGB2BGRA);
-                        Mat img_result = img.clone();
-                        //Imgproc.GaussianBlur(img,img_result,new Size(13,7),8);
-                        //Imgproc.Canny(img,img_result,80,90);
-                        Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE,new Size(3,3));
-                        //Imgproc.erode(img,img_result,kernel);
-                        Imgproc.morphologyEx(img,img_result,Imgproc.MORPH_GRADIENT,kernel);
-                        Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(),img_result.rows(),Bitmap.Config.ARGB_8888);
-                        Utils.matToBitmap(img_result,img_bitmap);
-                        //result esta en img_bitamp
-                        Drawable d = new BitmapDrawable(getResources(),img_bitmap);
-                        layoutImageRx.setBackground(d);
-
-                    }
-                });
-
-
-
-//Filter SEPIA
-                openCv1.setOnClickListener(new View.OnClickListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-                    @Override
-                    public void onClick(View v) {
-                        // Fill sepia kernel
-                        Mat  mSepiaKernel;
-                        mSepiaKernel = new Mat(4, 4, CvType.CV_32F);
-                        mSepiaKernel.put(0, 0, /* R */0.189f, 0.769f, 0.393f, 0f);
-                        mSepiaKernel.put(1, 0, /* G */0.168f, 0.686f, 0.349f, 0f);
-                        mSepiaKernel.put(2, 0, /* B */0.131f, 0.534f, 0.272f, 0f);
-                        mSepiaKernel.put(3, 0, /* A */0.000f, 0.000f, 0.000f, 1f);
-                        Mat img = null;
-                        try{
-                            int d1 = R.drawable.rx_image_1;
-                            img = Utils.loadResource(getApplicationContext(),d1);
-
-                        }catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        Imgproc.cvtColor(img, img, Imgproc.COLOR_BGR2RGBA);
-                        Mat img_result = img.clone();
-                        //Mat sepiaMat = new Mat(img_result.size(), img_result.type());
-                        Core.transform(img, img_result, mSepiaKernel);
-                        //new SepiaFilter().apply(img_result, sepiaMat);
-                        Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(), img_result.rows(), Bitmap.Config.ARGB_8888);
-                        Utils.matToBitmap(img_result, img_bitmap);
-                        //result esta en img_bitamp
-                        Drawable d = new BitmapDrawable(getResources(),img_bitmap);
-                        layoutImageRx.setBackground(d);
-                    }
-                });
-                openCv4.setOnClickListener(new View.OnClickListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-                    @Override
-                    public void onClick(View v) {
-                        Mat img = null;
-                        try{
-                            int d1 = R.drawable.rx_image_1;
-                            img = Utils.loadResource(getApplicationContext(),d1);
-
-                        }catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        Imgproc.applyColorMap(img,img,Imgproc.COLORMAP_SUMMER);
-                        Mat img_result = img.clone();
-                        Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(), img_result.rows(), Bitmap.Config.ARGB_8888);
-                        Utils.matToBitmap(img_result, img_bitmap);
-                        //result esta en img_bitamp
-                        Drawable d = new BitmapDrawable(getResources(),img_bitmap);
-                        layoutImageRx.setBackground(d);
-                    }
-                });
-            openCv5.setOnClickListener(new View.OnClickListener() {
+             Drawable d = new BitmapDrawable(getResources(),myFilters.filterSummer());
+             layoutImageRx.setBackground(d);
+           }
+                     });
+        //filter pink
+        openCv5.setOnClickListener(new View.OnClickListener() {
                 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                 @Override
                 public void onClick(View v) {
-                    Mat img = null;
-                    try{
-                        int d1 = R.drawable.rx_image_1;
-                        img = Utils.loadResource(getApplicationContext(),d1);
-
-                    }catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    Imgproc.applyColorMap(img,img,Imgproc.COLORMAP_PINK);
-                    Mat img_result = img.clone();
-                    Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(), img_result.rows(), Bitmap.Config.ARGB_8888);
-                    Utils.matToBitmap(img_result, img_bitmap);
-                    //result esta en img_bitamp
-                    Drawable d = new BitmapDrawable(getResources(),img_bitmap);
-                    layoutImageRx.setBackground(d);
-                }
-            });
+            Drawable d = new BitmapDrawable(getResources(),myFilters.filterPink());
+            layoutImageRx.setBackground(d);
+        }
+                  });
+        //filter reduce colors gray
         openCv6.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Mat img = null;
-                try{
-                    int d1 = R.drawable.rx_image_1;
-                    img = Utils.loadResource(getApplicationContext(),d1);
-
-                }catch (IOException e) {
-                    e.printStackTrace();
-                }
-                Imgproc.cvtColor(img,img,Imgproc.COLOR_BGR2GRAY);
-                Mat img_result = img.clone();
-                img_result = reduceColorsGray(img_result, 5);
-                Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(), img_result.rows(), Bitmap.Config.ARGB_8888);
-                Utils.matToBitmap(img_result, img_bitmap);
-                //result esta en img_bitamp
-                Drawable d = new BitmapDrawable(getResources(),img_bitmap);
+                Drawable d = new BitmapDrawable(getResources(),myFilters.filterReduceColorsGray(5));
                 layoutImageRx.setBackground(d);
             }
         });
+        //filters reduce Colors
         openCv7.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Mat img = null;
-                try{
-                    int d1 = R.drawable.rx_image_1;
-                    img = Utils.loadResource(getApplicationContext(),d1);
-
-                }catch (IOException e) {
-                    e.printStackTrace();
-                }
-                Imgproc.cvtColor(img,img,Imgproc.COLOR_BGR2GRAY);
-                Mat img_result = img.clone();
-                /**/
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inScaled = false; // Leaving it to true enlarges the decoded image size.
-                Bitmap original = BitmapFactory.decodeResource(getResources(), R.drawable.rx_image_1, options);
-                Mat img1 = new Mat();
-                Utils.bitmapToMat(original, img1);
-                img_result = reduceColors(img1, 80, 15, 10);
-                /**/
-                //img_result = reduceColors(img_result, 5,5,5);
-                Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(), img_result.rows(), Bitmap.Config.ARGB_8888);
-                Utils.matToBitmap(img_result, img_bitmap);
-                //result esta en img_bitamp
-                Drawable d = new BitmapDrawable(getResources(),img_bitmap);
+                Drawable d = new BitmapDrawable(getResources(),myFilters.filterReduceColors(80,15,10));
                 layoutImageRx.setBackground(d);
             }
         });
+        //filter Pencil
         openCv8.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Mat img = null;
-                try{
-                    int d1 = R.drawable.rx_image_1;
-                    img = Utils.loadResource(getApplicationContext(),d1);
-
-                }catch (IOException e) {
-                    e.printStackTrace();
-                }
-                Imgproc.cvtColor(img,img,Imgproc.COLOR_BGR2GRAY);
-                Mat img_result = img.clone();
-                Imgproc.adaptiveThreshold(img_result,img_result,255,
-                        Imgproc.ADAPTIVE_THRESH_MEAN_C,Imgproc.THRESH_BINARY,9,2);
-                Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(), img_result.rows(), Bitmap.Config.ARGB_8888);
-                Utils.matToBitmap(img_result, img_bitmap);
-                //result esta en img_bitamp
-                Drawable d = new BitmapDrawable(getResources(),img_bitmap);
+                Drawable d = new BitmapDrawable(getResources(),myFilters.filterPencil());
                 layoutImageRx.setBackground(d);
             }
         });
+        //filter Carton
         openCv9.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Mat img = null;
-                try{
-                    int d1 = R.drawable.rx_image_1;
-                    img = Utils.loadResource(getApplicationContext(),d1);
-
-                }catch (IOException e) {
-                    e.printStackTrace();
-                }
-                Imgproc.cvtColor(img,img,Imgproc.COLOR_BGR2GRAY);
-                Mat img_result = img.clone();
-                //
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inScaled = false; // Leaving it to true enlarges the decoded image size.
-                Bitmap original = BitmapFactory.decodeResource(getResources(), R.drawable.rx_image_1, options);
-                Mat img1 = new Mat();
-                Utils.bitmapToMat(original, img1);
-                Imgproc.cvtColor(img1, img1, Imgproc.COLOR_BGRA2BGR);
-                img_result = cartoon(img1, 80, 15, 10);
-                //img_result = cartoon(img_result, 80, 15, 10);
-                //
-                Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(), img_result.rows(), Bitmap.Config.ARGB_8888);
-                Utils.matToBitmap(img_result, img_bitmap);
-                //result esta en img_bitamp
-                Drawable d = new BitmapDrawable(getResources(),img_bitmap);
+                Drawable d = new BitmapDrawable(getResources(),myFilters.filterCarton(80,15,10));
                 layoutImageRx.setBackground(d);
             }
         });
-
+        //filter Carton
+        openCv10.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onClick(View v) {
+                Random r = new Random();
+                int result = r.nextInt(20);
+                Drawable d = new BitmapDrawable(getResources(),myFilters.filterColor(result));
+                layoutImageRx.setBackground(d);
+            }
+        });
     }
     /**
      * Method initial Properties Initializing Properties of Activity
@@ -559,10 +382,9 @@ public class MainActivity extends AppCompatActivity {
         segmentation = findViewById(R.id.segmentation);
         //LinearLayout menu_left = findViewById(R.id.menu_left);
         //LinearLayout menu_right = findViewById(R.id.menu_right);
-        load = findViewById(R.id.load);
+        //ImageView load = findViewById(R.id.load);
         //ConstraintLayout frame = findViewById(R.id.frame);
         layoutImageRx = findViewById(R.id.layoutImageRx);
-
         myListFigures = new ListFigure(this,layoutImageRx);
         layoutImageRx.addView(myListFigures);
         //Animation
@@ -576,11 +398,11 @@ public class MainActivity extends AppCompatActivity {
         backMenuLeft = findViewById(R.id.back_menu_left_1);
         backMenuRight = findViewById(R.id.back_menu_right_1);
         //Segmentation
-        cardView = findViewById(R.id.zoomImage_1); //CARD
+        CardView cardView = findViewById(R.id.zoomImage_1); //CARD
         cardView.setVisibility(View.GONE);
         zoomImageLayout = findViewById(R.id.zoomLayoutImageRx_1); //Layout Zoom Image Ray-X
         zoomImageLayout.setVisibility(View.INVISIBLE);
-        myListSegmentation = new ListSegmentation(this, zoomImageLayout,cardView);
+        myListSegmentation = new ListSegmentation(this, zoomImageLayout, cardView);
         layoutImageRx1 = findViewById(R.id.layoutImageRx_1); //Layout Image Ray-X
         layoutImageRx1.addView(myListSegmentation);
         deleteSegments = findViewById(R.id.deleteSegments);
@@ -596,8 +418,22 @@ public class MainActivity extends AppCompatActivity {
         openCv7 = findViewById(R.id.openCV7);
         openCv8 = findViewById(R.id.openCV8);
         openCv9 = findViewById(R.id.openCV9);
+        openCv10 = findViewById(R.id.openCV10);
+        //IMAGE
+        img = null;
+        try{
+            int d1 = R.drawable.rx_image_1;
+            img = Utils.loadResource(getApplicationContext(),d1);
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inScaled = false;
+            this.original = BitmapFactory.decodeResource(getResources(), R.drawable.rx_image_1, options);
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        myFilters = new MyFilters(this.img,this.original);
         //--End Initializing
     }//End Method
+    /*
     public void esperarYCerrar(int milisegundos) {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -607,67 +443,5 @@ public class MainActivity extends AppCompatActivity {
                 //menu_right.setVisibility(View.INVISIBLE);
             }
         }, milisegundos);
-    }
-    public Mat createLUT(int numColors) {
-        // When numColors=1 the LUT will only have 1 color which is black.
-        if (numColors < 0 || numColors > 256) {
-            System.out.println("Invalid Number of Colors. It must be between 0 and 256 inclusive.");
-            return null;
-        }
-
-        Mat lookupTable = Mat.zeros(new Size(1, 256), CV_8UC1);
-
-        int startIdx = 0;
-        for (int x = 0; x < 256; x += 256.0 / numColors) {
-            lookupTable.put(x, 0, x);
-
-            for (int y = startIdx; y < x; y++) {
-                if (lookupTable.get(y, 0)[0] == 0) {
-                    lookupTable.put(y, 0, lookupTable.get(x, 0));
-                }
-            }
-            startIdx = x;
-        }
-        return lookupTable;
-    }
-    public Mat reduceColorsGray(Mat img, int numColors) {
-        Mat LUT = createLUT(numColors);
-        LUT(img, LUT, img);
-        return img;
-    }
-    public Mat reduceColors(Mat img, int numRed, int numGreen, int numBlue) {
-        Mat redLUT = createLUT(numRed);
-        Mat greenLUT = createLUT(numGreen);
-        Mat blueLUT = createLUT(numBlue);
-
-        List<Mat> BGR = new ArrayList<>(3);
-        //BGR.add(blueLUT);
-        //BGR.add(greenLUT);
-        //BGR.add(redLUT);
-        Core.split(img, BGR);
-
-        LUT(BGR.get(0), blueLUT, BGR.get(0));
-        LUT(BGR.get(1), greenLUT, BGR.get(1));
-        LUT(BGR.get(2), redLUT, BGR.get(2));
-
-        Core.merge(BGR, img);
-
-        return img;
-    }
-    public Mat cartoon(Mat img, int numRed, int numGreen, int numBlue) {
-        Mat reducedColorImage = reduceColors(img, numRed, numGreen, numBlue);
-
-        Mat result = new Mat();
-        Imgproc.cvtColor(img, result, Imgproc.COLOR_BGR2GRAY);
-        Imgproc.medianBlur(result, result, 15);
-
-        Imgproc.adaptiveThreshold(result, result, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, 15, 2);
-
-        Imgproc.cvtColor(result, result, Imgproc.COLOR_GRAY2BGR);
-
-        Core.bitwise_and(reducedColorImage, result, result);
-
-        return result;
-    }
-
+    }*/
 }//End Class
