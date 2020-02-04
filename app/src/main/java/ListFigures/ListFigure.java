@@ -32,6 +32,8 @@ public class ListFigure  extends View {
     private float generalWidth = 0;
     int mode=0; //Mode 1 is Resize... mode 2 is Move
     private  LinearLayout layout;
+    //private float widthLayout = layout.getWidth();
+    //private float heightLayout = layout.getHeight();
     //Mode Touch
     private int modeTouch = 0; //Mode 0 is Normal ... Mode 1 es zoomMode
     //PicToZoom
@@ -75,7 +77,7 @@ public class ListFigure  extends View {
         @Override
         public boolean onScale(ScaleGestureDetector scaleGestureDetector){
             mScaleFactor *= scaleGestureDetector.getScaleFactor();
-            float m_MIN_ZOOM = 0.5f;
+            float m_MIN_ZOOM = 1.0f;
             float m_MAX_ZOOM = 3.0f;
             mScaleFactor = Math.max(m_MIN_ZOOM,Math.min(mScaleFactor, m_MAX_ZOOM));
             invalidate();
@@ -97,7 +99,7 @@ public class ListFigure  extends View {
      * * */
     public void changeOrderList(float getX, float getY , int index){
         for(int i = 0; i<myFigures.size();i++){
-            if(i!=index){
+            if(i>index){
                 if(myFigures.get(i) instanceof  Point) {
                     Point temp = (Point) myFigures.get(i);
                     float distance = distancePoint_to_Point(getX, getY, temp.getCenterX(), temp.getCenterY());
@@ -463,7 +465,6 @@ public class ListFigure  extends View {
             }else {
                 aux.setRight(widthRectangle + 1);
             }
-
         }else if(aux.getRight()>generalWidth){
             aux.setRight(generalWidth-1);
             aux.setLeft(generalWidth-widthRectangle-1);
@@ -555,38 +556,53 @@ public class ListFigure  extends View {
         float getY = event.getY();
         int acct = event.getAction();
         //Mode Zoom
-        if(modeTouch == 1){
+        if(modeTouch == 1) {
             scaleGestureDetector.onTouchEvent(event);
             invalidate();
-            if(acct == MotionEvent.ACTION_DOWN) {
+            float d, d_1;
+            if (layout.getTranslationX() >= 0)
+                d = (layout.getScaleX() * layout.getWidth() - layout.getWidth()) - layout.getTranslationX();
+            else
+                d = (layout.getScaleX() * layout.getWidth() - layout.getWidth()) + layout.getTranslationX();
+            if (layout.getTranslationY() >= 0)
+                d_1 = (layout.getScaleY() * layout.getHeight() - layout.getHeight()) - layout.getTranslationY();
+            else
+                d_1 = (layout.getScaleY() * layout.getHeight() - layout.getHeight()) + layout.getTranslationY();
+            /*boolean testFilers=false;
+            if (acct == MotionEvent.ACTION_POINTER_UP) {
+                System.out.println("retiro los dos dedos");
+                testFilers = true;
+            } else{
+                testFilers = false;
+            }*/
+           if(acct == MotionEvent.ACTION_DOWN) {
+                if(!scaleGestureDetector.isInProgress()) {
+                    getPastX = getX;
+                    getPastY = getY;
+                }
+            }else if(acct == MotionEvent.ACTION_MOVE){
+                if(!scaleGestureDetector.isInProgress()&&layout.getScaleX()>1f&&layout.getScaleY()>1f) {
+                    if((getX - (getPastX - layout.getTranslationX()))<d &&(getX - (getPastX - layout.getTranslationX()))>-d)
+                        layout.setTranslationX(getX - (getPastX - layout.getTranslationX()));
+                    if((getY - (getPastY - layout.getTranslationY()))<d_1 &&(getY - (getPastY - layout.getTranslationY()))>-d_1)
+                        layout.setTranslationY(getY - (getPastY - layout.getTranslationY()));
+                }
+            }else if(acct == MotionEvent.ACTION_UP){
                 getPastX = getX;
                 getPastY = getY;
-            }else if(acct == MotionEvent.ACTION_MOVE){
-                if(!scaleGestureDetector.isInProgress()) {
-                    //distance a the first point of interaction
-                    //float distanceFirstPoint = distancePoint_to_Point(getX, getY, getPastX, getPastY);
-                    //distance a the second point of interaction
-                    //float distanceSecondPoint = distancePoint_to_Point(getX,getY,aux.getRight(),aux.getBottom());
-                    //checkRectangle check dimensions of the Rectangle
-                    //aux.setRight(getX + aux.getRight()-getPastX);
-                    //aux.setBottom(getY + aux.getBottom()-getPastY);
-                    //aux.setLeft(getX - (getPastX-aux.getLeft()));
-                    //aux.setTop(getY - (getPastY-aux.getTop()));
-                    //layout.setPivotX(getX+generalWidth-getPastX);
-                    //layout.setPivotY(getY+generalHeight-getPastY);
-                    //layout.setTranslationX(getX);
-                    //layout.setTranslationY(getY);
-                    //layout.setLeft();
-                    //layout.setX();
-                    //layout.setPivotX(getX);
-                    //layout.setPivotY(getY);
-                    //layout.setTranslationY((Math.abs(getY-getPastY)));
-                    //layout.
-                    System.out.println("in Progress");
+                if(layout.getScaleX()<=1f&&layout.getScaleY()<=1f){
+                    layout.animate().translationX(0).translationY(0);
+                }else{
+                    if(layout.getTranslationX()>d)
+                        layout.animate().translationX(d);
+                    if(layout.getTranslationY()>d_1)
+                        layout.animate().translationY(d_1);
+                    if(layout.getTranslationX()<-d)
+                        layout.animate().translationX(-d);
+                    if(layout.getTranslationY()<-d_1)
+                        layout.animate().translationY(-d_1);
                 }
             }
-            getPastY=getY;
-            getPastX=getX;
             return true;
         }
         //Mode Figures
@@ -612,15 +628,15 @@ public class ListFigure  extends View {
                         float distance = distancePoint_to_Point(getX, getY, temp.getCenterX(), temp.getCenterY());
                         //distance with the point pivot
                         float distance_ = distancePoint_to_Point(getX,getY,temp.getCenterX()+temp.getRadius(),temp.getCenterY());
-                            if (distance <= temp.getRadius()) { //Move
-                                mode = 2;
-                                this.figureSelected = i;
-                                changeOrderList(getX,getY,i);
-                            }
-                            if (distance_ <= acceptDistance) { //Resize
-                                mode = 1;
-                                this.figureSelected = i;
-                            }
+                        if (distance <= temp.getRadius()) { //Move
+                            mode = 2;
+                            this.figureSelected = i;
+                            changeOrderList(getX,getY,i);
+                        }
+                        if (distance_ <= acceptDistance) { //Resize
+                            mode = 1;
+                            this.figureSelected = i;
+                        }
                     } else if (myFigures.get(i) instanceof Rectangle) {
                         Rectangle temp = (Rectangle) myFigures.get(i);
                         //distance a the first point of interaction
@@ -665,15 +681,13 @@ public class ListFigure  extends View {
                         float distanceThirstPoint = distancePoint_to_Point(getX, getY, temp.getRight()/2 + temp.getLeft()/2, temp.getTop());
                         //distance a the forty point of interaction
                         float distanceFortyPoint = distancePoint_to_Point(getX, getY, temp.getRight()/2 + temp.getLeft()/2, temp.getBottom());
-                        if(temp.pointEquationX1(getY) >= getX && temp.pointEquationX2(getY) <= getX
-                                && temp.pointEquationY1(getX) >= getY && temp.pointEquationY2(getX) <= getY){
+                        if(temp.pointEquationX1(getY) >= getX && temp.pointEquationX2(getY) <= getX && temp.pointEquationY1(getX) >= getY && temp.pointEquationY2(getX) <= getY){
                             //Move
                             mode=2;
                             this.figureSelected = i;
                             changeOrderList(getX,getY,i);
                         }
-                        if(distanceFirstPoint <= acceptDistance || distanceSecondPoint <= acceptDistance ||
-                                distanceThirstPoint <= acceptDistance || distanceFortyPoint <= acceptDistance){
+                        if(distanceFirstPoint <= acceptDistance || distanceSecondPoint <= acceptDistance || distanceThirstPoint <= acceptDistance || distanceFortyPoint <= acceptDistance){
                             //Resize
                             mode=1;
                             this.figureSelected = i;
@@ -915,6 +929,4 @@ public class ListFigure  extends View {
         //}
         return true;
     }//End Method
-
-
 }
