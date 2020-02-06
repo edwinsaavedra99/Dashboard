@@ -5,6 +5,7 @@ import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Rect;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import java.util.ArrayList;
@@ -20,6 +21,21 @@ class MyFilters {
         this.img = img;
         this.image = image;
     }
+    Bitmap cropBitmap(Bitmap aux){
+        Rect rectCrop;
+        if(aux.getWidth()<aux.getHeight())
+            rectCrop = new Rect(0,0,aux.getWidth(),aux.getHeight()/2);
+        else
+            rectCrop = new Rect(0,0,aux.getWidth()/2,aux.getHeight());
+        Mat img_original = new Mat();
+        Utils.bitmapToMat(aux, img_original);
+        Mat image_out = img_original.submat(rectCrop);
+        Mat img_result = image_out.clone();
+        Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(),img_result.rows(),Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(img_result,img_bitmap);
+        return img_bitmap;
+    }
+
     Bitmap filterCanny(){
         Mat img_result = img.clone();
         Imgproc.cvtColor(img_result,img_result,Imgproc.COLOR_RGB2BGRA);

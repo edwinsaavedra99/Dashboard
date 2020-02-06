@@ -99,7 +99,7 @@ public class ListFigure  extends View {
      * * */
     public void changeOrderList(float getX, float getY , int index){
         for(int i = 0; i<myFigures.size();i++){
-            if(i>index){
+            if(i!=index){
                 if(myFigures.get(i) instanceof  Point) {
                     Point temp = (Point) myFigures.get(i);
                     float distance = distancePoint_to_Point(getX, getY, temp.getCenterX(), temp.getCenterY());
@@ -540,6 +540,31 @@ public class ListFigure  extends View {
             temp.setStartY(generalHeight - 1);
         }
     }//End Method
+    public void checkFigures(){
+        for (int i = 0; i < myFigures.size(); i++) {
+            if (myFigures.get(i) instanceof Circle){
+                Circle temp = (Circle) myFigures.get(i);
+                if(!checkCircle(temp))
+                    adaptCircle(temp);
+            }else if (myFigures.get(i) instanceof Rectangle){
+                Rectangle temp = (Rectangle) myFigures.get(i);
+                if(!checkRectangle(temp))
+                    adaptRectangle(temp);
+            }else if (myFigures.get(i) instanceof Point){
+                Point temp = (Point) myFigures.get(i);
+                if(!checkPoint(temp))
+                    adaptPoint(temp);
+            }else if (myFigures.get(i) instanceof Line){
+                Line temp = (Line) myFigures.get(i);
+                if(!checkLine(temp))
+                    adaptLine(temp);
+            }else if (myFigures.get(i) instanceof Ellipse){
+                Ellipse temp = (Ellipse) myFigures.get(i);
+                if(!checkEllipse(temp))
+                    adaptEllipse(temp);
+            }
+        }
+    }
     /*
     public float getXTouch(){
         return this.globalX;
@@ -555,27 +580,20 @@ public class ListFigure  extends View {
         float getX = event.getX();
         float getY = event.getY();
         int acct = event.getAction();
+        float d, d_1;
+        if (layout.getTranslationX() >= 0)
+            d = (layout.getScaleX() * layout.getWidth() - layout.getWidth()) - layout.getTranslationX();
+        else
+            d = (layout.getScaleX() * layout.getWidth() - layout.getWidth()) + layout.getTranslationX();
+        if (layout.getTranslationY() >= 0)
+            d_1 = (layout.getScaleY() * layout.getHeight() - layout.getHeight()) - layout.getTranslationY();
+        else
+            d_1 = (layout.getScaleY() * layout.getHeight() - layout.getHeight()) + layout.getTranslationY();
         //Mode Zoom
         if(modeTouch == 1) {
             scaleGestureDetector.onTouchEvent(event);
             invalidate();
-            float d, d_1;
-            if (layout.getTranslationX() >= 0)
-                d = (layout.getScaleX() * layout.getWidth() - layout.getWidth()) - layout.getTranslationX();
-            else
-                d = (layout.getScaleX() * layout.getWidth() - layout.getWidth()) + layout.getTranslationX();
-            if (layout.getTranslationY() >= 0)
-                d_1 = (layout.getScaleY() * layout.getHeight() - layout.getHeight()) - layout.getTranslationY();
-            else
-                d_1 = (layout.getScaleY() * layout.getHeight() - layout.getHeight()) + layout.getTranslationY();
-            /*boolean testFilers=false;
-            if (acct == MotionEvent.ACTION_POINTER_UP) {
-                System.out.println("retiro los dos dedos");
-                testFilers = true;
-            } else{
-                testFilers = false;
-            }*/
-           if(acct == MotionEvent.ACTION_DOWN) {
+            if(acct == MotionEvent.ACTION_DOWN) {
                 if(!scaleGestureDetector.isInProgress()) {
                     getPastX = getX;
                     getPastY = getY;
@@ -915,9 +933,22 @@ public class ListFigure  extends View {
             getPastX = getX;
             getPastY = getY;
             invalidate(); //reDraw
+        }else if(acct == MotionEvent.ACTION_UP ) {
+            System.out.println("up:"+getX+":"+getY);
+            System.out.println("up:"+getPastX+":"+getPastY);
+            if(layout.getScaleX()<=1f&&layout.getScaleY()<=1f){
+                layout.animate().translationX(0).translationY(0);
+            }else{
+                if(layout.getTranslationX()>d)
+                    layout.animate().translationX(d);
+                if(layout.getTranslationY()>d_1)
+                    layout.animate().translationY(d_1);
+                if(layout.getTranslationX()<-d)
+                    layout.animate().translationX(-d);
+                if(layout.getTranslationY()<-d_1)
+                    layout.animate().translationY(-d_1);
+            }
         }
-        //if(acct == MotionEvent.ACTION_UP ){
-
             /*Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
@@ -927,6 +958,7 @@ public class ListFigure  extends View {
             },10000);
             System.out.println("data test");*/
         //}
+        checkFigures();
         return true;
     }//End Method
 }
