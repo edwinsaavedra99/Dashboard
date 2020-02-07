@@ -3,11 +3,14 @@ package com.example.dashboard;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -19,6 +22,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.SeekBar;
 import android.widget.Toast;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
@@ -156,11 +160,13 @@ public class MainActivity extends AppCompatActivity {
     private ImageView openCv26;
     private ImageView openCv27;
     private ImageView openCv28;
+    private SeekBar zoomBar;
     //img original format Bitmap
     private Bitmap original;
     private Mat img;
     private int nameImage;
     //--End Attributes of class
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,8 +178,28 @@ public class MainActivity extends AppCompatActivity {
         //Load OpenCV
         OpenCVLoader.initDebug();
         //Initializing Properties
-        initialProperties();
+        zoomBar = findViewById(R.id.zoomBar);
+        zoomBar.getThumb().setColorFilter(Color.rgb(255, 127, 80), PorterDuff.Mode.MULTIPLY);
 
+        initialProperties();
+        zoomBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                float scale=1.0f+progress*0.01f;
+                layoutImageRx.setScaleX(scale);
+                layoutImageRx.setScaleY(scale);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
         //Change of layout to "Segmentation"
         segmentation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -889,7 +915,6 @@ public class MainActivity extends AppCompatActivity {
             layoutImageRx1.setBackground(d);
             //myListSegmentation.changeFlagFilter(d);
             //zoomImageLayout.setBackground(d);
-            //layoutImageRx1.setBackground(d);
         }
     }
     @SuppressLint("ShowToast")
@@ -907,8 +932,10 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Method initial Properties Initializing Properties of Activity
      * */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void initialProperties(){
         //Initializing properties--
+
         extendsImage = findViewById(R.id.extendsImage);
         backFilters = findViewById(R.id.backFilters);
         iconColors = findViewById(R.id.figuresSet);

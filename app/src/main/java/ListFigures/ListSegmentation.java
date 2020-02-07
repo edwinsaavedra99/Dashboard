@@ -106,8 +106,11 @@ public class ListSegmentation extends View {
         zoomList.addCircleSegmentation(_startX*this.viewZoom.getWidth()/this.getWidth(),_startY*this.viewZoom.getHeight()/this.getHeight(), _radius*this.viewZoom.getWidth()/this.getWidth(),pencil);
         zoomList.invalidate();
     }
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void changeFlagFilter(Drawable d){
-        flagFilter = !flagFilter;
+        //flagFilter = !flagFilter;
+        viewZoom.setBackground(d);
+        content.setBackground(d);
         this.d = d;
     }
 
