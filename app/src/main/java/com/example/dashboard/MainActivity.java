@@ -1063,6 +1063,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         myListFigures.loadImage(this.original);
+        myListSegmentation.loadImage(this.original);
         myFilters = new MyFilters(this.img,this.original);
         //Icons with filter
         openCv.setImageBitmap(myFilters.cropBitmap(myFilters.filterCanny()));

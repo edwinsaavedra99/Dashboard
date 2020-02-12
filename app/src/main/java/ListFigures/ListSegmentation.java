@@ -19,6 +19,9 @@ import androidx.cardview.widget.CardView;
 
 import java.util.ArrayList;
 import Figures.*;
+
+import static android.view.MotionEvent.INVALID_POINTER_ID;
+
 /**
  * This class Canvas defines a list of segments in a view
  * @author Edwin Saavedra
@@ -309,7 +312,7 @@ public class ListSegmentation extends View {
     /**
      * Method onTouchEvent
      * @param event Events of touch*/
-
+    private int mActivePointerId = INVALID_POINTER_ID;
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @SuppressLint("ClickableViewAccessibility")
     public boolean onTouchEvent(MotionEvent event) {
@@ -321,7 +324,8 @@ public class ListSegmentation extends View {
         upMode = true;
         float getX = event.getX();
         float getY = event.getY();
-        int acct = event.getAction();
+        final int acct = event.getActionMasked();
+
         float d, d_1;
         if (layout.getTranslationX() >= 0)
             d = (layout.getScaleX() * layout.getWidth() - layout.getWidth()) - layout.getTranslationX();
@@ -376,11 +380,16 @@ public class ListSegmentation extends View {
         this.viewZoom.setTranslationX(15);
         this.viewZoom.invalidate();
         invalidate();
-        if(event.getAction() == MotionEvent.ACTION_DOWN){
-            touchX = event.getX();
-            touchY = event.getY();
-            zoomList.touchX = event.getX()*this.viewZoom.getWidth()/this.getWidth();
-            zoomList.touchY = event.getY()*this.viewZoom.getHeight()/this.getHeight();
+        switch (acct) {
+            case MotionEvent.ACTION_DOWN: {
+                final int pointerIndex = event.getActionIndex();
+                getX = event.getX(pointerIndex);
+                getY = event.getY(pointerIndex);
+                mActivePointerId = event.getPointerId(0);
+            touchX = event.getX(pointerIndex);
+            touchY =event.getY(pointerIndex);
+            zoomList.touchX = event.getX(pointerIndex)*this.viewZoom.getWidth()/this.getWidth();
+            zoomList.touchY = event.getY(pointerIndex)*this.viewZoom.getHeight()/this.getHeight();
             if(modeTouch == 0) { //Touch segments
                 this.figureSelected = -1;
                 zoomList.figureSelected = -1;
@@ -392,8 +401,8 @@ public class ListSegmentation extends View {
                 //zoomList.touchPastY = getY();
                 if (!segmentation.isEmpty()) {
                     Circle aux = (Circle) segmentation.get(segmentation.size() - 1);
-                    float centerX = aux.getCenterX() - event.getX();
-                    float centerY = aux.getCenterY() - event.getY();
+                    float centerX = aux.getCenterX() - event.getX(pointerIndex);
+                    float centerY = aux.getCenterY() - event.getY(pointerIndex);
                     if (Math.sqrt(centerX * centerX + centerY * centerY) <= 40) {
                         this.viewZoom.setVisibility(View.VISIBLE);
                         this.cardView.setVisibility(VISIBLE);
@@ -415,102 +424,127 @@ public class ListSegmentation extends View {
                 this.cardView.setVisibility(VISIBLE);
                 zoomList.invalidate();
             }
-        }else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-            touchX = event.getX();
-            touchY = event.getY();
-            zoomList.touchX = event.getX()*this.viewZoom.getWidth()/this.getWidth();
-            zoomList.touchY = event.getY()*this.viewZoom.getHeight()/this.getHeight();
-            if(modeTouch == 0) { //Touch segments
-                if (figureSelected == segmentation.size() - 1) {
-                    if (!segmentation.isEmpty()) {
-                        boolean drawS = false;
-                        Circle aux = (Circle) segmentation.get(segmentation.size() - 1);
-                        float centerX = aux.getCenterX() - event.getX();
-                        float centerY = aux.getCenterY() - event.getY();
-                        //60 y 70 is the interval of segmentation acceptDistance = 30
-                        if (Math.sqrt(centerX * centerX + centerY * centerY) > acceptDistance * 2 && Math.sqrt(centerX * centerX + centerY * centerY) < acceptDistance * 2 + 10) {
-                            drawS = true;
-                            this.viewZoom.setVisibility(View.VISIBLE);
-                            this.cardView.setVisibility(VISIBLE);
-                        }
+            break;
+        }
+        case MotionEvent.ACTION_MOVE: {
+                final int pointerIndex = event.findPointerIndex(mActivePointerId);
+                getX = event.getX(pointerIndex);
+                getY = event.getY(pointerIndex);
+                touchX = event.getX(pointerIndex);
+                touchY = event.getY(pointerIndex);
+                zoomList.touchX = event.getX(pointerIndex)*this.viewZoom.getWidth()/this.getWidth();
+                zoomList.touchY = event.getY(pointerIndex)*this.viewZoom.getHeight()/this.getHeight();
+                if(modeTouch == 0) { //Touch segments
+                    if (figureSelected == segmentation.size() - 1) {
+                        if (!segmentation.isEmpty()) {
+                            boolean drawS = false;
+                            Circle aux = (Circle) segmentation.get(segmentation.size() - 1);
+                            float centerX = aux.getCenterX() - event.getX(pointerIndex);
+                            float centerY = aux.getCenterY() - event.getY(pointerIndex);
+                            //60 y 70 is the interval of segmentation acceptDistance = 30
+                            if (Math.sqrt(centerX * centerX + centerY * centerY) > acceptDistance * 2 && Math.sqrt(centerX * centerX + centerY * centerY) < acceptDistance * 2 + 10) {
+                                drawS = true;
+                                this.viewZoom.setVisibility(View.VISIBLE);
+                                this.cardView.setVisibility(VISIBLE);
+                            }
                         if (drawS)
                             addCircleSegmentation(getX, getY, 9); //9 is radius acceptable
-                    } else {
+                        } else {
 
-                        addCircleSegmentation(getX, getY, 9);  //9 is radius acceptable
-                        /*if(flag) {
-                            segmentation.remove(0);
-                            flag = false;
-                        }*/
-                    }
-                } else {
-                    if (this.figureSelected > -1) {
-                        if (segmentation.get(figureSelected) instanceof Circle) {
-                            Circle temp = (Circle) segmentation.get(figureSelected);
-                            Circle temp_z = (Circle) zoomList.segmentation.get(figureSelected);
-                            //checkCircle check dimensions of the circle
-                            if (checkCircle(temp)) {
-                                temp.setCenterX(temp.getCenterX() - (getPastX - getX));
-                                temp.setCenterY(temp.getCenterY() - (getPastY - getY));
+                            addCircleSegmentation(getX, getY, 9);  //9 is radius acceptable
+                            /*if(flag) {
+                                segmentation.remove(0);
+                                flag = false;
+                            }*/
+                        }
+                    } else {
+                        if (this.figureSelected > -1) {
+                            if (segmentation.get(figureSelected) instanceof Circle) {
+                                Circle temp = (Circle) segmentation.get(figureSelected);
+                                Circle temp_z = (Circle) zoomList.segmentation.get(figureSelected);
+                                //checkCircle check dimensions of the circle
+                                if (checkCircle(temp)) {
+                                    temp.setCenterX(temp.getCenterX() - (getPastX - getX));
+                                    temp.setCenterY(temp.getCenterY() - (getPastY - getY));
                                 invalidate();
-                                temp_z.setCenterX(temp.getCenterX() * this.viewZoom.getWidth() / this.getWidth());
-                                temp_z.setCenterY(temp.getCenterY() * this.viewZoom.getHeight() / this.getHeight());
+                                    temp_z.setCenterX(temp.getCenterX() * this.viewZoom.getWidth() / this.getWidth());
+                                    temp_z.setCenterY(temp.getCenterY() * this.viewZoom.getHeight() / this.getHeight());
+                                    zoomList.invalidate();
+                                } else {
+                                    adaptCircle(temp);
+                                }
+                            }
+                        }
+                        getPastX = getX;
+                        getPastY = getY;
+                    }
+                }else if(modeTouch == 2){ //touch eraser
+                    for (int i = 0; i < segmentation.size(); i++) {
+                        if (segmentation.get(i) instanceof Circle){
+                            Circle temp = (Circle) segmentation.get(i);
+                            //distance with the origin
+                            float distance = distancePoint_to_Point(getX, getY, temp.getCenterX(), temp.getCenterY());
+                            if(distance<=temp.getRadius()){
+                                segmentation.remove(i);
+                                zoomList.segmentation.remove(i);
+                                figureSelected = segmentation.size()-1;
+                                zoomList.figureSelected = zoomList.segmentation.size()-1;
                                 zoomList.invalidate();
-                            } else {
-                                adaptCircle(temp);
                             }
                         }
                     }
-                    getPastX = getX;
-                    getPastY = getY;
                 }
-            }else if(modeTouch == 2){ //touch eraser
+                this.viewZoom.setVisibility(View.VISIBLE);
+                this.cardView.setVisibility(VISIBLE);
+                invalidate();
+                zoomList.invalidate();
+            break;
+        }
+            case MotionEvent.ACTION_UP: {
+                mActivePointerId = INVALID_POINTER_ID;
+                touchEvent = false;
+                upMode = false;
+                invalidate();
+                zoomList.invalidate();
+                this.viewZoom.setVisibility(View.INVISIBLE);
+                this.cardView.setVisibility(GONE);
+                break;
+            }
+            case MotionEvent.ACTION_CANCEL: {
+                mActivePointerId = INVALID_POINTER_ID;
+                break;
+            }
+            case MotionEvent.ACTION_POINTER_UP: {
+                final int pointerIndex = event.getActionIndex();
+                final int pointerId = event.getPointerId(pointerIndex);
+                //if(segm
+
                 for (int i = 0; i < segmentation.size(); i++) {
-                    if (segmentation.get(i) instanceof Circle){
+                    if (segmentation.get(i) instanceof Circle) {
                         Circle temp = (Circle) segmentation.get(i);
-                        //distance with the origin
-                        float distance = distancePoint_to_Point(getX, getY, temp.getCenterX(), temp.getCenterY());
-                        if(distance<=temp.getRadius()){
-                            segmentation.remove(i);
-                            zoomList.segmentation.remove(i);
-                            figureSelected = segmentation.size()-1;
-                            zoomList.figureSelected = zoomList.segmentation.size()-1;
-                            zoomList.invalidate();
-                        }
+                        if (!checkCircle(temp))
+                            adaptCircle(temp);
                     }
                 }
-            }
-            this.viewZoom.setVisibility(View.VISIBLE);
-            this.cardView.setVisibility(VISIBLE);
-            invalidate();
-            zoomList.invalidate();
-        }
-        if(event.getAction() == MotionEvent.ACTION_UP){
-            //if(segm)
-            touchEvent = false;
-            upMode = false;
-            invalidate();
-            zoomList.invalidate();
-            this.viewZoom.setVisibility(View.INVISIBLE);
-            this.cardView.setVisibility(GONE);
-            for (int i = 0; i < segmentation.size(); i++) {
-                if (segmentation.get(i) instanceof Circle){
-                    Circle temp = (Circle) segmentation.get(i);
-                    if(!checkCircle(temp))
-                        adaptCircle(temp);
+                if (layout.getScaleX() <= 1f && layout.getScaleY() <= 1f) {
+                    layout.animate().translationX(0).translationY(0);
+                } else {
+                    if (layout.getTranslationX() > d)
+                        layout.animate().translationX(d);
+                    if (layout.getTranslationY() > d_1)
+                        layout.animate().translationY(d_1);
+                    if (layout.getTranslationX() < -d)
+                        layout.animate().translationX(-d);
+                    if (layout.getTranslationY() < -d_1)
+                        layout.animate().translationY(-d_1);
                 }
-            }
-            if(layout.getScaleX()<=1f&&layout.getScaleY()<=1f){
-                layout.animate().translationX(0).translationY(0);
-            }else{
-                if(layout.getTranslationX()>d)
-                    layout.animate().translationX(d);
-                if(layout.getTranslationY()>d_1)
-                    layout.animate().translationY(d_1);
-                if(layout.getTranslationX()<-d)
-                    layout.animate().translationX(-d);
-                if(layout.getTranslationY()<-d_1)
-                    layout.animate().translationY(-d_1);
+                if (pointerId == mActivePointerId) {
+                    final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
+                    getPastX = event.getX(newPointerIndex);
+                    getPastY = event.getY(newPointerIndex);
+                    mActivePointerId = event.getPointerId(newPointerIndex);
+                }
+                break;
             }
         }
         return true;
