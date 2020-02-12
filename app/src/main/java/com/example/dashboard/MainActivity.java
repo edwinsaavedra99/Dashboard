@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView test1;
     private ImageView clearSegments;
     private ImageView eraserSegments;
+    private ImageView pruebas;
     //Colors
     private ArrayList<ImageView> listColors;
     private int colorIndex;
@@ -182,22 +183,40 @@ public class MainActivity extends AppCompatActivity {
         zoomBar.getThumb().setColorFilter(Color.rgb(255, 127, 80), PorterDuff.Mode.MULTIPLY);
 
         initialProperties();
+
         zoomBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                float scale=1.0f+progress*0.01f;
-                layoutImageRx.setScaleX(scale);
-                layoutImageRx.setScaleY(scale);
+                float scale = 1.0f + progress * 0.01f;
+
+                if (layoutImageRx.getTranslationX() >= myListFigures.dX() && layoutImageRx.getTranslationY() >= myListFigures.dY()
+                        && layoutImageRx.getTranslationX() <= -myListFigures.dX() && layoutImageRx.getTranslationY() <= -myListFigures.dY()) {
+                    layoutImageRx.setScaleX(scale);
+                    layoutImageRx.setScaleY(scale);
+                }
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                //layoutImageRx.setPivotX(myListFigures.getXTouch());
+                //layoutImageRx.setPivotY(myListFigures.getYTouch());
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                System.out.println("data 1 : "+myListFigures.dX()+";"+myListFigures.dY());
+                System.out.println("data 2 : "+layoutImageRx.getPivotX()+";"+layoutImageRx.getPivotY());
+                System.out.println("data 3 : "+layoutImageRx.getTranslationX()+";"+layoutImageRx.getTranslationY());
+                if(layoutImageRx.getTranslationX()>myListFigures.dX())
+                    layoutImageRx.animate().translationX(myListFigures.dX());
+                if(layoutImageRx.getTranslationY()>myListFigures.dY())
+                    layoutImageRx.animate().translationY(myListFigures.dY());
+                if(layoutImageRx.getTranslationX()<-myListFigures.dX())
+                    layoutImageRx.animate().translationX(-myListFigures.dX());
+                if(layoutImageRx.getTranslationY()<-myListFigures.dY())
+                    layoutImageRx.animate().translationY(-myListFigures.dY());
+         //       layoutImageRx.setPivotX(360);
+           //     layoutImageRx.setPivotY(656);
             }
         });
         //Change of layout to "Segmentation"
@@ -205,6 +224,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(!flagSegmentation) {
+                    //myListSegmentation.addCircleSegmentation(12,12,12);
+                    //myListSegmentation.clearList();
                     if(myListSegmentation.getModeTouch()==1)
                         extendsImage.setColorFilter(Color.rgb(255, 127, 80)); //orange
                     else
@@ -260,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         //back menu right
-        backMenuRight.setOnClickListener(new View.OnClickListener() {
+        backFilters.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Animation.animationScale(backMenuRight,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
@@ -459,6 +480,42 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        //xd
+        pruebas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+/*                //zoom al centro controles de container funcionan
+                layoutImageRx.setScaleX(1.5f);
+                layoutImageRx.setScaleY(1.5f);
+                layoutImageRx.setTranslationX(10);
+                layoutImageRx.setTranslationY(10);
+                System.out.println("prueba SCALE -> x:"+layoutImageRx.getScaleX()+"; y:"+layoutImageRx.getScaleY());
+                System.out.println("prueba PIVOT -> x:"+layoutImageRx.getPivotX()+"; y:"+layoutImageRx.getPivotY());
+                System.out.println("prueba D -> x:"+myListFigures.dX()+"; y:"+myListFigures.dY());
+                System.out.println("prueba TRASLATE -> x:"+layoutImageRx.getTranslationX()+"; y:"+layoutImageRx.getTranslationY());
+                //
+                layoutImageRx.setScaleX(1.0f);
+                layoutImageRx.setScaleY(1.0f);
+                layoutImageRx.setTranslationX(0);
+                layoutImageRx.setTranslationY(0);
+                //*/
+                layoutImageRx.setPivotX(260);
+                //layoutImageRx.setPivotY(100);
+                layoutImageRx.setScaleX(1.3746202f);
+                layoutImageRx.setScaleY(1.3746202f);
+                layoutImageRx.setTranslationX(-0.57336426f);
+                layoutImageRx.setTranslationY(-2.295105f);
+                float dt = (layoutImageRx.getScaleX() * layoutImageRx.getWidth() - layoutImageRx.getWidth()) - layoutImageRx.getTranslationX() ;
+                float dty=(layoutImageRx.getScaleY() * layoutImageRx.getHeight() - layoutImageRx.getHeight()) - layoutImageRx.getTranslationY();
+                System.out.println("A prueba SCALE -> x:"+layoutImageRx.getScaleX()+"; y:"+layoutImageRx.getScaleY());
+                System.out.println("A prueba PIVOT -> x:"+layoutImageRx.getPivotX()+"; y:"+layoutImageRx.getPivotY());
+                System.out.println("A prueba D -> x:"+dt+"; y:"+dty);
+                System.out.println("prueba TRASLATE -> x:"+layoutImageRx.getTranslationX()+"; y:"+layoutImageRx.getTranslationY());
+
+            }
+        });
+
+
 
         color1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -631,16 +688,15 @@ public class MainActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-            Drawable d = new BitmapDrawable(getResources(), myFilters.filterCanny());
-            addFilter(d);
+                addFilter(myFilters.filterCanny());
             }
         });
         //Filter RGB is image original
         openCv3.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             public void onClick(View v) {
-                Drawable d = new BitmapDrawable(getResources(),myFilters.filterRGB());
-                addFilter(d);
+
+                addFilter(myFilters.filterRGB());
             }
         });
         //Filter morph
@@ -648,8 +704,8 @@ public class MainActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Drawable d = new BitmapDrawable(getResources(), myFilters.filterMorph());
-                addFilter(d);
+
+                addFilter(myFilters.filterMorph());
             }
         });
         //Filter SEPIA
@@ -657,8 +713,7 @@ public class MainActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Drawable d = new BitmapDrawable(getResources(),myFilters.filerSepia());
-                addFilter(d);
+                addFilter(myFilters.filerSepia());
             }
         });
         //filter summer
@@ -666,8 +721,7 @@ public class MainActivity extends AppCompatActivity {
                     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                     @Override
                     public void onClick(View v) {
-             Drawable d = new BitmapDrawable(getResources(),myFilters.filterSummer());
-                        addFilter(d);
+                        addFilter(myFilters.filterSummer());
            }
                      });
         //filter pink
@@ -675,8 +729,7 @@ public class MainActivity extends AppCompatActivity {
                 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                 @Override
                 public void onClick(View v) {
-            Drawable d = new BitmapDrawable(getResources(),myFilters.filterPink());
-                    addFilter(d);
+                    addFilter(myFilters.filterPink());
         }
                   });
         //filter reduce colors gray
@@ -684,8 +737,7 @@ public class MainActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Drawable d = new BitmapDrawable(getResources(),myFilters.filterReduceColorsGray(5));
-                addFilter(d);
+                addFilter(myFilters.filterReduceColorsGray(5));
             }
         });
         //filters reduce Colors
@@ -693,8 +745,7 @@ public class MainActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Drawable d = new BitmapDrawable(getResources(),myFilters.filterReduceColors(80,15,10));
-                addFilter(d);
+                addFilter(myFilters.filterReduceColors(80,15,10));
             }
         });
         //filter Pencil
@@ -702,8 +753,7 @@ public class MainActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Drawable d = new BitmapDrawable(getResources(),myFilters.filterPencil());
-                addFilter(d);
+                addFilter(myFilters.filterPencil());
             }
         });
         //filter Carton
@@ -711,8 +761,7 @@ public class MainActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Drawable d = new BitmapDrawable(getResources(),myFilters.filterCarton(80,15,10));
-                addFilter(d);
+                addFilter(myFilters.filterCarton(80,15,10));
             }
         });
         //filter R
@@ -720,152 +769,133 @@ public class MainActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Drawable d = new BitmapDrawable(getResources(),myFilters.filterColor(0));
-                addFilter(d);
+                addFilter(myFilters.filterColor(0));
             }
         });
         openCv11.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Drawable d = new BitmapDrawable(getResources(),myFilters.filterColor(1));
-                addFilter(d);
+                addFilter(myFilters.filterColor(1));
             }
         });
         openCv12.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Drawable d = new BitmapDrawable(getResources(),myFilters.filterColor(2));
-                addFilter(d);
+                addFilter(myFilters.filterColor(2));
             }
         });
         openCv13.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Drawable d = new BitmapDrawable(getResources(),myFilters.filterColor(3));
-                addFilter(d);
+                addFilter(myFilters.filterColor(3));
             }
         });
         openCv14.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Drawable d = new BitmapDrawable(getResources(),myFilters.filterColor(4));
-                addFilter(d);
+                addFilter(myFilters.filterColor(4));
             }
         });
         openCv15.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Drawable d = new BitmapDrawable(getResources(),myFilters.filterColor(5));
-                addFilter(d);
+                addFilter(myFilters.filterColor(5));
             }
         });
         openCv16.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Drawable d = new BitmapDrawable(getResources(),myFilters.filterColor(7));
-                addFilter(d);
+                addFilter(myFilters.filterColor(7));
             }
         });
         openCv17.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Drawable d = new BitmapDrawable(getResources(),myFilters.filterColor(8));
-                addFilter(d);
+                addFilter(myFilters.filterColor(8));
             }
         });
         openCv18.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Drawable d = new BitmapDrawable(getResources(),myFilters.filterColor(9));
-                addFilter(d);
+                addFilter(myFilters.filterColor(9));
             }
         });
         openCv19.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Drawable d = new BitmapDrawable(getResources(),myFilters.filterColor(11));
-                addFilter(d);
+                addFilter(myFilters.filterColor(11));
             }
         });
         openCv20.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Drawable d = new BitmapDrawable(getResources(),myFilters.filterColor(12));
-                addFilter(d);
+                addFilter(myFilters.filterColor(12));
             }
         });
         openCv21.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Drawable d = new BitmapDrawable(getResources(),myFilters.filterColor(13));
-                addFilter(d);
+                addFilter(myFilters.filterColor(13));
             }
         });
         openCv22.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Drawable d = new BitmapDrawable(getResources(),myFilters.filterColor(14));
-                addFilter(d);
+                addFilter(myFilters.filterColor(14));
             }
         });
         openCv23.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Drawable d = new BitmapDrawable(getResources(),myFilters.filterColor(15));
-                addFilter(d);
+                addFilter(myFilters.filterColor(15));
             }
         });
         openCv24.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Drawable d = new BitmapDrawable(getResources(),myFilters.filterColor(16));
-                addFilter(d);
+                addFilter(myFilters.filterColor(16));
             }
         });
         openCv25.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Drawable d = new BitmapDrawable(getResources(),myFilters.filterColor(17));
-                addFilter(d);
+                addFilter(myFilters.filterColor(17));
             }
         });
         openCv26.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Drawable d = new BitmapDrawable(getResources(),myFilters.filterColor(18));
-                addFilter(d);
+                addFilter(myFilters.filterColor(18));
             }
         });
         openCv27.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Drawable d = new BitmapDrawable(getResources(),myFilters.filterColor(19));
-                addFilter(d);
+                addFilter(myFilters.filterColor(19));
             }
         });
         openCv28.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Drawable d = new BitmapDrawable(getResources(),myFilters.filterColor(20));
-                addFilter(d);
+                addFilter(myFilters.filterColor(20));
             }
         });
         test1.setOnClickListener(new View.OnClickListener() {
@@ -908,13 +938,15 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    private void addFilter(Drawable d){
+    private void addFilter(Bitmap d){
+
+        Drawable drawable = new BitmapDrawable(getResources(),d);
         if(!flagSegmentation)
-            layoutImageRx.setBackground(d);
+            myListFigures.loadImage(d);
         else {
-            layoutImageRx1.setBackground(d);
+            myListSegmentation.loadImage(d);
             //myListSegmentation.changeFlagFilter(d);
-            //zoomImageLayout.setBackground(d);
+            zoomImageLayout.setBackground(drawable);
         }
     }
     @SuppressLint("ShowToast")
@@ -935,7 +967,7 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void initialProperties(){
         //Initializing properties--
-
+        pruebas = findViewById(R.id.pruebas);
         extendsImage = findViewById(R.id.extendsImage);
         backFilters = findViewById(R.id.backFilters);
         iconColors = findViewById(R.id.figuresSet);
@@ -1030,6 +1062,7 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("Insert image");
             e.printStackTrace();
         }
+        myListFigures.loadImage(this.original);
         myFilters = new MyFilters(this.img,this.original);
         //Icons with filter
         openCv.setImageBitmap(myFilters.cropBitmap(myFilters.filterCanny()));

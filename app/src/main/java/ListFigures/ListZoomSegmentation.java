@@ -1,9 +1,11 @@
 package ListFigures;
 //Imports
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.util.DisplayMetrics;
 import android.view.View;
 import java.util.ArrayList;
 import Figures.Circle;
@@ -24,6 +26,9 @@ public class ListZoomSegmentation extends View {
     protected float touchX = 0;
     protected float touchY = 0;
     protected int modeTouch = 0;
+    private Bitmap mImage;
+    private  int mImageWidth;
+    private int mImageHeight;
     /**
      * Class Constructor
      * @param context The View*/
@@ -42,6 +47,8 @@ public class ListZoomSegmentation extends View {
         pencil.setStrokeWidth(1);
         Circle aux = new Circle(_startX, _startY, _radius, pencil,color);
         this.segmentation.add(aux);
+        System.out.println("test: "+segmentation.size());
+        invalidate();
         figureSelected = this.segmentation.size()-1;
         invalidate();
     }//End Method
@@ -65,6 +72,7 @@ public class ListZoomSegmentation extends View {
     }
     public void clearList(){
         segmentation.clear();
+        invalidate();
     }
     /**
      * Method changeColour of the list of segments zoom
@@ -93,15 +101,28 @@ public class ListZoomSegmentation extends View {
         }
 
     }//End Method
+    public void loadImage(Bitmap mImage){
+        //mImage = img;
+        float aspectRatio = (float) mImage.getHeight()/mImage.getWidth();
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        mImageWidth = displayMetrics.widthPixels;
+        mImageHeight = Math.round(mImageWidth*aspectRatio);
+        this.mImage =  Bitmap.createScaledBitmap(mImage,mImageWidth,mImageHeight,false);
+        invalidate();
+        //requestLayout();
+    }
     /**
      * Method onDraw draw the segment
      * @param canvas area of draw*/
     protected void onDraw(Canvas canvas) {
         generalWidth = canvas.getWidth();
         generalHeight = canvas.getHeight();
+
         for(int i=0;i<segmentation.size();i++){
             if (segmentation.get(i) instanceof Circle) {
                 Circle temp = (Circle) segmentation.get(i);
+                Paint p = Util.Circle(temp.getColour());
+                p.setStrokeWidth(2);
                 if(i==segmentation.size()-1){
                     temp.getPaint().setStyle(Paint.Style.STROKE);
                     temp.getPaint().setStrokeWidth(2);
@@ -110,9 +131,8 @@ public class ListZoomSegmentation extends View {
                 }
                 canvas.drawCircle(temp.getCenterX(), temp.getCenterY(), temp.getRadius(), temp.getPaint());
                 if(i == figureSelected){
-                    Paint p = Util.Circle(temp.getColour());
-                    p.setStrokeWidth(2);
                     canvas.drawCircle(temp.getCenterX(),temp.getCenterY(),acceptDistance,p);
+                    //canvas.drawCircle(temp.getCenterX(),temp.getCenterY(),temp.getRadius(),temp.getPaint());
                 }
             }
         }

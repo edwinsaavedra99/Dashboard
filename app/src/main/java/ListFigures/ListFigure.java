@@ -2,16 +2,37 @@ package ListFigures;
 //Imports
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.MediaStore;
+import android.util.DisplayMetrics;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.LinearLayout;
+
+import androidx.annotation.RequiresApi;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.view.MotionEventCompat;
+import androidx.core.view.ViewCompat;
+
+import com.example.dashboard.R;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import Figures.*;
+
+import static android.view.MotionEvent.INVALID_POINTER_ID;
+
 /**
  * This class Canvas defines a list of figures in a view
  * @author Edwin Saavedra
@@ -26,6 +47,12 @@ public class ListFigure  extends View {
     private int[] figureColour = {183, 149, 11};
     private float getPastX = 0;
     private float getPastY = 0;
+    private float touchX = 0;
+    private float touchY = 0;
+    private float mPositionX;
+    private float mPositionY;
+    private float d;
+    private float d_1;
     // acceptDistance is the acceptable distance to interact with the figure
     private float acceptDistance = 30;
     private float generalHeight = 0;
@@ -37,21 +64,43 @@ public class ListFigure  extends View {
     //Mode Touch
     private int modeTouch = 0; //Mode 0 is Normal ... Mode 1 es zoomMode
     //PicToZoom
+    private GestureDetector mGestureDetector;
     private ScaleGestureDetector scaleGestureDetector;
-    private float mScaleFactor = 1.0f;
-
+    private Drawable mBoard;
+    private float mBoardWidth;
+    private  float mBoardHeght;
+    private float mScaleFactor = 1.f;
+    private  Matrix matrix;
+    private Bitmap mImage;
+    private  int mImageWidth;
+    private int mImageHeight;
     /**
      * Class Constructor
      * @param context The View*/
     public ListFigure(Context context,LinearLayout _layout){
         super(context);
+        mBoard = ResourcesCompat.getDrawable(context.getResources(), R.drawable.rx_image_1,null);
+        mBoardWidth = mBoard.getIntrinsicWidth();
+        mBoardHeght = mBoard.getIntrinsicHeight();
+        mBoard.setBounds(0,0,(int)mBoardWidth,(int)mBoardHeght);
+        matrix = new Matrix();
         myFigures = new ArrayList<>();
         layout = _layout;
         scaleGestureDetector = new ScaleGestureDetector(context, new ScaleListener());
+        mGestureDetector = new GestureDetector(context,listener);
         initialStyleFigure();
         invalidate();
     }//Closing the class constructor
-
+    public void loadImage(Bitmap mImage){
+      //mImage = img;
+      float aspectRatio = (float) mImage.getHeight()/mImage.getWidth();
+      DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+      mImageWidth = displayMetrics.widthPixels;
+      mImageHeight = Math.round(mImageWidth*aspectRatio);
+      this.mImage =  Bitmap.createScaledBitmap(mImage,mImageWidth,mImageHeight,false);
+      invalidate();
+      //requestLayout();
+    }
     /**
      * Method changeModeTouch : change modeTouch if is 0 change to 1 else change to 0
      * */
@@ -76,19 +125,37 @@ public class ListFigure  extends View {
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener{
         @Override
         public boolean onScale(ScaleGestureDetector scaleGestureDetector){
-            mScaleFactor *= scaleGestureDetector.getScaleFactor();
+            /*mScaleFactor *= scaleGestureDetector.getScaleFactor();
             float m_MIN_ZOOM = 1.0f;
             float m_MAX_ZOOM = 3.0f;
             mScaleFactor = Math.max(m_MIN_ZOOM,Math.min(mScaleFactor, m_MAX_ZOOM));
-            invalidate();
-            layout.setScaleX(mScaleFactor);
-            layout.setScaleY(mScaleFactor);
+            invalidate();*/
+            float facto = scaleGestureDetector.getScaleFactor();
+            matrix.postScale(facto,facto,getWidth()/2f,getHeight()/2f);
+            ViewCompat.postInvalidateOnAnimation(ListFigure.this);
             return true;
         }
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector){
             return true;
         }
+    }
+    GestureDetector.OnGestureListener listener = new GestureDetector.SimpleOnGestureListener(){
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2 , float dX, float dY){
+            matrix.postTranslate(-dX,-dY);
+            ViewCompat.postInvalidateOnAnimation(ListFigure.this);
+         return  true;
+        }
+
+    };
+
+
+    @Override
+    protected  void onSizeChanged(int w, int h ,int oldw, int oldh){
+        float scale = Math.max(w/mBoardWidth,h/mBoardHeght);
+        matrix.setScale(scale,scale);
+        matrix.postTranslate((w-scale*mBoardWidth)/2f,(h-scale*mBoardHeght)/2f);
     }
     /**
      * Method changeOrderList : change a element in the list of figures
@@ -283,6 +350,13 @@ public class ListFigure  extends View {
     protected void onDraw(Canvas canvas) {
         generalWidth = canvas.getWidth();
         generalHeight = canvas.getHeight();
+        if(mImage !=null){
+            canvas.save();
+            //canvas.concat(matrix);
+            //mBoard.draw(canvas);
+            canvas.drawBitmap(mImage,0,0,null);
+            canvas.restore();
+        }
         for (int i = 0; i < myFigures.size(); i++) {
             if(myFigures.get(i) instanceof  Point) {
                 Point temp = (Point) myFigures.get(i);
@@ -334,6 +408,12 @@ public class ListFigure  extends View {
                 System.out.println("No Tips");
             }
         }
+        //canvas.translate(mPositionX,mPositionY);
+        //canvas.scale(mScaleFactor,mScaleFactor);
+
+
+
+        //canvas.restore();
     }//End Method
     /**
      * Method check check the dimensions of the figure Point in its container
@@ -565,91 +645,144 @@ public class ListFigure  extends View {
             }
         }
     }
-    /*
+
     public float getXTouch(){
-        return this.globalX;
+        return this.touchX;
     }
     public  float getYTouch(){
-        return this.globalY;
-    }*/
+        return this.touchY;
+    }
+    public float dX(){
+        return d;
+    }
+    public float dY(){
+        return d_1;
+    }
+
+    private int mActivePointerId = INVALID_POINTER_ID;
     /**
      * Method onTouchEvent
      * @param event Events of touch*/
     @SuppressLint("ClickableViewAccessibility")
     public boolean onTouchEvent(MotionEvent event) {
+        touchX = event.getX();
+        touchY = event.getY();
         float getX = event.getX();
         float getY = event.getY();
-        int acct = event.getAction();
-        float d, d_1;
-        if (layout.getTranslationX() >= 0)
-            d = (layout.getScaleX() * layout.getWidth() - layout.getWidth()) - layout.getTranslationX();
-        else
-            d = (layout.getScaleX() * layout.getWidth() - layout.getWidth()) + layout.getTranslationX();
-        if (layout.getTranslationY() >= 0)
+        //int acct = event.getAction();
+        //scaleGestureDetector.onTouchEvent(event);
+        //mGestureDetector.onTouchEvent(event);
+        final int acct =   event.getActionMasked();
+        if (layout.getTranslationX() >= 0) { //-
+            d = (layout.getScaleX() * layout.getWidth() - layout.getWidth()) - layout.getTranslationX() ;
+        }else { //+
+            d = (layout.getScaleX() * layout.getWidth() - layout.getWidth()) + layout.getTranslationX(); //
+        }
+        if (layout.getTranslationY() >= 0) {//-
             d_1 = (layout.getScaleY() * layout.getHeight() - layout.getHeight()) - layout.getTranslationY();
-        else
-            d_1 = (layout.getScaleY() * layout.getHeight() - layout.getHeight()) + layout.getTranslationY();
-        //Mode Zoom
+        }
+        else {//+
+            d_1 = (layout.getScaleY() * layout.getHeight() - layout.getHeight()) + layout.getTranslationY();//
+        }
+       //Mode Zoom
         if(modeTouch == 1) {
             scaleGestureDetector.onTouchEvent(event);
             invalidate();
-            if(acct == MotionEvent.ACTION_DOWN) {
-                if(!scaleGestureDetector.isInProgress()) {
+            switch (acct) {
+                case MotionEvent.ACTION_DOWN: {
+                    final int pointerIndex = event.getActionIndex();
+                    getX = event.getX(pointerIndex);
+                    getY = event.getY(pointerIndex);
                     getPastX = getX;
                     getPastY = getY;
+                    mActivePointerId = event.getPointerId(0);
+                    break;
+
                 }
-            }else if(acct == MotionEvent.ACTION_MOVE){
-                if(!scaleGestureDetector.isInProgress()&&layout.getScaleX()>1f&&layout.getScaleY()>1f) {
-                    if((getX - (getPastX - layout.getTranslationX()))<d &&(getX - (getPastX - layout.getTranslationX()))>-d)
-                        layout.setTranslationX(getX - (getPastX - layout.getTranslationX()));
-                    if((getY - (getPastY - layout.getTranslationY()))<d_1 &&(getY - (getPastY - layout.getTranslationY()))>-d_1)
-                        layout.setTranslationY(getY - (getPastY - layout.getTranslationY()));
+                case MotionEvent.ACTION_MOVE: {
+                    final int pointerIndex = event.findPointerIndex(mActivePointerId);
+                    getX = event.getX(pointerIndex);
+                    getY = event.getY(pointerIndex);
+                    if (!scaleGestureDetector.isInProgress() && layout.getScaleX() > 1f && layout.getScaleY() > 1f) {
+                        if ((getX - (getPastX - layout.getTranslationX())) < d && (getX - (getPastX - layout.getTranslationX())) > -d)
+                            layout.setTranslationX(getX - (getPastX - layout.getTranslationX()));
+                        if ((getY - (getPastY - layout.getTranslationY())) < d_1 && (getY - (getPastY - layout.getTranslationY())) > -d_1)
+                            layout.setTranslationY(getY - (getPastY - layout.getTranslationY()));
+                    }
+                    getPastX = getX;
+                    getPastY = getY;
+                    break;
+
                 }
-            }else if(acct == MotionEvent.ACTION_UP){
-                getPastX = getX;
-                getPastY = getY;
-                if(layout.getScaleX()<=1f&&layout.getScaleY()<=1f){
-                    layout.animate().translationX(0).translationY(0);
-                }else{
-                    if(layout.getTranslationX()>d)
-                        layout.animate().translationX(d);
-                    if(layout.getTranslationY()>d_1)
-                        layout.animate().translationY(d_1);
-                    if(layout.getTranslationX()<-d)
-                        layout.animate().translationX(-d);
-                    if(layout.getTranslationY()<-d_1)
-                        layout.animate().translationY(-d_1);
+                case MotionEvent.ACTION_UP: {
+                    mActivePointerId = INVALID_POINTER_ID;
+                    break;
+                }
+                case MotionEvent.ACTION_CANCEL: {
+                    mActivePointerId = INVALID_POINTER_ID;
+                    break;
+                }
+                case MotionEvent.ACTION_POINTER_UP: {
+                    final int pointerIndex = event.getActionIndex();
+                    final int pointerId = event.getPointerId(pointerIndex);
+//                getPastX = getX;
+                    //              getPastY = getY;
+                    if (layout.getScaleX() <= 1f && layout.getScaleY() <= 1f) {
+                        layout.animate().translationX(0).translationY(0);
+                    } else {
+                        if (layout.getTranslationX() > d)
+                            layout.animate().translationX(d);
+                        if (layout.getTranslationY() > d_1)
+                            layout.animate().translationY(d_1);
+                        if (layout.getTranslationX() < -d)
+                            layout.animate().translationX(-d);
+                        if (layout.getTranslationY() < -d_1)
+                            layout.animate().translationY(-d_1);
+                    }
+                    if (pointerId == mActivePointerId) {
+                        final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
+                        getPastX = event.getX(newPointerIndex);
+                        getPastY = event.getY(newPointerIndex);
+                        mActivePointerId = event.getPointerId(newPointerIndex);
+                    }
+                    break;
                 }
             }
             return true;
         }
+
         //Mode Figures
-        if (acct == MotionEvent.ACTION_DOWN ) {
+        switch (acct) {
+            case MotionEvent.ACTION_DOWN: {
+                final int pointerIndex = event.getActionIndex();
+                getX = event.getX(pointerIndex);
+                getY = event.getY(pointerIndex);
                 this.figureSelected = -1;
                 invalidate();
                 getPastX = getX;
                 getPastY = getY;
+                mActivePointerId = event.getPointerId(0);
                 for (int i = 0; i < myFigures.size(); i++) {
-                    if(myFigures.get(i) instanceof  Point) {
+                    if (myFigures.get(i) instanceof Point) {
                         Point temp = (Point) myFigures.get(i);
                         //distance with the origin(centerX,centerY)
                         float distance = distancePoint_to_Point(getX, getY, temp.getCenterX(), temp.getCenterY());
-                        if(distance <= acceptDistance*2){ //Move
-                            mode=2;
+                        if (distance <= acceptDistance * 2) { //Move
+                            mode = 2;
                             this.figureSelected = i;
-                            changeOrderList(getX,getY,i);
+                            changeOrderList(getX, getY, i);
                         }
-                    }else if (myFigures.get(i) instanceof Circle) {
+                    } else if (myFigures.get(i) instanceof Circle) {
                         //float acceptDistanceCircle = acceptDistance;
                         Circle temp = (Circle) myFigures.get(i);
                         //distance with the origin
                         float distance = distancePoint_to_Point(getX, getY, temp.getCenterX(), temp.getCenterY());
                         //distance with the point pivot
-                        float distance_ = distancePoint_to_Point(getX,getY,temp.getCenterX()+temp.getRadius(),temp.getCenterY());
+                        float distance_ = distancePoint_to_Point(getX, getY, temp.getCenterX() + temp.getRadius(), temp.getCenterY());
                         if (distance <= temp.getRadius()) { //Move
                             mode = 2;
                             this.figureSelected = i;
-                            changeOrderList(getX,getY,i);
+                            changeOrderList(getX, getY, i);
                         }
                         if (distance_ <= acceptDistance) { //Resize
                             mode = 1;
@@ -663,301 +796,332 @@ public class ListFigure  extends View {
                         float distanceSecondPoint = distancePoint_to_Point(getX, getY, temp.getRight(), temp.getBottom());
                         if (getX <= temp.getRight() && getX >= temp.getLeft() && getY <= temp.getBottom() && getY >= temp.getTop()) {
                             //Move
-                            mode=2;
+                            mode = 2;
                             this.figureSelected = i;
-                            changeOrderList(getX,getY,i);
+                            changeOrderList(getX, getY, i);
                         }
-                        if(distanceFirstPoint<=acceptDistance||distanceSecondPoint<=acceptDistance){
+                        if (distanceFirstPoint <= acceptDistance || distanceSecondPoint <= acceptDistance) {
                             //Resize
-                            mode=1;
+                            mode = 1;
                             this.figureSelected = i;
                         }
                     } else if (myFigures.get(i) instanceof Line) {
                         Line temp = (Line) myFigures.get(i);
                         //distance a the first point of interaction
-                        float distanceFirstPoint = distancePoint_to_Point(getX,getY,temp.getStartX(),temp.getStartY());
+                        float distanceFirstPoint = distancePoint_to_Point(getX, getY, temp.getStartX(), temp.getStartY());
                         //distance a the second point of interaction
-                        float distanceSecondPoint = distancePoint_to_Point(getX,getY,temp.getStopX(),temp.getStopY());
+                        float distanceSecondPoint = distancePoint_to_Point(getX, getY, temp.getStopX(), temp.getStopY());
                         if (temp.distancePoint_to_Line(getX, getY) <= acceptDistance) {
                             //Move
-                            mode=2;
+                            mode = 2;
                             this.figureSelected = i;
-                            changeOrderList(getX,getY,i);
+                            changeOrderList(getX, getY, i);
                         }
-                        if(distanceFirstPoint<=acceptDistance || distanceSecondPoint <=acceptDistance){
+                        if (distanceFirstPoint <= acceptDistance || distanceSecondPoint <= acceptDistance) {
                             //Resize
-                            mode=1;
+                            mode = 1;
                             this.figureSelected = i;
                         }
                     } else if (myFigures.get(i) instanceof Ellipse) {
                         Ellipse temp = (Ellipse) myFigures.get(i);
                         //distance a the first point of interaction
-                        float distanceFirstPoint = distancePoint_to_Point(getX, getY, temp.getLeft(), temp.getBottom()/2 + temp.getTop()/2);
+                        float distanceFirstPoint = distancePoint_to_Point(getX, getY, temp.getLeft(), temp.getBottom() / 2 + temp.getTop() / 2);
                         //distance a the second point of interaction
-                        float distanceSecondPoint = distancePoint_to_Point(getX, getY, temp.getRight(), temp.getBottom()/2 + temp.getTop()/2);
+                        float distanceSecondPoint = distancePoint_to_Point(getX, getY, temp.getRight(), temp.getBottom() / 2 + temp.getTop() / 2);
                         //distance a the thirst point of interaction
-                        float distanceThirstPoint = distancePoint_to_Point(getX, getY, temp.getRight()/2 + temp.getLeft()/2, temp.getTop());
+                        float distanceThirstPoint = distancePoint_to_Point(getX, getY, temp.getRight() / 2 + temp.getLeft() / 2, temp.getTop());
                         //distance a the forty point of interaction
-                        float distanceFortyPoint = distancePoint_to_Point(getX, getY, temp.getRight()/2 + temp.getLeft()/2, temp.getBottom());
-                        if(temp.pointEquationX1(getY) >= getX && temp.pointEquationX2(getY) <= getX && temp.pointEquationY1(getX) >= getY && temp.pointEquationY2(getX) <= getY){
+                        float distanceFortyPoint = distancePoint_to_Point(getX, getY, temp.getRight() / 2 + temp.getLeft() / 2, temp.getBottom());
+                        if (temp.pointEquationX1(getY) >= getX && temp.pointEquationX2(getY) <= getX && temp.pointEquationY1(getX) >= getY && temp.pointEquationY2(getX) <= getY) {
                             //Move
-                            mode=2;
+                            mode = 2;
                             this.figureSelected = i;
-                            changeOrderList(getX,getY,i);
+                            changeOrderList(getX, getY, i);
                         }
-                        if(distanceFirstPoint <= acceptDistance || distanceSecondPoint <= acceptDistance || distanceThirstPoint <= acceptDistance || distanceFortyPoint <= acceptDistance){
+                        if (distanceFirstPoint <= acceptDistance || distanceSecondPoint <= acceptDistance || distanceThirstPoint <= acceptDistance || distanceFortyPoint <= acceptDistance) {
                             //Resize
-                            mode=1;
+                            mode = 1;
                             this.figureSelected = i;
                         }
-                    }else{
+                    } else {
                         //Type of Mode (is not selection)
-                        mode=0;
+                        mode = 0;
                         invalidate();
                     }
                 }
-        }
-        if (acct == MotionEvent.ACTION_MOVE) {
-            if (this.figureSelected > -1) {
-                if(myFigures.get(figureSelected) instanceof  Point) {
-                    Point temp = (Point) myFigures.get(figureSelected);
-                    //checkPoint check dimensions of the point
-                    if(checkPoint(temp)){
-                        if (mode==1) { //ReSize
-                            System.out.println("Error");
-                        }
-                        if(mode==2){ //Move
-                            temp.setCenterX(temp.getCenterX() - (getPastX - getX));
-                            temp.setCenterY(temp.getCenterY() - (getPastY - getY));
-                            invalidate();
-                        }
-                    }else{
-                        adaptPoint(temp);
-                    }
-                }else if (myFigures.get(figureSelected) instanceof Circle) {
-                    Circle temp = (Circle) myFigures.get(figureSelected);
-                   //checkCircle check dimensions of the circle
-                    if(checkCircle(temp)){
-                        if (mode==1) { //ReSize
-                            // 80 is the radius acceptable
-                            if ((temp.getRadius()-(getPastX-getX)) >=80 && check(getX,getY)) {
-                                temp.setRadius(temp.getRadius() + (getX - getPastX));
+                break;
+            }
+            case MotionEvent.ACTION_MOVE: {
+                final int pointerIndex = event.findPointerIndex(mActivePointerId);
+                getX = event.getX(pointerIndex);
+                getY = event.getY(pointerIndex);
+
+                if (this.figureSelected > -1 && !scaleGestureDetector.isInProgress()) {
+                    if (myFigures.get(figureSelected) instanceof Point) {
+                        Point temp = (Point) myFigures.get(figureSelected);
+                        //checkPoint check dimensions of the point
+                        if (checkPoint(temp)) {
+                            if (mode == 1) { //ReSize
+                                System.out.println("Error");
+                            }
+                            if (mode == 2) { //Move
+                                temp.setCenterX(temp.getCenterX() - (getPastX - getX));
+                                temp.setCenterY(temp.getCenterY() - (getPastY - getY));
                                 invalidate();
                             }
+                        } else {
+                            adaptPoint(temp);
                         }
-                        if(mode==2){ //Move
-                            //changeOrderList(getX,getY,figureSelected);
-                            temp.setCenterX(temp.getCenterX() - (getPastX - getX));
-                            temp.setCenterY(temp.getCenterY() - (getPastY - getY));
-                            invalidate();
-                        }
-                    }else{
-                        adaptCircle(temp);
-                    }
-                } else if (myFigures.get(figureSelected) instanceof Rectangle) {
-                    Rectangle aux = (Rectangle) myFigures.get(figureSelected);
-                    //distance a the first point of interaction
-                    float distanceFirstPoint = distancePoint_to_Point(getX,getY,aux.getLeft(),aux.getTop());
-                    //distance a the second point of interaction
-                    float distanceSecondPoint = distancePoint_to_Point(getX,getY,aux.getRight(),aux.getBottom());
-                    //checkRectangle check dimensions of the Rectangle
-                    if(checkRectangle(aux)){
-                        if(mode==1&& check(getX,getY)){ //Resize
-                            if (distanceFirstPoint <= acceptDistance) {
-                                //100x100 is Dimension of Rectangle limit
-                                if(aux.getRight()-aux.getLeft()>100 && aux.getBottom()-aux.getTop()>100){
-                                    aux.setLeft(getX);
-                                    aux.setTop(getY);
-                                    invalidate();
-                                }else{
-                                    //100+1 for no limit dimension
-                                    if(aux.getRight()-aux.getLeft()<=100){
-                                        aux.setLeft(aux.getRight()-101);
-                                        invalidate();
-                                    }else if(aux.getBottom()-aux.getTop()<=100){
-                                        aux.setTop(aux.getBottom()-101);
-                                        invalidate();
-                                    }
-                                }
-                            }
-                            if(distanceSecondPoint<=acceptDistance) {
-                                //100x100 is Dimension of Rectangle limit
-                                if(aux.getRight()-aux.getLeft()>100 && aux.getBottom()-aux.getTop()>100){
-                                    aux.setRight(getX);
-                                    aux.setBottom(getY);
-                                    invalidate();
-                                }else{
-                                    //100+1 for no limit dimension
-                                    if(aux.getRight()-aux.getLeft()<=100){
-                                        aux.setRight(aux.getLeft()+101);
-                                        invalidate();
-                                    }else if(aux.getBottom()-aux.getTop()<=100){
-                                        aux.setBottom(aux.getTop()+101);
-                                        invalidate();
-                                    }
-                                }
-                            }
-                        }
-                        if(mode==2) { //Move
-                            aux.setRight(getX + aux.getRight()-getPastX);
-                            aux.setBottom(getY + aux.getBottom()-getPastY);
-                            aux.setLeft(getX - (getPastX-aux.getLeft()));
-                            aux.setTop(getY - (getPastY-aux.getTop()));
-                            invalidate();
-                        }
-                    }else{
-                        //adaptRectangle Setter dimensions
-                        adaptRectangle(aux);
-                        invalidate();
-                    }
-                } else if (myFigures.get(figureSelected) instanceof Line) {
-                    Line temp = (Line) myFigures.get(figureSelected);
-                    //distance a the first point of interaction
-                    float distanceFirstPoint = distancePoint_to_Point(getX,getY,temp.getStartX(),temp.getStartY());
-                    //distance a the second point of interaction
-                    float distanceSecondPoint = distancePoint_to_Point(getX,getY,temp.getStopX(),temp.getStopY());
-                    //distance a the line
-                    //float distanceToLine = temp.distancePoint_to_Line(getX,getY);
-                    if(checkLine(temp)) {
-                        if(mode == 1&& check(getX,getY)){ //ReSize
-                            if (distanceFirstPoint <= acceptDistance) {
-                                //50 is distance between points start and stop
-                                if(distancePoint_to_Point(temp.getStartX(),temp.getStartY(),temp.getStopX(),temp.getStopY())<=50){
-                                    if(temp.getStartX()<temp.getStopX()||temp.getStartY()<temp.getStopY()) {
-                                        temp.setStartX(temp.getStartX() - 1);
-                                        temp.setStartY(temp.getStartY() - 1);
-                                        temp.setStopX(temp.getStopX() + 1);
-                                        temp.setStopY(temp.getStopY() + 1);
-                                        invalidate();
-                                    }else {
-                                        temp.setStartX(temp.getStartX() + 1);
-                                        temp.setStartY(temp.getStartY() + 1);
-                                        temp.setStopX(temp.getStopX() - 1);
-                                        temp.setStopY(temp.getStopY() - 1);
-                                        invalidate();
-                                    }
-                                }else{
-                                    temp.setStartX(getX);
-                                    temp.setStartY(getY);
+                    } else if (myFigures.get(figureSelected) instanceof Circle) {
+                        Circle temp = (Circle) myFigures.get(figureSelected);
+                        //checkCircle check dimensions of the circle
+                        if (checkCircle(temp)) {
+                            if (mode == 1) { //ReSize
+                                // 80 is the radius acceptable
+                                if ((temp.getRadius() - (getPastX - getX)) >= 80 && check(getX, getY)) {
+                                    temp.setRadius(temp.getRadius() + (getX - getPastX));
                                     invalidate();
                                 }
                             }
-                            if (distanceSecondPoint <= acceptDistance) {
-                                temp.setStopX(getX);
-                                temp.setStopY(getY);
+                            if (mode == 2) { //Move
+                                //changeOrderList(getX,getY,figureSelected);
+                                temp.setCenterX(temp.getCenterX() - (getPastX - getX));
+                                temp.setCenterY(temp.getCenterY() - (getPastY - getY));
                                 invalidate();
                             }
+                        } else {
+                            adaptCircle(temp);
                         }
-                         if(mode==2) { //Move
-                            temp.setStopX(getX + temp.getStopX() - getPastX);
-                            temp.setStopY(getY + temp.getStopY() - getPastY);
-                            temp.setStartX(getX - (getPastX - temp.getStartX()));
-                            temp.setStartY(getY - (getPastY - temp.getStartY()));
-                            invalidate();
-                        }
-                    }else{
-                        adaptLine(temp);
-                    }
-                } else if (myFigures.get(figureSelected) instanceof Ellipse) {
-                    Ellipse temp = (Ellipse) myFigures.get(figureSelected);
-                    //distance a the first point of interaction
-                    temp.updateParameters(temp);
-                    float distanceFirstPoint = distancePoint_to_Point(getX, getY, temp.getLeft(), temp.getBottom() / 2 + temp.getTop() / 2);
-                    //distance a the second point of interaction
-                    float distanceSecondPoint = distancePoint_to_Point(getX, getY, temp.getRight(), temp.getBottom() / 2 + temp.getTop() / 2);
-                    //distance a the third point of interaction
-                    float distanceThirdPoint = distancePoint_to_Point(getX, getY, temp.getRight() / 2 + temp.getLeft() / 2, temp.getTop());
-                    //distance a the forty point of interaction
-                    float distanceFortyPoint = distancePoint_to_Point(getX, getY, temp.getRight() / 2 + temp.getLeft() / 2, temp.getBottom());
-                    //Dimensions of the Ellipse
-                    float widthEllipse= Math.abs(temp.getRight() - temp.getLeft());
-                    float heightEllipse = Math.abs(temp.getBottom() - temp.getTop());
-                    if (checkEllipse(temp)) {
-                        if(mode==1&& check(getX,getY)) { //Resize
-                            if (distanceFirstPoint <= acceptDistance) {
-                                if (widthEllipse > 100) {
-                                    temp.setLeft(getX);
-                                    invalidate();
-                                } else {
-                                    temp.setLeft(temp.getRight() - 101);
-                                    invalidate();
+                    } else if (myFigures.get(figureSelected) instanceof Rectangle) {
+                        Rectangle aux = (Rectangle) myFigures.get(figureSelected);
+                        //distance a the first point of interaction
+                        float distanceFirstPoint = distancePoint_to_Point(getX, getY, aux.getLeft(), aux.getTop());
+                        //distance a the second point of interaction
+                        float distanceSecondPoint = distancePoint_to_Point(getX, getY, aux.getRight(), aux.getBottom());
+                        //checkRectangle check dimensions of the Rectangle
+                        if (checkRectangle(aux)) {
+                            if (mode == 1 && check(getX, getY)) { //Resize
+                                if (distanceFirstPoint <= acceptDistance) {
+                                    //100x100 is Dimension of Rectangle limit
+                                    if (aux.getRight() - aux.getLeft() > 100 && aux.getBottom() - aux.getTop() > 100) {
+                                        aux.setLeft(getX);
+                                        aux.setTop(getY);
+                                        invalidate();
+                                    } else {
+                                        //100+1 for no limit dimension
+                                        if (aux.getRight() - aux.getLeft() <= 100) {
+                                            aux.setLeft(aux.getRight() - 101);
+                                            invalidate();
+                                        } else if (aux.getBottom() - aux.getTop() <= 100) {
+                                            aux.setTop(aux.getBottom() - 101);
+                                            invalidate();
+                                        }
+                                    }
                                 }
-                                temp.updateParameters(temp);
-                            } else if (distanceSecondPoint <= acceptDistance) {
-                                if (widthEllipse > 100) {
-                                    temp.setRight(getX);
-                                    invalidate();
-                                } else {
-                                    temp.setRight(temp.getLeft() + 101);
-                                    invalidate();
+                                if (distanceSecondPoint <= acceptDistance) {
+                                    //100x100 is Dimension of Rectangle limit
+                                    if (aux.getRight() - aux.getLeft() > 100 && aux.getBottom() - aux.getTop() > 100) {
+                                        aux.setRight(getX);
+                                        aux.setBottom(getY);
+                                        invalidate();
+                                    } else {
+                                        //100+1 for no limit dimension
+                                        if (aux.getRight() - aux.getLeft() <= 100) {
+                                            aux.setRight(aux.getLeft() + 101);
+                                            invalidate();
+                                        } else if (aux.getBottom() - aux.getTop() <= 100) {
+                                            aux.setBottom(aux.getTop() + 101);
+                                            invalidate();
+                                        }
+                                    }
                                 }
-                                temp.updateParameters(temp);
-                            } else if (distanceThirdPoint <= acceptDistance) {
-                                if (heightEllipse > 100) {
-                                    temp.setTop(getY);
-                                    invalidate();
-                                } else {
-                                    temp.setTop(temp.getBottom() - 101);
-                                    invalidate();
-                                }
-                                temp.updateParameters(temp);
-                            } else if (distanceFortyPoint <= acceptDistance) {
-                                if (heightEllipse > 100) {
-                                    temp.setBottom(getY);
-                                    invalidate();
-                                } else {
-                                    temp.setBottom(temp.getTop() + 101);
-                                    invalidate();
-                                }
-                                temp.updateParameters(temp);
                             }
-                        }
-                        if(mode==2){ //Move
-                            temp.setRight(getX + temp.getRight() - getPastX);
-                            temp.updateParameters(temp);
-                            temp.setBottom(getY + temp.getBottom() - getPastY);
-                            temp.updateParameters(temp);
-                            temp.setLeft(getX - (getPastX - temp.getLeft()));
-                            temp.updateParameters(temp);
-                            temp.setTop(getY - (getPastY - temp.getTop()));
-                            temp.updateParameters(temp);
+                            if (mode == 2) { //Move
+                                aux.setRight(getX + aux.getRight() - getPastX);
+                                aux.setBottom(getY + aux.getBottom() - getPastY);
+                                aux.setLeft(getX - (getPastX - aux.getLeft()));
+                                aux.setTop(getY - (getPastY - aux.getTop()));
+                                invalidate();
+                            }
+                        } else {
+                            //adaptRectangle Setter dimensions
+                            adaptRectangle(aux);
                             invalidate();
                         }
-                    }else{
-                        adaptEllipse(temp);
+                    } else if (myFigures.get(figureSelected) instanceof Line) {
+                        Line temp = (Line) myFigures.get(figureSelected);
+                        //distance a the first point of interaction
+                        float distanceFirstPoint = distancePoint_to_Point(getX, getY, temp.getStartX(), temp.getStartY());
+                        //distance a the second point of interaction
+                        float distanceSecondPoint = distancePoint_to_Point(getX, getY, temp.getStopX(), temp.getStopY());
+                        //distance a the line
+                        //float distanceToLine = temp.distancePoint_to_Line(getX,getY);
+                        if (checkLine(temp)) {
+                            if (mode == 1 && check(getX, getY)) { //ReSize
+                                if (distanceFirstPoint <= acceptDistance) {
+                                    //50 is distance between points start and stop
+                                    if (distancePoint_to_Point(temp.getStartX(), temp.getStartY(), temp.getStopX(), temp.getStopY()) <= 50) {
+                                        if (temp.getStartX() < temp.getStopX() || temp.getStartY() < temp.getStopY()) {
+                                            temp.setStartX(temp.getStartX() - 1);
+                                            temp.setStartY(temp.getStartY() - 1);
+                                            temp.setStopX(temp.getStopX() + 1);
+                                            temp.setStopY(temp.getStopY() + 1);
+                                            invalidate();
+                                        } else {
+                                            temp.setStartX(temp.getStartX() + 1);
+                                            temp.setStartY(temp.getStartY() + 1);
+                                            temp.setStopX(temp.getStopX() - 1);
+                                            temp.setStopY(temp.getStopY() - 1);
+                                            invalidate();
+                                        }
+                                    } else {
+                                        temp.setStartX(getX);
+                                        temp.setStartY(getY);
+                                        invalidate();
+                                    }
+                                }
+                                if (distanceSecondPoint <= acceptDistance) {
+                                    temp.setStopX(getX);
+                                    temp.setStopY(getY);
+                                    invalidate();
+                                }
+                            }
+                            if (mode == 2) { //Move
+                                temp.setStopX(getX + temp.getStopX() - getPastX);
+                                temp.setStopY(getY + temp.getStopY() - getPastY);
+                                temp.setStartX(getX - (getPastX - temp.getStartX()));
+                                temp.setStartY(getY - (getPastY - temp.getStartY()));
+                                invalidate();
+                            }
+                        } else {
+                            adaptLine(temp);
+                        }
+                    } else if (myFigures.get(figureSelected) instanceof Ellipse) {
+                        Ellipse temp = (Ellipse) myFigures.get(figureSelected);
+                        //distance a the first point of interaction
+                        temp.updateParameters(temp);
+                        float distanceFirstPoint = distancePoint_to_Point(getX, getY, temp.getLeft(), temp.getBottom() / 2 + temp.getTop() / 2);
+                        //distance a the second point of interaction
+                        float distanceSecondPoint = distancePoint_to_Point(getX, getY, temp.getRight(), temp.getBottom() / 2 + temp.getTop() / 2);
+                        //distance a the third point of interaction
+                        float distanceThirdPoint = distancePoint_to_Point(getX, getY, temp.getRight() / 2 + temp.getLeft() / 2, temp.getTop());
+                        //distance a the forty point of interaction
+                        float distanceFortyPoint = distancePoint_to_Point(getX, getY, temp.getRight() / 2 + temp.getLeft() / 2, temp.getBottom());
+                        //Dimensions of the Ellipse
+                        float widthEllipse = Math.abs(temp.getRight() - temp.getLeft());
+                        float heightEllipse = Math.abs(temp.getBottom() - temp.getTop());
+                        if (checkEllipse(temp)) {
+                            if (mode == 1 && check(getX, getY)) { //Resize
+                                if (distanceFirstPoint <= acceptDistance) {
+                                    if (widthEllipse > 100) {
+                                        temp.setLeft(getX);
+                                        invalidate();
+                                    } else {
+                                        temp.setLeft(temp.getRight() - 101);
+                                        invalidate();
+                                    }
+                                    temp.updateParameters(temp);
+                                } else if (distanceSecondPoint <= acceptDistance) {
+                                    if (widthEllipse > 100) {
+                                        temp.setRight(getX);
+                                        invalidate();
+                                    } else {
+                                        temp.setRight(temp.getLeft() + 101);
+                                        invalidate();
+                                    }
+                                    temp.updateParameters(temp);
+                                } else if (distanceThirdPoint <= acceptDistance) {
+                                    if (heightEllipse > 100) {
+                                        temp.setTop(getY);
+                                        invalidate();
+                                    } else {
+                                        temp.setTop(temp.getBottom() - 101);
+                                        invalidate();
+                                    }
+                                    temp.updateParameters(temp);
+                                } else if (distanceFortyPoint <= acceptDistance) {
+                                    if (heightEllipse > 100) {
+                                        temp.setBottom(getY);
+                                        invalidate();
+                                    } else {
+                                        temp.setBottom(temp.getTop() + 101);
+                                        invalidate();
+                                    }
+                                    temp.updateParameters(temp);
+                                }
+                            }
+                            if (mode == 2) { //Move
+                                temp.setRight(getX + temp.getRight() - getPastX);
+                                temp.updateParameters(temp);
+                                temp.setBottom(getY + temp.getBottom() - getPastY);
+                                temp.updateParameters(temp);
+                                temp.setLeft(getX - (getPastX - temp.getLeft()));
+                                temp.updateParameters(temp);
+                                temp.setTop(getY - (getPastY - temp.getTop()));
+                                temp.updateParameters(temp);
+                                invalidate();
+                            }
+                        } else {
+                            adaptEllipse(temp);
+                        }
+                    } else {
+                        System.out.println("No Tips");
                     }
                 } else {
-                    System.out.println("No Tips");
+                    /*if(!scaleGestureDetector.isInProgress()) {
+                        final float distanceX = getX - getPastX;
+                        final float distanceY = getY - getPastY;
+                        mPositionX += distanceX;
+                        mPositionY += distanceY;
+                        invalidate(); //reDraw
+
+                    }*/
+                    /*if (layout.getScaleX() > 1f && layout.getScaleY() > 1f) {
+                        if ((getX - (getPastX - layout.getTranslationX())) < d && (getX - (getPastX - layout.getTranslationX())) > -d)
+                            layout.setTranslationX(getX - (getPastX - layout.getTranslationX()));
+                        if ((getY - (getPastY - layout.getTranslationY())) < d_1 && (getY - (getPastY - layout.getTranslationY())) > -d_1)
+                            layout.setTranslationY(getY - (getPastY - layout.getTranslationY()));
+                    }*/
                 }
+                getPastX = getX;
+                getPastY = getY;
+                break;
             }
-            getPastX = getX;
-            getPastY = getY;
-            invalidate(); //reDraw
-        }else if(acct == MotionEvent.ACTION_UP ) {
-            System.out.println("up:"+getX+":"+getY);
-            System.out.println("up:"+getPastX+":"+getPastY);
-            if(layout.getScaleX()<=1f&&layout.getScaleY()<=1f){
-                layout.animate().translationX(0).translationY(0);
-            }else{
-                if(layout.getTranslationX()>d)
-                    layout.animate().translationX(d);
-                if(layout.getTranslationY()>d_1)
-                    layout.animate().translationY(d_1);
-                if(layout.getTranslationX()<-d)
-                    layout.animate().translationX(-d);
-                if(layout.getTranslationY()<-d_1)
-                    layout.animate().translationY(-d_1);
+            case MotionEvent.ACTION_UP: {
+                mActivePointerId = INVALID_POINTER_ID;
+                break;
+            }
+            case MotionEvent.ACTION_CANCEL: {
+                mActivePointerId = INVALID_POINTER_ID;
+                break;
+            }
+            case MotionEvent.ACTION_POINTER_UP: {
+
+                final int pointerIndex = event.getActionIndex();
+                final int pointerId = event.getPointerId(pointerIndex);
+                System.out.println("up:" + getX + ":" + getY);
+                System.out.println("up:" + getPastX + ":" + getPastY);
+                if (layout.getScaleX() <= 1f && layout.getScaleY() <= 1f) {
+                    layout.animate().translationX(0).translationY(0);
+                } else {
+                    if (layout.getTranslationX() > d)
+                        layout.animate().translationX(d);
+                    if (layout.getTranslationY() > d_1)
+                        layout.animate().translationY(d_1);
+                    if (layout.getTranslationX() < -d)
+                        layout.animate().translationX(-d);
+                    if (layout.getTranslationY() < -d_1)
+                        layout.animate().translationY(-d_1);
+                }
+                if (pointerId == mActivePointerId) {
+                    final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
+                    getPastX = event.getX(newPointerIndex);
+                    getPastY = event.getY( newPointerIndex);
+                    mActivePointerId = event.getPointerId(newPointerIndex);
+                }
+                break;
             }
         }
-            /*Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                public void run() {
-                    menuLeft.setVisibility(INVISIBLE);
-                    menuRight.setVisibility(INVISIBLE);
-                }
-            },10000);
-            System.out.println("data test");*/
-        //}
         checkFigures();
         return true;
     }//End Method

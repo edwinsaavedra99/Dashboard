@@ -2,11 +2,13 @@ package ListFigures;
 //Imports
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -40,7 +42,10 @@ public class ListSegmentation extends View {
     private float generalHeight = 0;
     private float generalWidth = 0;
     private float scaleZoomLayout = 3.0f;
+
     //Mode Touch
+    private boolean touchEvent = false;
+    private boolean flag = true;
     private int modeTouch = 0; //Mode 0 is Normal ... Mode 1 es zoomMode ... //Mode 2 es eraser
     private  LinearLayout layout;
     private boolean upMode = false;
@@ -49,6 +54,9 @@ public class ListSegmentation extends View {
     private ScaleGestureDetector scaleGestureDetector;
     private float mScaleFactor = 1.0f;
     private ListZoomSegmentation zoomList;
+    private Bitmap mImage;
+    private  int mImageWidth;
+    private int mImageHeight;
     /**
      * Class Constructor
      * @param context The View
@@ -67,6 +75,17 @@ public class ListSegmentation extends View {
         this.viewZoom.addView(zoomList);
         invalidate();
     }//Closing the class constructor
+    public void loadImage(Bitmap mImage){
+        //mImage = img;
+        float aspectRatio = (float) mImage.getHeight()/mImage.getWidth();
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        mImageWidth = displayMetrics.widthPixels;
+        mImageHeight = Math.round(mImageWidth*aspectRatio);
+        this.mImage =  Bitmap.createScaledBitmap(mImage,mImageWidth,mImageHeight,false);
+        invalidate();
+        //requestLayout();
+        zoomList.loadImage(mImage);
+    }
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener{
         @Override
         public boolean onScale(ScaleGestureDetector scaleGestureDetector){
@@ -102,6 +121,7 @@ public class ListSegmentation extends View {
         pencil.setPathEffect(dashPathEffect);
         Circle aux = new Circle(_startX, _startY,  _radius, pencil,color);
         this.segmentation.add(aux);
+        invalidate();
         figureSelected = this.segmentation.size()-1;
         zoomList.addCircleSegmentation(_startX*this.viewZoom.getWidth()/this.getWidth(),_startY*this.viewZoom.getHeight()/this.getHeight(), _radius*this.viewZoom.getWidth()/this.getWidth(),pencil);
         zoomList.invalidate();
@@ -136,11 +156,15 @@ public class ListSegmentation extends View {
     /**
      * Method clearList deleted the list
      * */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void clearList(){
-        zoomList.clearList();
-        zoomList.invalidate();
-        segmentation.clear();
-        invalidate();
+        //        if(aux ==null)
+        if(!touchEvent) {
+            zoomList.clearList();
+            zoomList.invalidate();
+            segmentation.clear();
+            invalidate();
+        }
     }
     /**
      * Method changeColour of the list of segments
@@ -191,6 +215,13 @@ public class ListSegmentation extends View {
     protected void onDraw(Canvas canvas) {
         generalWidth = canvas.getWidth();
         generalHeight = canvas.getHeight();
+        if(mImage !=null){
+            canvas.save();
+            //canvas.concat(matrix);
+            //mBoard.draw(canvas);
+            canvas.drawBitmap(mImage,0,0,null);
+            canvas.restore();
+        }
         for(int i=0;i<segmentation.size();i++){
             if (segmentation.get(i) instanceof Circle) {
                 Circle temp = (Circle) segmentation.get(i);
@@ -278,9 +309,13 @@ public class ListSegmentation extends View {
     /**
      * Method onTouchEvent
      * @param event Events of touch*/
+
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @SuppressLint("ClickableViewAccessibility")
     public boolean onTouchEvent(MotionEvent event) {
+        touchEvent = true;
+        invalidate();
+        zoomList.invalidate();
         touchX = event.getX();
         touchY = event.getY();
         upMode = true;
@@ -401,7 +436,12 @@ public class ListSegmentation extends View {
                         if (drawS)
                             addCircleSegmentation(getX, getY, 9); //9 is radius acceptable
                     } else {
+
                         addCircleSegmentation(getX, getY, 9);  //9 is radius acceptable
+                        /*if(flag) {
+                            segmentation.remove(0);
+                            flag = false;
+                        }*/
                     }
                 } else {
                     if (this.figureSelected > -1) {
@@ -446,6 +486,8 @@ public class ListSegmentation extends View {
             zoomList.invalidate();
         }
         if(event.getAction() == MotionEvent.ACTION_UP){
+            //if(segm)
+            touchEvent = false;
             upMode = false;
             invalidate();
             zoomList.invalidate();

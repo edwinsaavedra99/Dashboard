@@ -37,7 +37,6 @@
                         android:id="@+id/layoutImageRx"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
-                        android:background="@drawable/rx_image_1"
                         android:gravity="center"
                         android:orientation="vertical"
                         android:visibility="visible"
@@ -72,6 +71,7 @@
                         android:visibility="gone"
                         app:cardBackgroundColor="@android:color/transparent"
                         app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         android:layout_marginLeft="5dp">
 
@@ -164,6 +164,7 @@
                         android:textSize="10sp" />
 
                     <ImageView
+                        android:id="@+id/pruebas"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginBottom="15dp"
