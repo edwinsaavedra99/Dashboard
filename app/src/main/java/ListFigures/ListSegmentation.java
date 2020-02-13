@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.DisplayMetrics;
@@ -41,11 +42,12 @@ public class ListSegmentation extends View {
     protected float touchY = 0;
     private float getPastX = 0;
     private float getPastY = 0;
+    private float mPositionX;
+    private float mPositionY;
     private float acceptDistance = 30;
     private float generalHeight = 0;
     private float generalWidth = 0;
     private float scaleZoomLayout = 3.0f;
-
     //Mode Touch
     private boolean touchEvent = false;
     private boolean flag = true;
@@ -57,6 +59,9 @@ public class ListSegmentation extends View {
     private ScaleGestureDetector scaleGestureDetector;
     private float mScaleFactor = 1.0f;
     private ListZoomSegmentation zoomList;
+    private Drawable mBoard;
+    private float mBoardWidth;
+    private  float mBoardHeght;
     private Bitmap mImage;
     private  int mImageWidth;
     private int mImageHeight;
@@ -79,14 +84,9 @@ public class ListSegmentation extends View {
         invalidate();
     }//Closing the class constructor
     public void loadImage(Bitmap mImage){
-        //mImage = img;
-        float aspectRatio = (float) mImage.getHeight()/mImage.getWidth();
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        mImageWidth = displayMetrics.widthPixels;
-        mImageHeight = Math.round(mImageWidth*aspectRatio);
-        this.mImage =  Bitmap.createScaledBitmap(mImage,mImageWidth,mImageHeight,false);
+        mBoard = new BitmapDrawable(getResources(),mImage);
         invalidate();
-        //requestLayout();
+        requestLayout();
         zoomList.loadImage(mImage);
     }
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener{
@@ -97,8 +97,6 @@ public class ListSegmentation extends View {
             float m_MAX_ZOOM = 3.0f;
             mScaleFactor = Math.max(m_MIN_ZOOM,Math.min(mScaleFactor, m_MAX_ZOOM));
             invalidate();
-            layout.setScaleX(mScaleFactor);
-            layout.setScaleY(mScaleFactor);
             return true;
         }
         @Override
@@ -130,12 +128,7 @@ public class ListSegmentation extends View {
         zoomList.invalidate();
     }
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    public void changeFlagFilter(Drawable d){
-        //flagFilter = !flagFilter;
-        viewZoom.setBackground(d);
-        content.setBackground(d);
-        this.d = d;
-    }
+
 
     /**
      * Method after : remove one segment : deleteFigure the selected figure is deleted*/
@@ -218,12 +211,29 @@ public class ListSegmentation extends View {
     protected void onDraw(Canvas canvas) {
         generalWidth = canvas.getWidth();
         generalHeight = canvas.getHeight();
-        if(mImage !=null){
+        if(mBoard !=null){
             canvas.save();
-            //canvas.concat(matrix);
-            //mBoard.draw(canvas);
-            canvas.drawBitmap(mImage,0,0,null);
-            canvas.restore();
+            int altoCa = getBottom();
+            int anchoCa = getRight();
+            mBoard.setBounds(0,0,anchoCa,altoCa);
+            mImageHeight = altoCa;
+            mImageWidth = anchoCa;
+            if(mPositionX*-1<0){
+                mPositionX = 0;
+            }else if((mPositionX*-1)>mImageWidth*mScaleFactor-getWidth()){
+                mPositionX = (mImageWidth * mScaleFactor-getWidth())*-1;
+            }
+            if(mPositionY*-1<0){
+                mPositionY = 0;
+            }else if((mPositionY*-1)>mImageHeight*mScaleFactor-getHeight()){
+                mPositionY = (mImageHeight * mScaleFactor-getHeight())*-1;
+            }
+            if((mImageHeight*mScaleFactor<getHeight())){
+                mPositionY = 0;
+            }
+            canvas.translate(mPositionX,mPositionY);
+            canvas.scale(mScaleFactor,mScaleFactor);
+            mBoard.draw(canvas);
         }
         for(int i=0;i<segmentation.size();i++){
             if (segmentation.get(i) instanceof Circle) {
@@ -251,9 +261,10 @@ public class ListSegmentation extends View {
             pencil.setStrokeWidth(4);
             pencil.setStyle(Paint.Style.STROKE);
             pencil.setPathEffect(dashPathEffect);
-            canvas.drawCircle(touchX,touchY,acceptDistance/2,pencil);
-            canvas.drawCircle(touchX,touchY,acceptDistance*2,pencil);
+            canvas.drawCircle((touchX-mPositionX)/mScaleFactor,(touchY-mPositionY)/mScaleFactor,acceptDistance/2,pencil);
+            canvas.drawCircle((touchX-mPositionX)/mScaleFactor,(touchY-mPositionY)/mScaleFactor,acceptDistance*2,pencil);
         }
+        canvas.restore();
     }
 
     public void changeModeTouch( int mode){
@@ -325,55 +336,15 @@ public class ListSegmentation extends View {
         float getX = event.getX();
         float getY = event.getY();
         final int acct = event.getActionMasked();
-
-        float d, d_1;
-        if (layout.getTranslationX() >= 0)
-            d = (layout.getScaleX() * layout.getWidth() - layout.getWidth()) - layout.getTranslationX();
-        else
-            d = (layout.getScaleX() * layout.getWidth() - layout.getWidth()) + layout.getTranslationX();
-        if (layout.getTranslationY() >= 0)
-            d_1 = (layout.getScaleY() * layout.getHeight() - layout.getHeight()) - layout.getTranslationY();
-        else
-            d_1 = (layout.getScaleY() * layout.getHeight() - layout.getHeight()) + layout.getTranslationY();
         //Mode Zoom
         if(modeTouch == 1) {
             scaleGestureDetector.onTouchEvent(event);
-            invalidate();
-            if(acct == MotionEvent.ACTION_DOWN) {
-                if(!scaleGestureDetector.isInProgress()) {
-                    getPastX = getX;
-                    getPastY = getY;
-                }
-            }else if(acct == MotionEvent.ACTION_MOVE){
-                if(!scaleGestureDetector.isInProgress()&&layout.getScaleX()>1f&&layout.getScaleY()>1f) {
-                    if((getX - (getPastX - layout.getTranslationX()))<d &&(getX - (getPastX - layout.getTranslationX()))>-d)
-                        layout.setTranslationX(getX - (getPastX - layout.getTranslationX()));
-                    if((getY - (getPastY - layout.getTranslationY()))<d_1 &&(getY - (getPastY - layout.getTranslationY()))>-d_1)
-                        layout.setTranslationY(getY - (getPastY - layout.getTranslationY()));
-                }
-            }else if(acct == MotionEvent.ACTION_UP){
-                getPastX = getX;
-                getPastY = getY;
-                if(layout.getScaleX()<=1f&&layout.getScaleY()<=1f){
-                    layout.animate().translationX(0).translationY(0);
-                }else{
-                    if(layout.getTranslationX()>d)
-                        layout.animate().translationX(d);
-                    if(layout.getTranslationY()>d_1)
-                        layout.animate().translationY(d_1);
-                    if(layout.getTranslationX()<-d)
-                        layout.animate().translationX(-d);
-                    if(layout.getTranslationY()<-d_1)
-                        layout.animate().translationY(-d_1);
-                }
-            }
-            return true;
         }
-        zoomList.acceptDistance = acceptDistance*this.viewZoom.getWidth()/this.getWidth();
-        zoomList.touchX = event.getX()*this.viewZoom.getWidth()/this.getWidth();
-        zoomList.touchY = event.getY()*this.viewZoom.getHeight()/this.getHeight();
-        this.viewZoom.setPivotX(getX*this.viewZoom.getWidth()/this.getWidth());
-        this.viewZoom.setPivotY(getY*this.viewZoom.getHeight()/this.getHeight());
+        zoomList.acceptDistance = acceptDistance*mScaleFactor*this.viewZoom.getWidth()/this.getWidth();
+        zoomList.touchX = (event.getX()-mPositionX)/mScaleFactor*this.viewZoom.getWidth()/this.getWidth();
+        zoomList.touchY = (event.getY()-mPositionY)/mScaleFactor*this.viewZoom.getHeight()/this.getHeight();
+        this.viewZoom.setPivotX((getX-mPositionX)/mScaleFactor*this.viewZoom.getWidth()/this.getWidth());
+        this.viewZoom.setPivotY((getY-mPositionY)/mScaleFactor*this.viewZoom.getHeight()/this.getHeight());
         this.viewZoom.setScaleX(scaleZoomLayout);
         this.viewZoom.setScaleY(scaleZoomLayout);
         this.viewZoom.setTranslationY(15);
@@ -386,44 +357,42 @@ public class ListSegmentation extends View {
                 getX = event.getX(pointerIndex);
                 getY = event.getY(pointerIndex);
                 mActivePointerId = event.getPointerId(0);
-            touchX = event.getX(pointerIndex);
-            touchY =event.getY(pointerIndex);
-            zoomList.touchX = event.getX(pointerIndex)*this.viewZoom.getWidth()/this.getWidth();
-            zoomList.touchY = event.getY(pointerIndex)*this.viewZoom.getHeight()/this.getHeight();
-            if(modeTouch == 0) { //Touch segments
+                touchX = event.getX(pointerIndex);
+                touchY = event.getY(pointerIndex);
+                zoomList.touchX = (event.getX()-mPositionX)/mScaleFactor*this.viewZoom.getWidth()/this.getWidth();
+                zoomList.touchY = (event.getY()-mPositionY)/mScaleFactor*this.viewZoom.getHeight()/this.getHeight();
                 this.figureSelected = -1;
                 zoomList.figureSelected = -1;
                 zoomList.invalidate();
                 invalidate();
                 getPastX = getX;
                 getPastY = getY;
-                //zoomList.touchPastX = getX();
-                //zoomList.touchPastY = getY();
-                if (!segmentation.isEmpty()) {
-                    Circle aux = (Circle) segmentation.get(segmentation.size() - 1);
-                    float centerX = aux.getCenterX() - event.getX(pointerIndex);
-                    float centerY = aux.getCenterY() - event.getY(pointerIndex);
-                    if (Math.sqrt(centerX * centerX + centerY * centerY) <= 40) {
-                        this.viewZoom.setVisibility(View.VISIBLE);
-                        this.cardView.setVisibility(VISIBLE);
-                    }
-                    for (int i = 0; i < segmentation.size(); i++) {
-                        if (segmentation.get(i) instanceof Circle) {
-                            Circle temp = (Circle) segmentation.get(i);
-                            //distance with the origin
-                            float distance = distancePoint_to_Point(getX, getY, temp.getCenterX(), temp.getCenterY());
-                            if (distance <= acceptDistance) { //Move
-                                zoomList.figureSelected = i;
-                                this.figureSelected = i;
+                if(modeTouch == 0 || modeTouch ==1) { //Touch segments
+                    if (!segmentation.isEmpty()) {
+                        Circle aux = (Circle) segmentation.get(segmentation.size() - 1);
+                        float centerX = aux.getCenterX()*mScaleFactor+mPositionX - event.getX(pointerIndex);
+                        float centerY = aux.getCenterY()*mScaleFactor+mPositionY - event.getY(pointerIndex);
+                        if (Math.sqrt(centerX * centerX + centerY * centerY) <= 40*mScaleFactor) {
+                            this.viewZoom.setVisibility(View.VISIBLE);
+                            this.cardView.setVisibility(VISIBLE);
+                        }
+                        for (int i = 0; i < segmentation.size(); i++) {
+                            if (segmentation.get(i) instanceof Circle) {
+                                Circle temp = (Circle) segmentation.get(i);
+                                //distance with the origin
+                                float distance = distancePoint_to_Point(getX, getY, temp.getCenterX()*mScaleFactor+mPositionX, temp.getCenterY()*mScaleFactor+mPositionY);
+                                if (distance <= acceptDistance*mScaleFactor) { //Move
+                                    zoomList.figureSelected = i;
+                                    this.figureSelected = i;
+                                }
                             }
                         }
                     }
+                }else if(modeTouch == 2){ //touch eraser
+                    this.viewZoom.setVisibility(View.VISIBLE);
+                    this.cardView.setVisibility(VISIBLE);
+                    zoomList.invalidate();
                 }
-            }else if(modeTouch == 2){ //touch eraser
-                this.viewZoom.setVisibility(View.VISIBLE);
-                this.cardView.setVisibility(VISIBLE);
-                zoomList.invalidate();
-            }
             break;
         }
         case MotionEvent.ACTION_MOVE: {
@@ -432,33 +401,28 @@ public class ListSegmentation extends View {
                 getY = event.getY(pointerIndex);
                 touchX = event.getX(pointerIndex);
                 touchY = event.getY(pointerIndex);
-                zoomList.touchX = event.getX(pointerIndex)*this.viewZoom.getWidth()/this.getWidth();
-                zoomList.touchY = event.getY(pointerIndex)*this.viewZoom.getHeight()/this.getHeight();
-                if(modeTouch == 0) { //Touch segments
+                zoomList.touchX = (event.getX()-mPositionX)/mScaleFactor*this.viewZoom.getWidth()/this.getWidth();
+                zoomList.touchY = (event.getY()-mPositionY)/mScaleFactor*this.viewZoom.getHeight()/this.getHeight();
+                if(modeTouch == 0 || modeTouch == 1) { //Touch segments
                     if (figureSelected == segmentation.size() - 1) {
                         if (!segmentation.isEmpty()) {
                             boolean drawS = false;
                             Circle aux = (Circle) segmentation.get(segmentation.size() - 1);
-                            float centerX = aux.getCenterX() - event.getX(pointerIndex);
-                            float centerY = aux.getCenterY() - event.getY(pointerIndex);
+                            float centerX = aux.getCenterX()*mScaleFactor+mPositionX - event.getX(pointerIndex);
+                            float centerY = aux.getCenterY()*mScaleFactor+mPositionY - event.getY(pointerIndex);
                             //60 y 70 is the interval of segmentation acceptDistance = 30
-                            if (Math.sqrt(centerX * centerX + centerY * centerY) > acceptDistance * 2 && Math.sqrt(centerX * centerX + centerY * centerY) < acceptDistance * 2 + 10) {
+                            if (Math.sqrt(centerX * centerX + centerY * centerY) > acceptDistance * 2 * mScaleFactor && Math.sqrt(centerX * centerX + centerY * centerY) < (acceptDistance * 2 + 10)*mScaleFactor) {
                                 drawS = true;
                                 this.viewZoom.setVisibility(View.VISIBLE);
                                 this.cardView.setVisibility(VISIBLE);
                             }
                         if (drawS)
-                            addCircleSegmentation(getX, getY, 9); //9 is radius acceptable
+                            addCircleSegmentation((getX-mPositionX)/mScaleFactor, (getY-mPositionY)/mScaleFactor, 9); //9 is radius acceptable
                         } else {
-
-                            addCircleSegmentation(getX, getY, 9);  //9 is radius acceptable
-                            /*if(flag) {
-                                segmentation.remove(0);
-                                flag = false;
-                            }*/
+                            addCircleSegmentation((getX-mPositionX)/mScaleFactor, (getY-mPositionY)/mScaleFactor, 9);  //9 is radius acceptable
                         }
-                    } else {
-                        if (this.figureSelected > -1) {
+                    } else if (this.figureSelected > -1 && !segmentation.isEmpty()) {
+                        if( !scaleGestureDetector.isInProgress()) {
                             if (segmentation.get(figureSelected) instanceof Circle) {
                                 Circle temp = (Circle) segmentation.get(figureSelected);
                                 Circle temp_z = (Circle) zoomList.segmentation.get(figureSelected);
@@ -466,7 +430,7 @@ public class ListSegmentation extends View {
                                 if (checkCircle(temp)) {
                                     temp.setCenterX(temp.getCenterX() - (getPastX - getX));
                                     temp.setCenterY(temp.getCenterY() - (getPastY - getY));
-                                invalidate();
+                                    invalidate();
                                     temp_z.setCenterX(temp.getCenterX() * this.viewZoom.getWidth() / this.getWidth());
                                     temp_z.setCenterY(temp.getCenterY() * this.viewZoom.getHeight() / this.getHeight());
                                     zoomList.invalidate();
@@ -475,15 +439,23 @@ public class ListSegmentation extends View {
                                 }
                             }
                         }
-                        getPastX = getX;
-                        getPastY = getY;
+                    }else{
+                        if(!scaleGestureDetector.isInProgress()) {
+                            final float distanceX = getX - getPastX;
+                            final float distanceY = getY - getPastY;
+                            mPositionX += distanceX;
+                            mPositionY += distanceY;
+                            invalidate(); //reDraw
+                        }
                     }
+                    getPastX = getX;
+                    getPastY = getY;
                 }else if(modeTouch == 2){ //touch eraser
                     for (int i = 0; i < segmentation.size(); i++) {
                         if (segmentation.get(i) instanceof Circle){
                             Circle temp = (Circle) segmentation.get(i);
                             //distance with the origin
-                            float distance = distancePoint_to_Point(getX, getY, temp.getCenterX(), temp.getCenterY());
+                            float distance = distancePoint_to_Point(getX, getY, temp.getCenterX()*mScaleFactor+mPositionX, temp.getCenterY()*mScaleFactor+mPositionY);
                             if(distance<=temp.getRadius()){
                                 segmentation.remove(i);
                                 zoomList.segmentation.remove(i);
@@ -517,8 +489,6 @@ public class ListSegmentation extends View {
             case MotionEvent.ACTION_POINTER_UP: {
                 final int pointerIndex = event.getActionIndex();
                 final int pointerId = event.getPointerId(pointerIndex);
-                //if(segm
-
                 for (int i = 0; i < segmentation.size(); i++) {
                     if (segmentation.get(i) instanceof Circle) {
                         Circle temp = (Circle) segmentation.get(i);
@@ -528,15 +498,6 @@ public class ListSegmentation extends View {
                 }
                 if (layout.getScaleX() <= 1f && layout.getScaleY() <= 1f) {
                     layout.animate().translationX(0).translationY(0);
-                } else {
-                    if (layout.getTranslationX() > d)
-                        layout.animate().translationX(d);
-                    if (layout.getTranslationY() > d_1)
-                        layout.animate().translationY(d_1);
-                    if (layout.getTranslationX() < -d)
-                        layout.animate().translationX(-d);
-                    if (layout.getTranslationY() < -d_1)
-                        layout.animate().translationY(-d_1);
                 }
                 if (pointerId == mActivePointerId) {
                     final int newPointerIndex = pointerIndex == 0 ? 1 : 0;

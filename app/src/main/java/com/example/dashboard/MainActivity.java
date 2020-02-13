@@ -3,14 +3,11 @@ package com.example.dashboard;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
-
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -22,18 +19,12 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.SeekBar;
 import android.widget.Toast;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
-import org.opencv.core.Rect;
-import org.opencv.imgproc.Imgproc;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Random;
 import ListFigures.ListFigure;
 import ListFigures.ListSegmentation;
 import ListFigures.Util;
@@ -101,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView clearSegments;
     private ImageView eraserSegments;
     private ImageView pruebas;
+    private CardView cardView;
     //Colors
     private ArrayList<ImageView> listColors;
     private int colorIndex;
@@ -161,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageView openCv26;
     private ImageView openCv27;
     private ImageView openCv28;
-    private SeekBar zoomBar;
     //img original format Bitmap
     private Bitmap original;
     private Mat img;
@@ -179,53 +170,12 @@ public class MainActivity extends AppCompatActivity {
         //Load OpenCV
         OpenCVLoader.initDebug();
         //Initializing Properties
-        zoomBar = findViewById(R.id.zoomBar);
-        zoomBar.getThumb().setColorFilter(Color.rgb(255, 127, 80), PorterDuff.Mode.MULTIPLY);
-
         initialProperties();
-
-        zoomBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                float scale = 1.0f + progress * 0.01f;
-
-                if (layoutImageRx.getTranslationX() >= myListFigures.dX() && layoutImageRx.getTranslationY() >= myListFigures.dY()
-                        && layoutImageRx.getTranslationX() <= -myListFigures.dX() && layoutImageRx.getTranslationY() <= -myListFigures.dY()) {
-                    layoutImageRx.setScaleX(scale);
-                    layoutImageRx.setScaleY(scale);
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                //layoutImageRx.setPivotX(myListFigures.getXTouch());
-                //layoutImageRx.setPivotY(myListFigures.getYTouch());
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                System.out.println("data 1 : "+myListFigures.dX()+";"+myListFigures.dY());
-                System.out.println("data 2 : "+layoutImageRx.getPivotX()+";"+layoutImageRx.getPivotY());
-                System.out.println("data 3 : "+layoutImageRx.getTranslationX()+";"+layoutImageRx.getTranslationY());
-                if(layoutImageRx.getTranslationX()>myListFigures.dX())
-                    layoutImageRx.animate().translationX(myListFigures.dX());
-                if(layoutImageRx.getTranslationY()>myListFigures.dY())
-                    layoutImageRx.animate().translationY(myListFigures.dY());
-                if(layoutImageRx.getTranslationX()<-myListFigures.dX())
-                    layoutImageRx.animate().translationX(-myListFigures.dX());
-                if(layoutImageRx.getTranslationY()<-myListFigures.dY())
-                    layoutImageRx.animate().translationY(-myListFigures.dY());
-         //       layoutImageRx.setPivotX(360);
-           //     layoutImageRx.setPivotY(656);
-            }
-        });
         //Change of layout to "Segmentation"
         segmentation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!flagSegmentation) {
-                    //myListSegmentation.addCircleSegmentation(12,12,12);
-                    //myListSegmentation.clearList();
                     if(myListSegmentation.getModeTouch()==1)
                         extendsImage.setColorFilter(Color.rgb(255, 127, 80)); //orange
                     else
@@ -245,7 +195,6 @@ public class MainActivity extends AppCompatActivity {
                         extendsImage.setColorFilter(Color.rgb(255, 127, 80)); //orange
                     else
                         extendsImage.setColorFilter(Color.rgb(255, 255, 255)); //white
-
                     segmentation.setColorFilter(Color.rgb(255,255,255));
                     scrollLeft2.setVisibility(View.GONE);
                     if(flagAnimationColors)
@@ -328,7 +277,6 @@ public class MainActivity extends AppCompatActivity {
                         else
                             myListSegmentation.changeModeTouch(0);
                     }
-
                 }
             }
         });
@@ -480,43 +428,15 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        //xd
+        //detectPruebas
         pruebas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-/*                //zoom al centro controles de container funcionan
-                layoutImageRx.setScaleX(1.5f);
-                layoutImageRx.setScaleY(1.5f);
-                layoutImageRx.setTranslationX(10);
-                layoutImageRx.setTranslationY(10);
-                System.out.println("prueba SCALE -> x:"+layoutImageRx.getScaleX()+"; y:"+layoutImageRx.getScaleY());
-                System.out.println("prueba PIVOT -> x:"+layoutImageRx.getPivotX()+"; y:"+layoutImageRx.getPivotY());
-                System.out.println("prueba D -> x:"+myListFigures.dX()+"; y:"+myListFigures.dY());
-                System.out.println("prueba TRASLATE -> x:"+layoutImageRx.getTranslationX()+"; y:"+layoutImageRx.getTranslationY());
-                //
-                layoutImageRx.setScaleX(1.0f);
-                layoutImageRx.setScaleY(1.0f);
-                layoutImageRx.setTranslationX(0);
-                layoutImageRx.setTranslationY(0);
-                //*/
-                layoutImageRx.setPivotX(260);
-                //layoutImageRx.setPivotY(100);
-                layoutImageRx.setScaleX(1.3746202f);
-                layoutImageRx.setScaleY(1.3746202f);
-                layoutImageRx.setTranslationX(-0.57336426f);
-                layoutImageRx.setTranslationY(-2.295105f);
-                float dt = (layoutImageRx.getScaleX() * layoutImageRx.getWidth() - layoutImageRx.getWidth()) - layoutImageRx.getTranslationX() ;
-                float dty=(layoutImageRx.getScaleY() * layoutImageRx.getHeight() - layoutImageRx.getHeight()) - layoutImageRx.getTranslationY();
                 System.out.println("A prueba SCALE -> x:"+layoutImageRx.getScaleX()+"; y:"+layoutImageRx.getScaleY());
                 System.out.println("A prueba PIVOT -> x:"+layoutImageRx.getPivotX()+"; y:"+layoutImageRx.getPivotY());
-                System.out.println("A prueba D -> x:"+dt+"; y:"+dty);
                 System.out.println("prueba TRASLATE -> x:"+layoutImageRx.getTranslationX()+"; y:"+layoutImageRx.getTranslationY());
-
             }
         });
-
-
-
         color1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -945,7 +865,6 @@ public class MainActivity extends AppCompatActivity {
             myListFigures.loadImage(d);
         else {
             myListSegmentation.loadImage(d);
-            //myListSegmentation.changeFlagFilter(d);
             zoomImageLayout.setBackground(drawable);
         }
     }
@@ -1004,7 +923,7 @@ public class MainActivity extends AppCompatActivity {
         //Back and Checks
         backMenuRight = findViewById(R.id.back_menu_right_1);
         //Segmentation
-        CardView cardView = findViewById(R.id.zoomImage_1); //CARD
+        cardView = findViewById(R.id.zoomImage_1); //CARD
         cardView.setVisibility(View.GONE);
         zoomImageLayout = findViewById(R.id.zoomLayoutImageRx_1); //Layout Zoom Image Ray-X
         zoomImageLayout.setVisibility(View.INVISIBLE);
@@ -1065,6 +984,7 @@ public class MainActivity extends AppCompatActivity {
         myListFigures.loadImage(this.original);
         myListSegmentation.loadImage(this.original);
         myFilters = new MyFilters(this.img,this.original);
+        zoomImageLayout.setBackground(new BitmapDrawable(getResources(),myFilters.filterRGB()));
         //Icons with filter
         openCv.setImageBitmap(myFilters.cropBitmap(myFilters.filterCanny()));
         openCv1.setImageBitmap(myFilters.cropBitmap(myFilters.filerSepia()));
