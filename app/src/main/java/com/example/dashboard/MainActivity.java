@@ -164,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         //ORIENTATION FALSE
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setTheme(R.style.AppTheme);
         //Add Layout Activity XML
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);

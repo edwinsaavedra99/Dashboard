@@ -1051,7 +1051,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginBottom="10dp"
-                        android:src="@drawable/delete_bin_64px" />
+                        android:src="@drawable/broom_30px" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -1065,7 +1065,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginBottom="10dp"
-                        android:src="@drawable/delete_bin_64px" />
+                        android:src="@drawable/eraser_24px" />
 
                 </LinearLayout>
                 <LinearLayout
