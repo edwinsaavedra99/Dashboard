@@ -428,8 +428,8 @@ public class ListSegmentation extends View {
                                 Circle temp_z = (Circle) zoomList.segmentation.get(figureSelected);
                                 //checkCircle check dimensions of the circle
                                 if (checkCircle(temp)) {
-                                    temp.setCenterX(temp.getCenterX() - (getPastX - getX));
-                                    temp.setCenterY(temp.getCenterY() - (getPastY - getY));
+                                    temp.setCenterX((temp.getCenterX() - (getPastX - getX)));
+                                    temp.setCenterY((temp.getCenterY() - (getPastY - getY)));
                                     invalidate();
                                     temp_z.setCenterX(temp.getCenterX() * this.viewZoom.getWidth() / this.getWidth());
                                     temp_z.setCenterY(temp.getCenterY() * this.viewZoom.getHeight() / this.getHeight());

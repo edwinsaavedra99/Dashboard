@@ -298,6 +298,19 @@ public class ListFigure  extends View {
             canvas.save();
             int altoCa = getBottom();
             int anchoCa = getRight();
+            /*float medioCa = (float) altoCa/anchoCa;
+            int altoIm = mBoard.getIntrinsicHeight();
+            int anchoIm = mBoard.getIntrinsicWidth();
+            float medioIm = (float)altoIm/anchoIm;
+            int alto,ancho;
+            if(medioCa<medioIm){
+                ancho = anchoCa;
+                alto =(int)(medioIm*ancho);
+            }else{
+                alto = altoCa;
+                ancho = (int) (alto/medioIm);
+            }
+            mBoard.setBounds(0,0,ancho,alto);*/
             mBoard.setBounds(0,0,anchoCa,altoCa);
             mImageHeight = altoCa;
             mImageWidth = anchoCa;

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -163,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //ORIENTATION FALSE
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         setTheme(R.style.AppTheme);
         //Add Layout Activity XML
         super.onCreate(savedInstanceState);
@@ -172,6 +173,13 @@ public class MainActivity extends AppCompatActivity {
         OpenCVLoader.initDebug();
         //Initializing Properties
         initialProperties();
+       /* if(getRequestedOrientation()== ActivityInfo.SCREEN_ORIENTATION_PORTRAIT){
+            System.out.println("estoy en modo vertical");
+        }else if(getRequestedOrientation()== ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
+            System.out.println("estoy en modo horizontal");
+        }*/
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         //Change of layout to "Segmentation"
         segmentation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -858,6 +866,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void addFilter(Bitmap d){
 
@@ -977,7 +987,7 @@ public class MainActivity extends AppCompatActivity {
             img = Utils.loadResource(getApplicationContext(),nameImage);
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inScaled = false;
-            this.original = BitmapFactory.decodeResource(getResources(), R.drawable.rx_image_1, options);
+            this.original = BitmapFactory.decodeResource(getResources(), nameImage, options);
         }catch (IOException e) {
             System.out.println("Insert image");
             e.printStackTrace();
