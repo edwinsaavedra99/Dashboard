@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private String nameBinder;
     private File file;*/
     //Insert Figures
+    private ImageView saveData;
+    private ImageView saveFigures;
     private ImageView creatorCircles;
     private ImageView creatorRectangles;
     private ImageView creatorLines;
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private Drawable d;
     //Change Layout
     private ImageView segmentation;
+    private ImageView addPointSegment;
     //Layout for Image RX
     private LinearLayout layoutImageRx;
     private LinearLayout layoutImageRx1;
@@ -73,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean flagAnimationColors;
     private boolean flagSegmentation;
     private boolean flagEraserSegmentation;
+    private boolean flagPointSegmentation;
+    private boolean flagPreviewSegmentation;
     //Scroll
     private LinearLayout menu_left;
     private LinearLayout menu_right;
@@ -92,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView test1;
     private ImageView clearSegments;
     private ImageView eraserSegments;
-    private ImageView pruebas;
+    private ImageView preview;
     private CardView cardView;
     //Colors
     private ArrayList<ImageView> listColors;
@@ -173,13 +178,56 @@ public class MainActivity extends AppCompatActivity {
         OpenCVLoader.initDebug();
         //Initializing Properties
         initialProperties();
-       /* if(getRequestedOrientation()== ActivityInfo.SCREEN_ORIENTATION_PORTRAIT){
-            System.out.println("estoy en modo vertical");
-        }else if(getRequestedOrientation()== ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
-            System.out.println("estoy en modo horizontal");
-        }*/
+
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        saveFigures.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Animation.animationScale(deleteFigures,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
+                Toast toast;
+                if(myListFigures.deleteFigure())
+                    toast = Toast.makeText(getApplicationContext(),"Data Save Successfully",Toast.LENGTH_SHORT);
+                else
+                    toast = Toast.makeText(getApplicationContext(),"Data not Save",Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
+
+        saveData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Animation.animationScale(deleteFigures,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
+                Toast toast;
+                //myListSegmentation ... ESTAS AQUI !!
+                if(myListFigures.deleteFigure())
+                    toast = Toast.makeText(getApplicationContext(),"Data Save Successfully",Toast.LENGTH_SHORT);
+                else
+                    toast = Toast.makeText(getApplicationContext(),"Data not Save",Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
+        preview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!flagPreviewSegmentation) {
+                    Animation.animationScale(preview, TIME_ANIMATION, SCALE_ANIMATION, SCALE_ANIMATION);
+                    preview.setColorFilter(Color.rgb(255, 127, 80));
+                    //myListSegmentation.changeModeTouch(4);
+                    myListSegmentation.getFlagPreview();
+                    myListSegmentation.invalidate();
+                    flagPreviewSegmentation = true;
+                }else{
+                    preview.setColorFilter(Color.rgb(255, 255, 255));
+                    //myListSegmentation.changeModeTouch(0);
+                    myListSegmentation.getFlagPreview();
+                    myListSegmentation.invalidate();
+                    flagPreviewSegmentation = false;
+                }
+
+            }
+        });
         //Change of layout to "Segmentation"
         segmentation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -229,12 +277,29 @@ public class MainActivity extends AppCompatActivity {
                 if(!flagEraserSegmentation) {
                     Animation.animationScale(eraserSegments, TIME_ANIMATION, SCALE_ANIMATION, SCALE_ANIMATION);
                     eraserSegments.setColorFilter(Color.rgb(255, 127, 80));
+                    addPointSegment.setColorFilter(Color.rgb(255, 255, 255));
                     myListSegmentation.changeModeTouch(2);
                     flagEraserSegmentation = true;
                 }else{
                     eraserSegments.setColorFilter(Color.rgb(255, 255, 255));
                     myListSegmentation.changeModeTouch(0);
                     flagEraserSegmentation = false;
+                }
+            }
+        });
+        addPointSegment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!flagPointSegmentation) {
+                    Animation.animationScale(addPointSegment, TIME_ANIMATION, SCALE_ANIMATION, SCALE_ANIMATION);
+                    eraserSegments.setColorFilter(Color.rgb(255, 255, 255));
+                    addPointSegment.setColorFilter(Color.rgb(255, 127, 80));
+                    myListSegmentation.changeModeTouch(3);
+                    flagPointSegmentation = true;
+                }else{
+                    addPointSegment.setColorFilter(Color.rgb(255, 255, 255));
+                    myListSegmentation.changeModeTouch(0);
+                    flagPointSegmentation = false;
                 }
             }
         });
@@ -348,7 +413,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Animation.animationScale(changeColor,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
                     Animation animation1 = new TranslateAnimation(2, 0.0f, 2, -1.0f, 2, 0.0f, 2, 0.0f);
-                    animation1.setDuration(750);
+                    animation1.setDuration(550);
                     animation1.setAnimationListener(new Animation.AnimationListener() {
                         @Override
                         public void onAnimationStart(android.view.animation.Animation animation) {
@@ -356,7 +421,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onAnimationEnd(android.view.animation.Animation animation) {
                             Animation animation2 = new TranslateAnimation(2, -1.0f, 2, 0.0f, 2, 0.0f, 2, 0.0f);
-                            animation2.setDuration(750);
+                            animation2.setDuration(550);
                             scrollLeft3.startAnimation(animation2);
                             scrollLeft1.setVisibility(View.GONE);
                             scrollLeft3.setVisibility(View.VISIBLE);
@@ -388,13 +453,13 @@ public class MainActivity extends AppCompatActivity {
                             scrollLeft2.setVisibility(View.VISIBLE);
                             getFigures.setVisibility(View.GONE);
                             Animation animation2 = new TranslateAnimation(2, -1.0f, 2, 0.0f, 2, 0.0f, 2, 0.0f);
-                            animation2.setDuration(750);
+                            animation2.setDuration(550);
                             scrollLeft2.startAnimation(animation2);
                         }else {
                             scrollLeft1.setVisibility(View.VISIBLE);
                             getFigures.setVisibility(View.GONE);
                             Animation animation2 = new TranslateAnimation(2, -1.0f, 2, 0.0f, 2, 0.0f, 2, 0.0f);
-                            animation2.setDuration(750);
+                            animation2.setDuration(550);
                             scrollLeft1.startAnimation(animation2);
                         }
 
@@ -413,7 +478,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Animation.animationScale(changeColorSegments,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
                 Animation animation1 = new TranslateAnimation(2, 0.0f, 2, -1.0f, 2, 0.0f, 2, 0.0f);
-                animation1.setDuration(750);
+                animation1.setDuration(550);
                 animation1.setAnimationListener(new Animation.AnimationListener() {
                     @Override
                     public void onAnimationStart(android.view.animation.Animation animation) {
@@ -421,7 +486,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onAnimationEnd(android.view.animation.Animation animation) {
                         Animation animation2 = new TranslateAnimation(2, -1.0f, 2, 0.0f, 2, 0.0f, 2, 0.0f);
-                        animation2.setDuration(750);
+                        animation2.setDuration(550);
                         scrollLeft3.startAnimation(animation2);
                         scrollLeft2.setVisibility(View.GONE);
                         scrollLeft3.setVisibility(View.VISIBLE);
@@ -438,14 +503,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         //detectPruebas
-        pruebas.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                System.out.println("A prueba SCALE -> x:"+layoutImageRx.getScaleX()+"; y:"+layoutImageRx.getScaleY());
-                System.out.println("A prueba PIVOT -> x:"+layoutImageRx.getPivotX()+"; y:"+layoutImageRx.getPivotY());
-                System.out.println("prueba TRASLATE -> x:"+layoutImageRx.getTranslationX()+"; y:"+layoutImageRx.getTranslationY());
-            }
-        });
+
         color1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -601,7 +659,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Animation.animationScale(deleteSegments,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
-                myListSegmentation.after();
+                Toast toast;
+                if(myListSegmentation.after())
+                    toast = Toast.makeText(getApplicationContext(),"Deleted Successfully",Toast.LENGTH_SHORT);
+                else
+                    toast = Toast.makeText(getApplicationContext(),"Isn't Selected Figure",Toast.LENGTH_SHORT);
+                toast.show();
             }
         });
 
@@ -897,11 +960,13 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void initialProperties(){
         //Initializing properties--
-        pruebas = findViewById(R.id.pruebas);
+        preview = findViewById(R.id.preview);
         extendsImage = findViewById(R.id.extendsImage);
         backFilters = findViewById(R.id.backFilters);
         iconColors = findViewById(R.id.figuresSet);
         filterImage = findViewById(R.id.filter);
+        saveData = findViewById(R.id.saveData);
+        saveFigures = findViewById(R.id.saveFigures);
         creatorCircles = findViewById(R.id.addCircle);
         creatorCircles.setColorFilter(Color.rgb(255,255,255));
         creatorRectangles = findViewById(R.id.addRectangle);
@@ -934,6 +999,7 @@ public class MainActivity extends AppCompatActivity {
         //Back and Checks
         backMenuRight = findViewById(R.id.back_menu_right_1);
         //Segmentation
+        addPointSegment = findViewById(R.id.addPointSegment);
         cardView = findViewById(R.id.zoomImage_1); //CARD
         cardView.setVisibility(View.GONE);
         zoomImageLayout = findViewById(R.id.zoomLayoutImageRx_1); //Layout Zoom Image Ray-X
@@ -982,6 +1048,7 @@ public class MainActivity extends AppCompatActivity {
         flagAnimationColors=true;
         flagSegmentation = false;
         flagEraserSegmentation = false;
+        flagPreviewSegmentation = false;
         try{
             nameImage = R.drawable.rx_image_1;
             img = Utils.loadResource(getApplicationContext(),nameImage);
@@ -1061,3 +1128,4 @@ public class MainActivity extends AppCompatActivity {
         //--End Initializing
     }//End Method
 }//End Class
+

@@ -336,6 +336,7 @@ public class ListFigure  extends View {
                 Point temp = (Point) myFigures.get(i);
                 canvas.drawPoint(temp.getCenterX(),temp.getCenterY(),Util.Circle(temp.getColour()));
                 canvas.drawCircle(temp.getCenterX(),temp.getCenterY(),acceptDistance*2,Util.Circle(temp.getColour()));
+                canvas.drawCircle(temp.getCenterX(), temp.getCenterY(), 9,Util.CircleSmall(temp.getColour()));
                 if(i == figureSelected){
                     canvas.drawCircle(temp.getCenterX(),temp.getCenterY(),acceptDistance,Util.CircleTransparent(temp.getColour()));
                 }
@@ -778,15 +779,13 @@ public class ListFigure  extends View {
                         //checkRectangle check dimensions of the Rectangle
                         if (checkRectangle(aux)) {
                             if (mode == 1 && check(getX, getY)) { //Resize
-                                if (distanceFirstPoint <= acceptDistance*mScaleFactor) {
+                                if (distanceFirstPoint <= (acceptDistance+50)*mScaleFactor) {
                                     //100x100 is Dimension of Rectangle limit
                                     if (aux.getRight()- aux.getLeft()> 100 && aux.getBottom() - aux.getTop()> 100) {
-                                        System.out.println("entr");
                                         aux.setLeft((getX-mPositionX)/mScaleFactor);
                                         aux.setTop((getY-mPositionY)/mScaleFactor);
                                         invalidate();
                                     } else {
-                                        System.out.println("set");
                                         //100+1 for no limit dimension
                                         if (aux.getRight() - aux.getLeft() <= 100) {
                                             aux.setLeft(aux.getRight() - 101);
@@ -797,15 +796,13 @@ public class ListFigure  extends View {
                                         }
                                     }
                                 }
-                                if (distanceSecondPoint <= acceptDistance*mScaleFactor) {
+                                else if (distanceSecondPoint <= (acceptDistance+50)*mScaleFactor) {
                                     //100x100 is Dimension of Rectangle limit
                                     if (aux.getRight() - aux.getLeft() > 100 && aux.getBottom() - aux.getTop()> 100) {
-                                        System.out.println("entro a set");
                                         aux.setRight((getX-mPositionX)/mScaleFactor);
                                         aux.setBottom((getY-mPositionY)/mScaleFactor);
                                         invalidate();
                                     } else {
-                                        System.out.println("entro a no set");
                                         //100+1 for no limit dimension
                                         if (aux.getRight() - aux.getLeft() <= 100) {
                                             aux.setRight(aux.getLeft() + 101);
@@ -839,7 +836,7 @@ public class ListFigure  extends View {
                         //float distanceToLine = temp.distancePoint_to_Line(getX,getY);
                         if (checkLine(temp)) {
                             if (mode == 1 && check(getX, getY)) { //ReSize
-                                if (distanceFirstPoint <= acceptDistance*mScaleFactor) {
+                                if (distanceFirstPoint <= (acceptDistance+50)*mScaleFactor) {
                                     //50 is distance between points start and stop
                                     if (distancePoint_to_Point(temp.getStartX(), temp.getStartY(), temp.getStopX(), temp.getStopY()) <= 50) {
                                         if (temp.getStartX() < temp.getStopX() || temp.getStartY() < temp.getStopY()) {
@@ -861,7 +858,7 @@ public class ListFigure  extends View {
                                         invalidate();
                                     }
                                 }
-                                if (distanceSecondPoint <= acceptDistance*mScaleFactor) {
+                                if (distanceSecondPoint <= (acceptDistance+50)*mScaleFactor) {
                                     temp.setStopX((getX-mPositionX)/mScaleFactor);
                                     temp.setStopY((getY-mPositionY)/mScaleFactor);
                                     invalidate();
@@ -893,7 +890,7 @@ public class ListFigure  extends View {
                         float heightEllipse = Math.abs(temp.getBottom() - temp.getTop());
                         if (checkEllipse(temp)) {
                             if (mode == 1 && check(getX, getY)) { //Resize
-                                if (distanceFirstPoint <= acceptDistance*mScaleFactor) {
+                                if (distanceFirstPoint <= (acceptDistance+50)*mScaleFactor) {
                                     if (widthEllipse > 100) {
                                         temp.setLeft((getX-mPositionX)/mScaleFactor);
                                         invalidate();
@@ -902,7 +899,7 @@ public class ListFigure  extends View {
                                         invalidate();
                                     }
                                     temp.updateParameters(temp);
-                                } else if (distanceSecondPoint <= acceptDistance*mScaleFactor) {
+                                } else if (distanceSecondPoint <= (acceptDistance+50)*mScaleFactor) {
                                     if (widthEllipse > 100) {
                                         temp.setRight((getX-mPositionX)/mScaleFactor);
                                         invalidate();
@@ -911,7 +908,7 @@ public class ListFigure  extends View {
                                         invalidate();
                                     }
                                     temp.updateParameters(temp);
-                                } else if (distanceThirstPoint <= acceptDistance*mScaleFactor) {
+                                } else if (distanceThirstPoint <= (acceptDistance+50)*mScaleFactor) {
                                     if (heightEllipse > 100) {
                                         temp.setTop((getY-mPositionY)/mScaleFactor);
                                         invalidate();
@@ -920,7 +917,7 @@ public class ListFigure  extends View {
                                         invalidate();
                                     }
                                     temp.updateParameters(temp);
-                                } else if (distanceFortyPoint <= acceptDistance*mScaleFactor) {
+                                } else if (distanceFortyPoint <= (acceptDistance+50)*mScaleFactor) {
                                     if (heightEllipse > 100) {
                                         temp.setBottom((getY-mPositionY)/mScaleFactor);
                                         invalidate();

@@ -43,13 +43,18 @@ public class ListZoomSegmentation extends View {
      * @param _startX Define the position of the segment
      * @param _startY Define the position of the segment
      * @param _radius Define the radius od the segment*/
-    public void addCircleSegmentation(float _startX, float _startY, float _radius, Paint pencil) {
+    public void addCircleSegmentation(float _startX, float _startY, float _radius, Paint pencil,int index) {
         pencil.setStrokeWidth(1);
         Circle aux = new Circle(_startX, _startY, _radius, pencil,color);
-        this.segmentation.add(aux);
-        System.out.println("test: "+segmentation.size());
-        invalidate();
-        figureSelected = this.segmentation.size()-1;
+        if (index == 1) {
+            this.segmentation.add(aux);
+            invalidate();
+            figureSelected = this.segmentation.size() - 1;
+        }else{
+            this.segmentation.add(0,aux);
+            invalidate();
+            figureSelected = 0;
+        }
         invalidate();
     }//End Method
 
@@ -121,9 +126,7 @@ public class ListZoomSegmentation extends View {
         for(int i=0;i<segmentation.size();i++){
             if (segmentation.get(i) instanceof Circle) {
                 Circle temp = (Circle) segmentation.get(i);
-                Paint p = Util.Circle(temp.getColour());
-                p.setStrokeWidth(2);
-                if(i==segmentation.size()-1){
+                if(i==segmentation.size()-1 || i == 0){
                     temp.getPaint().setStyle(Paint.Style.STROKE);
                     temp.getPaint().setStrokeWidth(2);
                 }else{
@@ -131,8 +134,10 @@ public class ListZoomSegmentation extends View {
                 }
                 canvas.drawCircle(temp.getCenterX(), temp.getCenterY(), temp.getRadius(), temp.getPaint());
                 if(i == figureSelected){
+                    Paint p = temp.getPaint();
+                    p.setStyle(Paint.Style.STROKE);
+                    p.setStrokeWidth(2);
                     canvas.drawCircle(temp.getCenterX(),temp.getCenterY(),acceptDistance,p);
-                    //canvas.drawCircle(temp.getCenterX(),temp.getCenterY(),temp.getRadius(),temp.getPaint());
                 }
             }
         }

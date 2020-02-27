@@ -155,21 +155,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:text="Detect"
-                        android:textColor="#FFFFFF"
-                        android:textSize="10sp" />
-
-                    <ImageView
-                        android:id="@+id/pruebas"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_marginBottom="15dp"
-                        android:src="@drawable/detective_64px" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
                         android:text="Zoom"
                         android:textColor="#FFFFFF"
                         android:textSize="10sp" />
@@ -884,6 +869,7 @@
                         android:textSize="10sp" />
 
                     <ImageView
+                        android:id="@+id/saveFigures"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginBottom="15dp"
@@ -897,6 +883,19 @@
                         android:textColor="#FFFFFF"
                         android:textSize="10sp" />
 
+                        <ImageView
+                            android:id="@+id/addPoint"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_marginBottom="15dp"
+                            android:src="@drawable/filled_circle_16px" />
+
+                        <ImageView
+                            android:id="@+id/addLine"
+                            android:layout_width="25dp"
+                            android:layout_height="30dp"
+                            android:layout_marginBottom="15dp"
+                            android:src="@drawable/line_32px" />
                     <ImageView
                         android:id="@+id/addCircle"
                         android:layout_width="30dp"
@@ -910,20 +909,6 @@
                         android:layout_height="30dp"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/rectangular_26px" />
-
-                    <ImageView
-                        android:id="@+id/addLine"
-                        android:layout_width="25dp"
-                        android:layout_height="30dp"
-                        android:layout_marginBottom="15dp"
-                        android:src="@drawable/line_32px" />
-
-                    <ImageView
-                        android:id="@+id/addPoint"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_marginBottom="15dp"
-                        android:src="@drawable/filled_circle_16px" />
 
                     <ImageView
                         android:id="@+id/addEllipse"
@@ -1019,11 +1004,41 @@
                         android:textSize="10sp" />
 
                     <ImageView
+                        android:id="@+id/saveData"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginBottom="10dp"
                         android:src="@drawable/save_50px" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="Insert"
+                        android:textColor="#FFFFFF"
+                        android:textSize="10sp" />
 
+                    <ImageView
+                        android:id="@+id/addPointSegment"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:src="@drawable/filled_circle_16px" />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="Preview"
+                        android:textColor="#FFFFFF"
+                        android:textSize="10sp" />
+
+                    <ImageView
+                        android:id="@+id/preview"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_marginBottom="15dp"
+                        android:src="@drawable/detective_64px" />
                     <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -1066,6 +1081,7 @@
                         android:layout_height="30dp"
                         android:layout_marginBottom="10dp"
                         android:src="@drawable/eraser_24px" />
+
 
                 </LinearLayout>
                 <LinearLayout

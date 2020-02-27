@@ -51,7 +51,8 @@ public class ListSegmentation extends View {
     //Mode Touch
     private boolean touchEvent = false;
     private boolean flag = true;
-    private int modeTouch = 0; //Mode 0 is Normal ... Mode 1 es zoomMode ... //Mode 2 es eraser
+    private int modeTouch = 0; //Mode 0 is Normal ... Mode 1 is zoomMode ... //Mode 2 is eraser .. //Mode 3 is Point Segmentation
+    private boolean flagPreview = false;
     private  LinearLayout layout;
     private boolean upMode = false;
     private Drawable d;
@@ -89,6 +90,9 @@ public class ListSegmentation extends View {
         requestLayout();
         zoomList.loadImage(mImage);
     }
+    public void getFlagPreview(){
+        flagPreview = !flagPreview;
+    }
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener{
         @Override
         public boolean onScale(ScaleGestureDetector scaleGestureDetector){
@@ -104,12 +108,13 @@ public class ListSegmentation extends View {
             return true;
         }
     }
+
     /**
      * Method addCircleSegmentation add a circle in the list of segments
      * @param _startX Define the position of the segment
      * @param _startY Define the position of the segment
      * @param _radius Define the radius od the segment*/
-    public void addCircleSegmentation(float _startX, float _startY, float _radius) {
+    public void addCircleSegmentation(float _startX, float _startY, float _radius,int index) {
         float[] intervals = new float[]{0.0f, 0.0f};
         float phase = 0;
         DashPathEffect dashPathEffect = new DashPathEffect(intervals, phase);
@@ -121,10 +126,17 @@ public class ListSegmentation extends View {
         pencil.setStyle(Paint.Style.FILL);
         pencil.setPathEffect(dashPathEffect);
         Circle aux = new Circle(_startX, _startY,  _radius, pencil,color);
-        this.segmentation.add(aux);
-        invalidate();
-        figureSelected = this.segmentation.size()-1;
-        zoomList.addCircleSegmentation(_startX*this.viewZoom.getWidth()/this.getWidth(),_startY*this.viewZoom.getHeight()/this.getHeight(), _radius*this.viewZoom.getWidth()/this.getWidth(),pencil);
+        if (index == 1) {
+            this.segmentation.add(aux);
+            invalidate();
+            figureSelected = this.segmentation.size() - 1;
+        }else{
+            this.segmentation.add(0,aux);
+            invalidate();
+            figureSelected = 0;
+
+        }
+        zoomList.addCircleSegmentation(_startX*this.viewZoom.getWidth()/this.getWidth(),_startY*this.viewZoom.getHeight()/this.getHeight(), _radius*this.viewZoom.getWidth()/this.getWidth(),pencil,index);
         zoomList.invalidate();
     }
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -132,21 +144,24 @@ public class ListSegmentation extends View {
 
     /**
      * Method after : remove one segment : deleteFigure the selected figure is deleted*/
-    public void after(){
+    public boolean after(){
         zoomList.after();
         if(figureSelected == segmentation.size()-1) {
             if (segmentation.size() > 0) {
                 segmentation.remove(segmentation.size() - 1);
                 figureSelected = segmentation.size() - 1;
                 invalidate();
+                return true;
             }
         }else{
             if (segmentation.size()>0 && this.figureSelected != -1 ) {
                 segmentation.remove(this.figureSelected);
                 figureSelected = -1;
                 invalidate(); //Redraw
+                return true;
             }
         }
+        return false;
     }
 
     /**
@@ -167,7 +182,7 @@ public class ListSegmentation extends View {
      * */
     public boolean changeColour(int [] colour) {
         zoomList.changeColour(colour);
-        if(figureSelected == segmentation.size()-1) { //si el seleccionado es el ultimo -- cambiar el color a partir del ultimo
+        if(figureSelected == segmentation.size()-1 || figureSelected == 0) { //si el seleccionado es el ultimo -- cambiar el color a partir del ultimo
             if(segmentation.size()==0){
                 return false;
             }else {
@@ -238,7 +253,7 @@ public class ListSegmentation extends View {
         for(int i=0;i<segmentation.size();i++){
             if (segmentation.get(i) instanceof Circle) {
                 Circle temp = (Circle) segmentation.get(i);
-                if(i==segmentation.size()-1){
+                if(i==segmentation.size()-1 || i == 0){
                     temp.getPaint().setStyle(Paint.Style.STROKE);
                     temp.getPaint().setStrokeWidth(6);
                 }else{
@@ -250,7 +265,7 @@ public class ListSegmentation extends View {
                 }
             }
         }
-        if(modeTouch ==2&&upMode){
+        if(modeTouch ==2 && upMode){
             float[] intervals = new float[]{0.0f, 0.0f};
             float phase = 0;
             DashPathEffect dashPathEffect = new DashPathEffect(intervals, phase);
@@ -263,6 +278,18 @@ public class ListSegmentation extends View {
             pencil.setPathEffect(dashPathEffect);
             canvas.drawCircle((touchX-mPositionX)/mScaleFactor,(touchY-mPositionY)/mScaleFactor,acceptDistance/2,pencil);
             canvas.drawCircle((touchX-mPositionX)/mScaleFactor,(touchY-mPositionY)/mScaleFactor,acceptDistance*2,pencil);
+        }
+        if(flagPreview){ //DEMO TRAZADO SEGMENTATION
+            for(int i=0;i<segmentation.size();i++){
+                if (segmentation.get(i) instanceof Circle) {
+                    Circle temp = (Circle) segmentation.get(i);
+                    if(i+1!=segmentation.size() && segmentation.get(i+1)!=null) {
+                        Circle temp02 = (Circle) segmentation.get(i+1);
+                        canvas.drawLine( temp.getCenterX(),  temp.getCenterY(), temp02.getCenterX(),  temp02.getCenterY(), Util.Circle(temp.getColour()));
+                    }
+
+                }
+            }
         }
         canvas.restore();
     }
@@ -340,13 +367,14 @@ public class ListSegmentation extends View {
         if(modeTouch == 1) {
             scaleGestureDetector.onTouchEvent(event);
         }
-        zoomList.acceptDistance = acceptDistance*mScaleFactor*this.viewZoom.getWidth()/this.getWidth();
+        zoomList.acceptDistance = acceptDistance*this.viewZoom.getWidth()/this.getWidth();
         zoomList.touchX = (event.getX()-mPositionX)/mScaleFactor*this.viewZoom.getWidth()/this.getWidth();
         zoomList.touchY = (event.getY()-mPositionY)/mScaleFactor*this.viewZoom.getHeight()/this.getHeight();
         this.viewZoom.setPivotX((getX-mPositionX)/mScaleFactor*this.viewZoom.getWidth()/this.getWidth());
         this.viewZoom.setPivotY((getY-mPositionY)/mScaleFactor*this.viewZoom.getHeight()/this.getHeight());
-        this.viewZoom.setScaleX(scaleZoomLayout);
-        this.viewZoom.setScaleY(scaleZoomLayout);
+        //scale in zoom of ZoomLayout
+        this.viewZoom.setScaleX(scaleZoomLayout*mScaleFactor);
+        this.viewZoom.setScaleY(scaleZoomLayout*mScaleFactor);
         this.viewZoom.setTranslationY(15);
         this.viewZoom.setTranslationX(15);
         this.viewZoom.invalidate();
@@ -392,6 +420,11 @@ public class ListSegmentation extends View {
                     this.viewZoom.setVisibility(View.VISIBLE);
                     this.cardView.setVisibility(VISIBLE);
                     zoomList.invalidate();
+                }else if(modeTouch == 3){//point independient Segmentation
+                    addCircleSegmentation((getX - mPositionX) / mScaleFactor, (getY - mPositionY) / mScaleFactor, 9, 1); //9 is radius acceptable
+                    this.viewZoom.setVisibility(View.VISIBLE);
+                    this.cardView.setVisibility(VISIBLE);
+                    zoomList.invalidate();
                 }
             break;
         }
@@ -404,32 +437,39 @@ public class ListSegmentation extends View {
                 zoomList.touchX = (event.getX()-mPositionX)/mScaleFactor*this.viewZoom.getWidth()/this.getWidth();
                 zoomList.touchY = (event.getY()-mPositionY)/mScaleFactor*this.viewZoom.getHeight()/this.getHeight();
                 if(modeTouch == 0 || modeTouch == 1) { //Touch segments
-                    if (figureSelected == segmentation.size() - 1) {
+                    if (figureSelected == segmentation.size() - 1 || figureSelected == 0) {
+                        int index = 1;
+                        if(figureSelected == 0)
+                            index = 0;
                         if (!segmentation.isEmpty()) {
                             boolean drawS = false;
-                            Circle aux = (Circle) segmentation.get(segmentation.size() - 1);
-                            float centerX = aux.getCenterX()*mScaleFactor+mPositionX - event.getX(pointerIndex);
-                            float centerY = aux.getCenterY()*mScaleFactor+mPositionY - event.getY(pointerIndex);
+                            Circle aux = (Circle) segmentation.get(figureSelected);
+                            color = aux.getColour();
+                            float centerX = aux.getCenterX() * mScaleFactor + mPositionX - event.getX(pointerIndex);
+                            float centerY = aux.getCenterY() * mScaleFactor + mPositionY - event.getY(pointerIndex);
                             //60 y 70 is the interval of segmentation acceptDistance = 30
-                            if (Math.sqrt(centerX * centerX + centerY * centerY) > acceptDistance * 2 * mScaleFactor && Math.sqrt(centerX * centerX + centerY * centerY) < (acceptDistance * 2 + 10)*mScaleFactor) {
+                            if (Math.sqrt(centerX * centerX + centerY * centerY) > acceptDistance * 2 * mScaleFactor && Math.sqrt(centerX * centerX + centerY * centerY) < (acceptDistance * 2 + 10) * mScaleFactor) {
                                 drawS = true;
                                 this.viewZoom.setVisibility(View.VISIBLE);
                                 this.cardView.setVisibility(VISIBLE);
                             }
-                        if (drawS)
-                            addCircleSegmentation((getX-mPositionX)/mScaleFactor, (getY-mPositionY)/mScaleFactor, 9); //9 is radius acceptable
+                            if (drawS) {
+                                addCircleSegmentation((getX - mPositionX) / mScaleFactor, (getY - mPositionY) / mScaleFactor, 9, index); //9 is radius acceptable
+                            }
                         } else {
-                            addCircleSegmentation((getX-mPositionX)/mScaleFactor, (getY-mPositionY)/mScaleFactor, 9);  //9 is radius acceptable
+                            addCircleSegmentation((getX - mPositionX) / mScaleFactor, (getY - mPositionY) / mScaleFactor, 9,index);  //9 is radius acceptable
                         }
-                    } else if (this.figureSelected > -1 && !segmentation.isEmpty()) {
+                    }else if (this.figureSelected > -1 && !segmentation.isEmpty()) {
                         if( !scaleGestureDetector.isInProgress()) {
                             if (segmentation.get(figureSelected) instanceof Circle) {
                                 Circle temp = (Circle) segmentation.get(figureSelected);
                                 Circle temp_z = (Circle) zoomList.segmentation.get(figureSelected);
                                 //checkCircle check dimensions of the circle
                                 if (checkCircle(temp)) {
-                                    temp.setCenterX((temp.getCenterX() - (getPastX - getX)));
-                                    temp.setCenterY((temp.getCenterY() - (getPastY - getY)));
+                                    //temp.setCenterX((temp.getCenterX() - (getPastX - getX)));
+                                    temp.setCenterX((getX-mPositionX)/mScaleFactor);
+                                    //temp.setCenterY((temp.getCenterY() - (getPastY - getY)));
+                                    temp.setCenterY((getY-mPositionY)/mScaleFactor);
                                     invalidate();
                                     temp_z.setCenterX(temp.getCenterX() * this.viewZoom.getWidth() / this.getWidth());
                                     temp_z.setCenterY(temp.getCenterY() * this.viewZoom.getHeight() / this.getHeight());
