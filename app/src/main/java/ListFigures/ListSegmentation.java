@@ -32,6 +32,7 @@ import static android.view.MotionEvent.INVALID_POINTER_ID;
 public class ListSegmentation extends View {
     //Class Attributes
     private ArrayList<Figure> segmentation;
+    private ArrayList<Figure> segmentationMin;
     private int[] color = {183, 149, 11};
     private LinearLayout viewZoom;
     private LinearLayout content;
@@ -80,6 +81,7 @@ public class ListSegmentation extends View {
         this.cardView = cardView;
         this.cardView.setVisibility(GONE);
         segmentation = new ArrayList<>();
+        segmentationMin = new ArrayList<>();
         zoomList = new ListZoomSegmentation(context);
         this.viewZoom.addView(zoomList);
         invalidate();
@@ -92,6 +94,7 @@ public class ListSegmentation extends View {
     }
     public void getFlagPreview(){
         flagPreview = !flagPreview;
+        zoomList.flagPreview = flagPreview;
     }
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener{
         @Override
@@ -107,6 +110,32 @@ public class ListSegmentation extends View {
         public boolean onScaleBegin(ScaleGestureDetector detector){
             return true;
         }
+    }
+
+    public ArrayList<Figure> distanceMin(ArrayList<Figure> lista1){
+        ArrayList<Figure> lista = new ArrayList<Figure>(lista1);
+        ArrayList<Figure> newLista = new ArrayList<Figure>();
+        newLista.clear();
+        float min = 10000000,aux;
+        int indexMin=0;
+        newLista.add(lista.get(indexMin));
+        while (lista.size()!=0){
+            Circle temp2 = (Circle) newLista.get(newLista.size() - 1);
+            for (int i = 0; i<lista.size()-1; i++){
+                if (lista.get(i) instanceof Circle ) {
+                    Circle temp = (Circle) lista.get(i);
+                    aux = distancePoint_to_Point(temp2.getCenterX(),temp2.getCenterY(), temp.getCenterX(),temp.getCenterY());
+                    if (aux < min) {
+                        min = aux;
+                        indexMin = i;
+                    }
+                }
+            }
+            newLista.add(lista.get(indexMin));
+            lista.remove(indexMin);
+            min = 10000000;
+        }
+        return newLista;
     }
 
     /**
@@ -279,12 +308,14 @@ public class ListSegmentation extends View {
             canvas.drawCircle((touchX-mPositionX)/mScaleFactor,(touchY-mPositionY)/mScaleFactor,acceptDistance/2,pencil);
             canvas.drawCircle((touchX-mPositionX)/mScaleFactor,(touchY-mPositionY)/mScaleFactor,acceptDistance*2,pencil);
         }
-        if(flagPreview){ //DEMO TRAZADO SEGMENTATION
-            for(int i=0;i<segmentation.size();i++){
-                if (segmentation.get(i) instanceof Circle) {
-                    Circle temp = (Circle) segmentation.get(i);
-                    if(i+1!=segmentation.size() && segmentation.get(i+1)!=null) {
-                        Circle temp02 = (Circle) segmentation.get(i+1);
+        if(flagPreview && !segmentation.isEmpty()){ //DEMO TRAZADO SEGMENTATION
+            //segmentationMin = distanceMin(segmentation);
+            segmentationMin = segmentation;
+            for(int i=0;i< segmentationMin.size();i++){
+                if ( segmentationMin.get(i) instanceof Circle) {
+                    Circle temp = (Circle)  segmentationMin.get(i);
+                    if(i+1!= segmentationMin.size()) {
+                        Circle temp02 = (Circle)  segmentationMin.get(i+1);
                         canvas.drawLine( temp.getCenterX(),  temp.getCenterY(), temp02.getCenterX(),  temp02.getCenterY(), Util.Circle(temp.getColour()));
                     }
 

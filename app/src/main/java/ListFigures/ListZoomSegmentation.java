@@ -1,4 +1,5 @@
 package ListFigures;
+
 //Imports
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -18,6 +19,7 @@ import Figures.Figure;
 public class ListZoomSegmentation extends View {
     //Class Attributes
     protected ArrayList<Figure> segmentation;
+    private ArrayList<Figure> segmentationMin;
     private int[] color = {183, 149, 11};
     protected int figureSelected;
     protected float acceptDistance = 30;
@@ -29,12 +31,14 @@ public class ListZoomSegmentation extends View {
     private Bitmap mImage;
     private  int mImageWidth;
     private int mImageHeight;
+    protected boolean flagPreview = false;
     /**
      * Class Constructor
      * @param context The View*/
     public ListZoomSegmentation (Context context){
         super(context);
         segmentation = new ArrayList<>();
+        segmentationMin = new ArrayList<>();
         invalidate();
     }//Closing the class constructor
 
@@ -154,7 +158,23 @@ public class ListZoomSegmentation extends View {
             pencil.setPathEffect(dashPathEffect);
             canvas.drawCircle(touchX,touchY,acceptDistance/2,pencil);
             canvas.drawCircle(touchX,touchY,acceptDistance*2,pencil);
-            System.out.println("testEraser:"+touchX+","+touchY+":"+acceptDistance/2);
+        }
+        if(flagPreview && !segmentation.isEmpty()){ //DEMO TRAZADO SEGMENTATION
+            //segmentationMin = distanceMin(segmentation);
+            segmentationMin = segmentation;
+            for(int i=0;i< segmentationMin.size();i++){
+                if ( segmentationMin.get(i) instanceof Circle) {
+                    Circle temp = (Circle)  segmentationMin.get(i);
+                    if(i+1!= segmentationMin.size()) {
+                        Circle temp02 = (Circle)  segmentationMin.get(i+1);
+                        Paint p = temp.getPaint();
+                        p.setStyle(Paint.Style.STROKE);
+                        p.setStrokeWidth(2);
+                        canvas.drawLine( temp.getCenterX(),  temp.getCenterY(), temp02.getCenterX(),  temp02.getCenterY(),p);
+                    }
+
+                }
+            }
         }
     }
 }

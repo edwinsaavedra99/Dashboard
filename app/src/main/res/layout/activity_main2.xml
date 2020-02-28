@@ -211,21 +211,13 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Filters"
-                        android:textColor="#FFFFFF"
-                        android:textSize="11sp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Normal"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
+                    <ImageView
+                        android:id="@+id/openCVGroupVariant"
+                        android:layout_width="125dp"
+                        android:layout_height="125dp"
+                        android:layout_marginBottom="15dp"
+                        />
 
                     <ImageView
                         android:id="@+id/openCV3"
@@ -233,220 +225,30 @@
                         android:layout_height="125dp"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/detective_64px" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Borders"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
-
-                    <ImageView
-                        android:id="@+id/openCV"
-                        android:layout_width="125dp"
-                        android:layout_height="125dp"
-                        android:layout_marginBottom="15dp"
-                         />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Sepia"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
-
                     <ImageView
                         android:id="@+id/openCV1"
                         android:layout_width="125dp"
                         android:layout_height="125dp"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/detective_64px" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Morpho"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
-
-                    <ImageView
-                        android:id="@+id/openCV2"
-                        android:layout_width="125dp"
-                        android:layout_height="125dp"
-                        android:layout_marginBottom="15dp"
-                        android:src="@drawable/detective_64px" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Green"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
-
-                    <ImageView
-                        android:id="@+id/openCV4"
-                        android:layout_width="125dp"
-                        android:layout_height="125dp"
-                        android:layout_marginBottom="15dp"
-                        android:src="@drawable/detective_64px" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Pink"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
-
-                    <ImageView
-                        android:id="@+id/openCV5"
-                        android:layout_width="125dp"
-                        android:layout_height="125dp"
-                        android:layout_marginBottom="15dp"
-                        android:src="@drawable/detective_64px" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Gray"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
-
                     <ImageView
                         android:id="@+id/openCV6"
                         android:layout_width="125dp"
                         android:layout_height="125dp"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/detective_64px" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Colors"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
-
                     <ImageView
                         android:id="@+id/openCV7"
                         android:layout_width="125dp"
                         android:layout_height="125dp"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/detective_64px" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Pencil"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
-
-                    <ImageView
-                        android:id="@+id/openCV8"
-                        android:layout_width="125dp"
-                        android:layout_height="125dp"
-                        android:layout_marginBottom="15dp"
-                        android:src="@drawable/detective_64px" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Cartoon"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
-
-                    <ImageView
-                        android:id="@+id/openCV9"
-                        android:layout_width="125dp"
-                        android:layout_height="125dp"
-                        android:layout_marginBottom="15dp"
-                        android:src="@drawable/detective_64px" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Autumn"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
-
-                    <ImageView
-                        android:id="@+id/openCV10"
-                        android:layout_width="125dp"
-                        android:layout_height="125dp"
-                        android:layout_marginBottom="15dp"
-                        android:src="@drawable/detective_64px" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Bone"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
-
                     <ImageView
                         android:id="@+id/openCV11"
                         android:layout_width="125dp"
                         android:layout_height="125dp"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/detective_64px" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Jet"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
-
-                    <ImageView
-                        android:id="@+id/openCV12"
-                        android:layout_width="125dp"
-                        android:layout_height="125dp"
-                        android:layout_marginBottom="15dp"
-                        android:src="@drawable/detective_64px" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Winter"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
-
-                    <ImageView
-                        android:id="@+id/openCV13"
-                        android:layout_width="125dp"
-                        android:layout_height="125dp"
-                        android:layout_marginBottom="15dp"
-                        android:src="@drawable/detective_64px" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Rainbown"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
-
-                    <ImageView
-                        android:id="@+id/openCV14"
-                        android:layout_width="125dp"
-                        android:layout_height="125dp"
-                        android:layout_marginBottom="15dp"
-                        android:src="@drawable/detective_64px" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Ocean"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
-
                     <ImageView
                         android:id="@+id/openCV15"
                         android:layout_width="125dp"
@@ -454,115 +256,153 @@
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/detective_64px" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Spring"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
-
                     <ImageView
-                        android:id="@+id/openCV16"
+                        android:id="@+id/openCVGroupBorders"
+                        android:layout_width="125dp"
+                        android:layout_height="125dp"
+                        android:layout_marginBottom="15dp"
+                        />
+                    <ImageView
+                        android:id="@+id/openCVNormal"
+                        android:layout_width="125dp"
+                        android:layout_height="125dp"
+                        android:layout_marginBottom="15dp"
+                        />
+                    <ImageView
+                        android:id="@+id/openCV"
+                        android:layout_width="125dp"
+                        android:layout_height="125dp"
+                        android:layout_marginBottom="15dp"
+                         />
+                    <ImageView
+                        android:id="@+id/openCV2"
                         android:layout_width="125dp"
                         android:layout_height="125dp"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/detective_64px" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Cool"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
-
                     <ImageView
-                        android:id="@+id/openCV17"
+                        android:id="@+id/openCV8"
+                        android:layout_width="125dp"
+                        android:layout_height="125dp"
+                        android:layout_marginBottom="15dp"
+                        android:src="@drawable/detective_64px" />
+                    <ImageView
+                        android:id="@+id/openCV9"
                         android:layout_width="125dp"
                         android:layout_height="125dp"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/detective_64px" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Hsv"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
-
+                    <ImageView
+                        android:id="@+id/openCVGroupCalor"
+                        android:layout_width="125dp"
+                        android:layout_height="125dp"
+                        android:layout_marginBottom="15dp"
+                        />
+                    <ImageView
+                        android:id="@+id/openCVNormal01"
+                        android:layout_width="125dp"
+                        android:layout_height="125dp"
+                        android:layout_marginBottom="15dp"
+                        />
+                    <ImageView
+                        android:id="@+id/openCV12"
+                        android:layout_width="125dp"
+                        android:layout_height="125dp"
+                        android:layout_marginBottom="15dp"
+                        android:src="@drawable/detective_64px" />
+                    <ImageView
+                        android:id="@+id/openCV14"
+                        android:layout_width="125dp"
+                        android:layout_height="125dp"
+                        android:layout_marginBottom="15dp"
+                        android:src="@drawable/detective_64px" />
                     <ImageView
                         android:id="@+id/openCV18"
                         android:layout_width="125dp"
                         android:layout_height="125dp"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/detective_64px" />
+                    <ImageView
+                        android:id="@+id/openCV28"
+                        android:layout_width="125dp"
+                        android:layout_height="125dp"
+                        android:layout_marginBottom="15dp"
+                        android:src="@drawable/detective_64px" />
+                    <ImageView
+                        android:id="@+id/openCVGroupColors"
+                        android:layout_width="125dp"
+                        android:layout_height="125dp"
+                        android:layout_marginBottom="15dp"
+                        />
+                    <ImageView
+                        android:id="@+id/openCVNormal02"
+                        android:layout_width="125dp"
+                        android:layout_height="125dp"
+                        android:layout_marginBottom="15dp"
+                        />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Hot"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
-
+                    <ImageView
+                        android:id="@+id/openCV4"
+                        android:layout_width="125dp"
+                        android:layout_height="125dp"
+                        android:layout_marginBottom="15dp"
+                        android:src="@drawable/detective_64px" />
+                    <ImageView
+                        android:id="@+id/openCV5"
+                        android:layout_width="125dp"
+                        android:layout_height="125dp"
+                        android:layout_marginBottom="15dp"
+                        android:src="@drawable/detective_64px" />
+                    <ImageView
+                        android:id="@+id/openCV10"
+                        android:layout_width="125dp"
+                        android:layout_height="125dp"
+                        android:layout_marginBottom="15dp"
+                        android:src="@drawable/detective_64px" />
+                    <ImageView
+                        android:id="@+id/openCV13"
+                        android:layout_width="125dp"
+                        android:layout_height="125dp"
+                        android:layout_marginBottom="15dp"
+                        android:src="@drawable/detective_64px" />
+                    <ImageView
+                        android:id="@+id/openCV16"
+                        android:layout_width="125dp"
+                        android:layout_height="125dp"
+                        android:layout_marginBottom="15dp"
+                        android:src="@drawable/detective_64px" />
+                    <ImageView
+                        android:id="@+id/openCV17"
+                        android:layout_width="125dp"
+                        android:layout_height="125dp"
+                        android:layout_marginBottom="15dp"
+                        android:src="@drawable/detective_64px" />
                     <ImageView
                         android:id="@+id/openCV19"
                         android:layout_width="125dp"
                         android:layout_height="125dp"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/detective_64px" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Parula"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
-
                     <ImageView
                         android:id="@+id/openCV20"
                         android:layout_width="125dp"
                         android:layout_height="125dp"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/detective_64px" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Magma"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
-
                     <ImageView
                         android:id="@+id/openCV21"
                         android:layout_width="125dp"
                         android:layout_height="125dp"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/detective_64px" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Inferno"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
-
                     <ImageView
                         android:id="@+id/openCV22"
                         android:layout_width="125dp"
                         android:layout_height="125dp"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/detective_64px" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Plasma"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
 
                     <ImageView
                         android:id="@+id/openCV23"
@@ -570,13 +410,6 @@
                         android:layout_height="125dp"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/detective_64px" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Viridis"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
 
                     <ImageView
                         android:id="@+id/openCV24"
@@ -584,41 +417,18 @@
                         android:layout_height="125dp"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/detective_64px" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Cividis"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
-
                     <ImageView
                         android:id="@+id/openCV25"
                         android:layout_width="125dp"
                         android:layout_height="125dp"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/detective_64px" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Twilight"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
-
                     <ImageView
                         android:id="@+id/openCV26"
                         android:layout_width="125dp"
                         android:layout_height="125dp"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/detective_64px" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Shifted"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
 
                     <ImageView
                         android:id="@+id/openCV27"
@@ -626,20 +436,7 @@
                         android:layout_height="125dp"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/detective_64px" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Turbo"
-                        android:textColor="#FFFFFF"
-                        android:textSize="8sp" />
 
-                    <ImageView
-                        android:id="@+id/openCV28"
-                        android:layout_width="125dp"
-                        android:layout_height="125dp"
-                        android:layout_marginBottom="15dp"
-                        android:src="@drawable/detective_64px" />
 
                 </LinearLayout>
             </ScrollView>
@@ -1127,6 +924,33 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:src="@drawable/expand_26px" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/contenedor_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="15dp"
+            android:orientation="horizontal"
+            >
+
+            <EditText
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Description"
+                android:textColor="@android:color/white"
+                android:textColorHint="#ffffff"
+                android:textStyle="bold">
+
+            </EditText>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/getFigures"

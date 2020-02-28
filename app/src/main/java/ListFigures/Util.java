@@ -71,6 +71,11 @@ public class Util {
         paint.setPathEffect(dashPathEffect);
         return paint;
     }
+    static Paint CircleZoom(int[] colour){
+        Paint paint = Circle(colour);
+        paint.setStrokeWidth(2);
+        return paint;
+    }
 
     static Paint CircleTransparent(int[] colour){
         float[] intervals = new float[]{5.0f, 5.0f};

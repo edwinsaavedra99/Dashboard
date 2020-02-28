@@ -8,7 +8,13 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -78,9 +84,15 @@ public class MainActivity extends AppCompatActivity {
     private boolean flagEraserSegmentation;
     private boolean flagPointSegmentation;
     private boolean flagPreviewSegmentation;
+    private boolean flagVariant;
+    private boolean flagBorders;
+    private boolean flagCalor;
+    private boolean flagColors;
+
     //Scroll
     private LinearLayout menu_left;
     private LinearLayout menu_right;
+    private LinearLayout contenedor_description;
     private LinearLayout getFigures;
     private LinearLayout backFilters;
     private ScrollView scrollLeft1;
@@ -159,6 +171,13 @@ public class MainActivity extends AppCompatActivity {
     private ImageView openCv26;
     private ImageView openCv27;
     private ImageView openCv28;
+    private ImageView groupVariantOpenCv;
+    private ImageView groupBordersOpenCv;
+    private ImageView groupCalorOpenCv;
+    private ImageView groupColorsOpenCv;
+    private ImageView normalOpencv;
+    private ImageView normalOpencv1;
+    private ImageView normalOpencv2;
     //img original format Bitmap
     private Bitmap original;
     private Mat img;
@@ -313,6 +332,11 @@ public class MainActivity extends AppCompatActivity {
                 backFilters.setVisibility(View.GONE);
                 scrollRight1.setVisibility(View.VISIBLE);
                 test1.setVisibility(View.VISIBLE);
+                notViewFilters();
+                flagVariant = false;
+                flagBorders = false;
+                flagCalor = false;
+                flagColors = false;
             }
         });
         //Add Filter Image
@@ -325,6 +349,11 @@ public class MainActivity extends AppCompatActivity {
                 scrollRight1.setVisibility(View.GONE);
                 scrollRight2.setVisibility(View.VISIBLE);
                 backFilters.setVisibility(View.VISIBLE);
+                notViewFilters();
+                flagVariant = false;
+                flagBorders = false;
+                flagCalor = false;
+                flagColors = false;
             }
         });
         //Zoom Image RX
@@ -691,6 +720,27 @@ public class MainActivity extends AppCompatActivity {
                 addFilter(myFilters.filterRGB());
             }
         });
+        normalOpencv.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            public void onClick(View v) {
+
+                addFilter(myFilters.filterRGB());
+            }
+        });
+        normalOpencv1.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            public void onClick(View v) {
+
+                addFilter(myFilters.filterRGB());
+            }
+        });
+        normalOpencv2.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            public void onClick(View v) {
+
+                addFilter(myFilters.filterRGB());
+            }
+        });
         //Filter morph
         openCv2.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -890,6 +940,90 @@ public class MainActivity extends AppCompatActivity {
                 addFilter(myFilters.filterColor(20));
             }
         });
+
+        groupVariantOpenCv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                notViewFilters();
+                if(!flagVariant) {
+                    openCv1.setVisibility(View.VISIBLE);
+                    openCv3.setVisibility(View.VISIBLE);
+                    openCv6.setVisibility(View.VISIBLE);
+                    openCv7.setVisibility(View.VISIBLE);
+                    openCv11.setVisibility(View.VISIBLE);
+                    openCv15.setVisibility(View.VISIBLE);
+                    flagBorders = false;
+                    flagCalor = false;
+                    flagColors = false;
+                }
+                flagVariant = !flagVariant;
+
+            }
+        });
+
+        groupBordersOpenCv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                notViewFilters();
+                if(!flagBorders) {
+                    openCv.setVisibility(View.VISIBLE);
+                    openCv2.setVisibility(View.VISIBLE);
+                    openCv8.setVisibility(View.VISIBLE);
+                    openCv9.setVisibility(View.VISIBLE);
+                    normalOpencv.setVisibility(View.VISIBLE);
+                    flagVariant = false;
+                    flagCalor = false;
+                    flagColors = false;
+                }
+                flagBorders = !flagBorders;
+            }
+        });
+
+        groupCalorOpenCv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                notViewFilters();
+                if(!flagCalor) {
+                    openCv12.setVisibility(View.VISIBLE);
+                    openCv14.setVisibility(View.VISIBLE);
+                    openCv18.setVisibility(View.VISIBLE);
+                    openCv28.setVisibility(View.VISIBLE);
+                    normalOpencv1.setVisibility(View.VISIBLE);
+                    flagVariant = false;
+                    flagBorders = false;
+                    flagColors = false;
+                }
+                flagCalor = !flagCalor;
+            }
+        });
+        groupColorsOpenCv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                notViewFilters();
+                if(!flagColors) {
+                    openCv4.setVisibility(View.VISIBLE);
+                    openCv5.setVisibility(View.VISIBLE);
+                    openCv10.setVisibility(View.VISIBLE);
+                    openCv13.setVisibility(View.VISIBLE);
+                    openCv16.setVisibility(View.VISIBLE);
+                    openCv17.setVisibility(View.VISIBLE);
+                    openCv19.setVisibility(View.VISIBLE);
+                    openCv20.setVisibility(View.VISIBLE);
+                    openCv21.setVisibility(View.VISIBLE);
+                    openCv22.setVisibility(View.VISIBLE);
+                    openCv23.setVisibility(View.VISIBLE);
+                    openCv24.setVisibility(View.VISIBLE);
+                    openCv25.setVisibility(View.VISIBLE);
+                    openCv26.setVisibility(View.VISIBLE);
+                    openCv27.setVisibility(View.VISIBLE);
+                    normalOpencv2.setVisibility(View.VISIBLE);
+                    flagVariant = false;
+                    flagBorders = false;
+                    flagCalor = false;
+                }
+                flagColors = !flagColors;
+            }
+        });
         test1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -954,6 +1088,91 @@ public class MainActivity extends AppCompatActivity {
         }
         toast.show();
     }
+
+    public void notViewFilters(){
+        openCv.setVisibility(View.GONE);
+        openCv1.setVisibility(View.GONE);
+        openCv2.setVisibility(View.GONE);
+        openCv3.setVisibility(View.GONE);
+        openCv4.setVisibility(View.GONE);
+        openCv5.setVisibility(View.GONE);
+        openCv6.setVisibility(View.GONE);
+        openCv7.setVisibility(View.GONE);
+        openCv8.setVisibility(View.GONE);
+        openCv9.setVisibility(View.GONE);
+        openCv10.setVisibility(View.GONE);
+        openCv11.setVisibility(View.GONE);
+        openCv12.setVisibility(View.GONE);
+        openCv13.setVisibility(View.GONE);
+        openCv14.setVisibility(View.GONE);
+        openCv15.setVisibility(View.GONE);
+        openCv16.setVisibility(View.GONE);
+        openCv17.setVisibility(View.GONE);
+        openCv18.setVisibility(View.GONE);
+        openCv19.setVisibility(View.GONE);
+        openCv20.setVisibility(View.GONE);
+        openCv21.setVisibility(View.GONE);
+        openCv22.setVisibility(View.GONE);
+        openCv23.setVisibility(View.GONE);
+        openCv24.setVisibility(View.GONE);
+        openCv25.setVisibility(View.GONE);
+        openCv26.setVisibility(View.GONE);
+        openCv27.setVisibility(View.GONE);
+        openCv28.setVisibility(View.GONE);
+        normalOpencv.setVisibility(View.GONE);
+        normalOpencv1.setVisibility(View.GONE);
+        normalOpencv2.setVisibility(View.GONE);
+    }
+
+    public Bitmap makeTransparent(Bitmap src,int value,String description){
+        int width = src.getWidth();
+        int height =  src.getHeight();
+        Bitmap transBitmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(transBitmap);
+        canvas.drawARGB(0,0,0,0);
+        final Paint paint = new Paint();
+        paint.setAlpha(value);
+        final Paint pencil = new Paint();
+        Typeface tipoFuente = Typeface.create(Typeface.DEFAULT,Typeface.NORMAL);
+        pencil.setTypeface(tipoFuente);
+        pencil.setTextSize(30);
+        pencil.setTextAlign(Paint.Align.CENTER);
+        pencil.setColor(Color.WHITE);
+        canvas.drawBitmap(src,0,0,paint);
+        canvas.drawText(description,src.getWidth()/2,src.getHeight()/2,pencil);
+        return  transBitmap;
+    }
+
+    public Bitmap makeText(Bitmap src,String description){
+        int width = src.getWidth();
+        int height =  src.getHeight();
+        Bitmap textBitmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(textBitmap);
+        canvas.drawARGB(0,0,0,0);
+
+        final Paint paint = new Paint();
+        final Paint pencil2 = new Paint();
+
+        Typeface tipoFuente = Typeface.create(Typeface.DEFAULT,Typeface.NORMAL);
+        pencil2.setTypeface(tipoFuente);
+        pencil2.setTextSize(30);
+
+        Rect areRect = new Rect(0,height-60,width,height);
+        pencil2.setColor(Color.BLACK);
+
+        canvas.drawBitmap(src,0,0,paint);
+        canvas.drawRect(areRect,pencil2);
+
+        RectF bounds = new RectF(areRect);
+        bounds.right = pencil2.measureText(description,0,description.length());
+        bounds.bottom = pencil2.descent()-pencil2.ascent();
+        bounds.left += (areRect.width()-bounds.right)/2.0f;
+        bounds.top += (areRect.height()-bounds.bottom)/2.0f;
+        pencil2.setColor(Color.WHITE);
+        canvas.drawText(description,bounds.left,bounds.top-pencil2.ascent(),pencil2);
+        return  textBitmap;
+    }
+
     /**
      * Method initial Properties Initializing Properties of Activity
      * */
@@ -980,6 +1199,8 @@ public class MainActivity extends AppCompatActivity {
         clearSegments = findViewById(R.id.clearSegments);
         menu_left = findViewById(R.id.contenedor_menu_left);
         menu_right = findViewById(R.id.contenedor_menu_right);
+        contenedor_description = findViewById(R.id.contenedor_description);
+        //contenedor_description.setBackgroundColor(Color.parseColor("#80000000"));
         menu_left.setBackgroundColor(Color.parseColor("#80000000"));
         menu_right.setBackgroundColor(Color.parseColor("#80000000"));
         getFigures = findViewById(R.id.getFigures);
@@ -1039,7 +1260,13 @@ public class MainActivity extends AppCompatActivity {
         openCv26 = findViewById(R.id.openCV26);
         openCv27 = findViewById(R.id.openCV27);
         openCv28 = findViewById(R.id.openCV28);
-
+        groupVariantOpenCv = findViewById(R.id.openCVGroupVariant);
+        groupBordersOpenCv = findViewById(R.id.openCVGroupBorders);
+        groupCalorOpenCv = findViewById(R.id.openCVGroupCalor);
+        groupColorsOpenCv = findViewById(R.id.openCVGroupColors);
+        normalOpencv = findViewById(R.id.openCVNormal);
+        normalOpencv1 = findViewById(R.id.openCVNormal01);
+        normalOpencv2 = findViewById(R.id.openCVNormal02);
         //IMAGE
         test1 = findViewById(R.id.test);
         img = null;
@@ -1049,6 +1276,10 @@ public class MainActivity extends AppCompatActivity {
         flagSegmentation = false;
         flagEraserSegmentation = false;
         flagPreviewSegmentation = false;
+        flagVariant = false;
+        flagBorders = false;
+        flagCalor = false;
+        flagColors = false;
         try{
             nameImage = R.drawable.rx_image_1;
             img = Utils.loadResource(getApplicationContext(),nameImage);
@@ -1064,35 +1295,42 @@ public class MainActivity extends AppCompatActivity {
         myFilters = new MyFilters(this.img,this.original);
         zoomImageLayout.setBackground(new BitmapDrawable(getResources(),myFilters.filterRGB()));
         //Icons with filter
-        openCv.setImageBitmap(myFilters.cropBitmap(myFilters.filterCanny()));
-        openCv1.setImageBitmap(myFilters.cropBitmap(myFilters.filerSepia()));
-        openCv2.setImageBitmap(myFilters.cropBitmap(myFilters.filterMorph()));
-        openCv3.setImageBitmap(myFilters.cropBitmap(myFilters.filterRGB()));
-        openCv4.setImageBitmap(myFilters.cropBitmap(myFilters.filterSummer()));
-        openCv5.setImageBitmap(myFilters.cropBitmap(myFilters.filterPink()));
-        openCv6.setImageBitmap(myFilters.cropBitmap(myFilters.filterReduceColorsGray(5)));
-        openCv7.setImageBitmap(myFilters.cropBitmap(myFilters.filterReduceColors(80,15,10)));
-        openCv8.setImageBitmap(myFilters.cropBitmap(myFilters.filterPencil()));
-        openCv9.setImageBitmap(myFilters.cropBitmap(myFilters.filterCarton(80,15,10)));
-        openCv10.setImageBitmap(myFilters.cropBitmap(myFilters.filterColor(0)));
-        openCv11.setImageBitmap(myFilters.cropBitmap(myFilters.filterColor(1)));
-        openCv12.setImageBitmap(myFilters.cropBitmap(myFilters.filterColor(2)));
-        openCv13.setImageBitmap(myFilters.cropBitmap(myFilters.filterColor(3)));
-        openCv14.setImageBitmap(myFilters.cropBitmap(myFilters.filterColor(4)));
-        openCv15.setImageBitmap(myFilters.cropBitmap(myFilters.filterColor(5)));
-        openCv16.setImageBitmap(myFilters.cropBitmap(myFilters.filterColor(7)));
-        openCv17.setImageBitmap(myFilters.cropBitmap(myFilters.filterColor(8)));
-        openCv18.setImageBitmap(myFilters.cropBitmap(myFilters.filterColor(9)));
-        openCv19.setImageBitmap(myFilters.cropBitmap(myFilters.filterColor(11)));
-        openCv20.setImageBitmap(myFilters.cropBitmap(myFilters.filterColor(12)));
-        openCv21.setImageBitmap(myFilters.cropBitmap(myFilters.filterColor(13)));
-        openCv22.setImageBitmap(myFilters.cropBitmap(myFilters.filterColor(14)));
-        openCv23.setImageBitmap(myFilters.cropBitmap(myFilters.filterColor(15)));
-        openCv24.setImageBitmap(myFilters.cropBitmap(myFilters.filterColor(16)));
-        openCv25.setImageBitmap(myFilters.cropBitmap(myFilters.filterColor(17)));
-        openCv26.setImageBitmap(myFilters.cropBitmap(myFilters.filterColor(18)));
-        openCv27.setImageBitmap(myFilters.cropBitmap(myFilters.filterColor(19)));
-        openCv28.setImageBitmap(myFilters.cropBitmap(myFilters.filterColor(20)));
+        groupVariantOpenCv.setImageBitmap(makeTransparent(myFilters.cropBitmap(myFilters.filterRGB()),80,"Variant"));
+        groupBordersOpenCv.setImageBitmap(makeTransparent(myFilters.cropBitmap(myFilters.filterCanny()),80,"Borders"));
+        groupCalorOpenCv.setImageBitmap(makeTransparent(myFilters.cropBitmap(myFilters.filterColor(2)),80,"Calor"));
+        groupColorsOpenCv.setImageBitmap(makeTransparent(myFilters.cropBitmap(myFilters.filterSummer()),80,"Colors"));
+        openCv.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterCanny()),"Canny"));
+        openCv1.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filerSepia()),"Sepia"));
+        openCv2.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterMorph()),"Morph"));
+        openCv3.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterRGB()),"Normal"));
+        normalOpencv.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterRGB()),"Normal"));
+        normalOpencv1.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterRGB()),"Normal"));
+        normalOpencv2.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterRGB()),"Normal"));
+        openCv4.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterSummer()),"Green"));
+        openCv5.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterPink()),"Pink"));
+        openCv6.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterReduceColorsGray(5)),"Gray"));
+        openCv7.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterReduceColors(80,15,10)),"Dark"));
+        openCv8.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterPencil()),"Pencil"));
+        openCv9.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterCarton(80,15,10)),"Cartoon"));
+        openCv10.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(0)),"Autumn"));
+        openCv11.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(1)),"Bone"));
+        openCv12.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(2)),"Jet"));
+        openCv13.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(3)),"Winter"));
+        openCv14.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(4)),"Rainbown"));
+        openCv15.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(5)),"Ocean"));
+        openCv16.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(7)),"Spring"));
+        openCv17.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(8)),"Cool"));
+        openCv18.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(9)),"Hsv"));
+        openCv19.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(11)),"Hot"));
+        openCv20.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(12)),"Parula"));
+        openCv21.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(13)),"Magma"));
+        openCv22.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(14)),"Inferno"));
+        openCv23.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(15)),"Plasma"));
+        openCv24.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(16)),"Viridis"));
+        openCv25.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(17)),"Cividis"));
+        openCv26.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(18)),"Twilight"));
+        openCv27.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(19)),"Shifted"));
+        openCv28.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(20)),"Turbo"));
         //Icons Color
         listColors = new ArrayList<>();
         color1 = findViewById(R.id.color1); listColors.add(color1);
@@ -1128,4 +1366,7 @@ public class MainActivity extends AppCompatActivity {
         //--End Initializing
     }//End Method
 }//End Class
+
+
+
 
