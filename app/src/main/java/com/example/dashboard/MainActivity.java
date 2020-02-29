@@ -19,6 +19,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -32,6 +33,8 @@ import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import Figures.Circle;
 import ListFigures.ListFigure;
 import ListFigures.ListSegmentation;
 import ListFigures.Util;
@@ -182,10 +185,19 @@ public class MainActivity extends AppCompatActivity {
     private ImageView normalOpencv;
     private ImageView normalOpencv1;
     private ImageView normalOpencv2;
+    //Control
+    private LinearLayout control;
+    private ImageView sortUp;
+    private ImageView sortDown;
+    private ImageView sortLeft;
+    private ImageView sortRight;
+    private ImageView touchControl;
     //img original format Bitmap
     private Bitmap original;
     private Mat img;
     private int nameImage;
+    private boolean longClick = false;
+    private int mActivePointerId = INVALID_POINTER_ID;
     //--End Attributes of class
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @SuppressLint("ClickableViewAccessibility")
@@ -204,12 +216,79 @@ public class MainActivity extends AppCompatActivity {
 
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        sortUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(myListSegmentation.getFigureSelected()>-1){
 
-        int mActivePointerId = INVALID_POINTER_ID;
-        zoomImageLayout.setOnTouchListener(new View.OnTouchListener() {
+                        Circle a = (Circle) myListSegmentation.getSegmentation().get(myListSegmentation.getFigureSelected());
+                        a.setCenterY(a.getCenterY() - 5);
+                        myListSegmentation.invalidate();
+
+                }
+            }
+        });
+
+      /*  sortUp.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                longClick = true;
+                return true;
+            }
+        });*/
+
+
+        touchControl.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                System.out.println("GAAAAAAAAAAA");
+                float getX = event.getX();
+                float getY = event.getY();
+                float getPastX=0;
+                float getPastY=0;
+                final int acct = event.getActionMasked();
+                switch (acct) {
+                    case MotionEvent.ACTION_DOWN:{
+                        final int pointerIndex = event.getActionIndex();
+                        mActivePointerId = event.getPointerId(0);
+                        getPastX = getX;
+                        getPastY = getY;
+                        break;
+                    }
+                    case MotionEvent.ACTION_MOVE: {
+                        final int pointerIndex = event.findPointerIndex(mActivePointerId);
+                        getX = event.getX(pointerIndex);
+                        getY = event.getY(pointerIndex);
+                        if((control.getTranslationX()-(getPastX-getX))-40>=0 && (control.getTranslationX()-(getPastX-getX))+120<=myListSegmentation.getGeneralWidth()){
+                            control.setTranslationX((control.getTranslationX()-(getPastX-getX))-40);
+                        }
+                        if((control.getTranslationY()-(getPastY-getY))+120<=myListSegmentation.getGeneralHeight()&& (control.getTranslationY()-(getPastY-getY))-40>=0){
+                            control.setTranslationY((control.getTranslationY()-(getPastY-getY))-40);
+                        }
+                        getPastX = getX;
+                        getPastY = getY;
+
+                        break;
+                    }
+                    case MotionEvent.ACTION_UP: {
+                        mActivePointerId = INVALID_POINTER_ID;
+                        break;
+                    }
+                    case MotionEvent.ACTION_CANCEL: {
+                        mActivePointerId = INVALID_POINTER_ID;
+                        break;
+                    }
+                    case MotionEvent.ACTION_POINTER_UP: {
+                        final int pointerIndex = event.getActionIndex();
+                        final int pointerId = event.getPointerId(pointerIndex);
+                        if (pointerId == mActivePointerId) {
+                            final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
+                            getPastX = event.getX(newPointerIndex);
+                            getPastY = event.getY( newPointerIndex);
+                            mActivePointerId = event.getPointerId(newPointerIndex);
+                        }
+                        break;
+                    }
+                }
                 return true;
             }
         });
@@ -1258,6 +1337,15 @@ public class MainActivity extends AppCompatActivity {
         scrollRight2 = findViewById(R.id.scrollRight_2);
         //Back and Checks
         backMenuRight = findViewById(R.id.back_menu_right_1);
+        //Control
+        control = findViewById(R.id.control);
+        touchControl = findViewById(R.id.move);
+        sortDown = findViewById(R.id.boot);
+        sortLeft = findViewById(R.id.izquierda);
+        sortRight = findViewById(R.id.derecha);
+        sortUp = findViewById(R.id.upp);
+        ControlMenu controlMenu = new ControlMenu(control,touchControl,sortLeft,sortRight,sortUp,sortDown);
+
         //Segmentation
         addPointSegment = findViewById(R.id.addPointSegment);
         pencilSegment =  findViewById(R.id.pencilSegment);
@@ -1266,10 +1354,14 @@ public class MainActivity extends AppCompatActivity {
         zoomImageLayout = findViewById(R.id.zoomLayoutImageRx_1); //Layout Zoom Image Ray-X
         zoomImageLayout.setVisibility(View.INVISIBLE);
         layoutImageRx1 = findViewById(R.id.layoutImageRx_1); //Layout Image Ray-X
-        myListSegmentation = new ListSegmentation(this, zoomImageLayout, cardView,layoutImageRx1);
+        myListSegmentation = new ListSegmentation(this, zoomImageLayout, cardView,layoutImageRx1,controlMenu);
         layoutImageRx1.addView(myListSegmentation);
         deleteSegments = findViewById(R.id.deleteSegments);
         changeColorSegments = findViewById(R.id.changeColorSegments);
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        control.setTranslationX(metrics.widthPixels/2-80); //convertir a DP
+        control.setTranslationY(metrics.heightPixels/2-80); //convertir a DP
         //Filters
         openCv = findViewById(R.id.openCV);
         openCv1 = findViewById(R.id.openCV1);
@@ -1322,7 +1414,7 @@ public class MainActivity extends AppCompatActivity {
         flagCalor = false;
         flagColors = false;
         try{
-            nameImage = R.drawable.rx_image_6;
+            nameImage = R.drawable.rx_image_1;
             img = Utils.loadResource(getApplicationContext(),nameImage);
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inScaled = false;

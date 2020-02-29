@@ -18,7 +18,11 @@ import android.widget.LinearLayout;
 import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 
+import com.example.dashboard.ControlMenu;
+
 import java.util.ArrayList;
+import java.util.ResourceBundle;
+
 import Figures.*;
 
 import static android.view.MotionEvent.INVALID_POINTER_ID;
@@ -34,10 +38,19 @@ public class ListSegmentation extends View {
     private ArrayList<Figure> segmentation;
     private ArrayList<Figure> segmentationMin;
     private int[] color = {183, 149, 11};
+
+    public ArrayList<Figure> getSegmentation() {
+        return segmentation;
+    }
+
+    public int getFigureSelected() {
+        return figureSelected;
+    }
+
     private LinearLayout viewZoom;
     private LinearLayout content;
     private CardView cardView;
-    private int figureSelected;
+    private int figureSelected=-1;
     private boolean flagFilter = false;
     protected float touchX = 0;
     protected float touchY = 0;
@@ -48,6 +61,16 @@ public class ListSegmentation extends View {
     private float acceptDistance = 30;
     private float generalHeight = 0;
     private float generalWidth = 0;
+
+    public float getGeneralHeight() {
+        return generalHeight;
+    }
+
+    public float getGeneralWidth() {
+        return generalWidth;
+    }
+
+
     private float scaleZoomLayout = 3.0f;
     //Mode Touch
     private boolean touchEvent = false;
@@ -68,11 +91,13 @@ public class ListSegmentation extends View {
     private Bitmap mImage;
     private  int mImageWidth;
     private int mImageHeight;
+    //Control
+    private  ControlMenu controlMenu;
     /**
      * Class Constructor
      * @param context The View
      * @param viewZoom : layout zoom Image RX*/
-    public ListSegmentation (Context context, LinearLayout viewZoom,CardView cardView,LinearLayout content){
+    public ListSegmentation (Context context, LinearLayout viewZoom, CardView cardView, LinearLayout content, ControlMenu controlMenu){
         super(context);
         this.content = content;
         this.viewZoom = viewZoom;
@@ -85,7 +110,10 @@ public class ListSegmentation extends View {
         segmentationMin = new ArrayList<>();
         zoomList = new ListZoomSegmentation(context);
         this.viewZoom.addView(zoomList);
+        this.controlMenu = controlMenu;
         invalidate();
+        //controlMenu.getGeneral().setTranslationX(content.getWidth()/2);
+        //controlMenu.getGeneral().setTranslationY(content.getHeight()/2);
     }//Closing the class constructor
     public void loadImage(Bitmap mImage){
         mBoard = new BitmapDrawable(getResources(),mImage);

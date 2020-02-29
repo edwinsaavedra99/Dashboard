@@ -79,6 +79,15 @@ public class ListFigure  extends View {
             modeTouch = 0;
         }
     }
+
+    public float getGeneralHeight() {
+        return generalHeight;
+    }
+
+    public float getGeneralWidth() {
+        return generalWidth;
+    }
+
     /**
      * Method getModeTouch
      * @return modeTouch
