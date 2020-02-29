@@ -1,16 +1,25 @@
 package ListFigures;
 
 //Imports
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.os.Build;
 import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.view.View;
+
+import androidx.annotation.RequiresApi;
+
 import java.util.ArrayList;
 import Figures.Circle;
 import Figures.Figure;
+
+import static android.view.MotionEvent.INVALID_POINTER_ID;
+
 /**
  * This class Canvas defines a list of figures in a view zoom
  * @author Edwin Saavedra
@@ -176,5 +185,18 @@ public class ListZoomSegmentation extends View {
                 }
             }
         }
+    }
+    @SuppressLint("ClickableViewAccessibility")
+    public boolean onTouchEvent(MotionEvent event) {
+
+        final int acct = event.getActionMasked();
+        switch (acct) {
+
+            case MotionEvent.ACTION_MOVE:{
+                //System.out.println(event.getX()+" : "+event.getY());
+                break;
+            }
+        }
+        return true;
     }
 }

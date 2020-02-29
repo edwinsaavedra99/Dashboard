@@ -36,6 +36,8 @@ import ListFigures.ListFigure;
 import ListFigures.ListSegmentation;
 import ListFigures.Util;
 
+import static android.view.MotionEvent.INVALID_POINTER_ID;
+
 /**
  * This class define the Main Activity Image Ray-X editing space
  * @author Edwin Saavedra
@@ -69,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
     //Change Layout
     private ImageView segmentation;
     private ImageView addPointSegment;
+    private ImageView pencilSegment;
     //Layout for Image RX
     private LinearLayout layoutImageRx;
     private LinearLayout layoutImageRx1;
@@ -83,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean flagSegmentation;
     private boolean flagEraserSegmentation;
     private boolean flagPointSegmentation;
+    private boolean flagPencilSegmentation;
     private boolean flagPreviewSegmentation;
     private boolean flagVariant;
     private boolean flagBorders;
@@ -201,6 +205,16 @@ public class MainActivity extends AppCompatActivity {
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        int mActivePointerId = INVALID_POINTER_ID;
+        zoomImageLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                System.out.println("GAAAAAAAAAAA");
+                return true;
+            }
+        });
+
+
         saveFigures.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -297,6 +311,8 @@ public class MainActivity extends AppCompatActivity {
                     Animation.animationScale(eraserSegments, TIME_ANIMATION, SCALE_ANIMATION, SCALE_ANIMATION);
                     eraserSegments.setColorFilter(Color.rgb(255, 127, 80));
                     addPointSegment.setColorFilter(Color.rgb(255, 255, 255));
+                    extendsImage.setColorFilter(Color.rgb(255, 255, 255));
+                    pencilSegment.setColorFilter(Color.rgb(255, 255, 255));
                     myListSegmentation.changeModeTouch(2);
                     flagEraserSegmentation = true;
                 }else{
@@ -309,16 +325,39 @@ public class MainActivity extends AppCompatActivity {
         addPointSegment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int modeTouch = myListSegmentation.getModeTouch();
                 if(!flagPointSegmentation) {
                     Animation.animationScale(addPointSegment, TIME_ANIMATION, SCALE_ANIMATION, SCALE_ANIMATION);
                     eraserSegments.setColorFilter(Color.rgb(255, 255, 255));
+                    pencilSegment.setColorFilter(Color.rgb(255, 255, 255));
+                    extendsImage.setColorFilter(Color.rgb(255, 255, 255));
                     addPointSegment.setColorFilter(Color.rgb(255, 127, 80));
                     myListSegmentation.changeModeTouch(3);
                     flagPointSegmentation = true;
                 }else{
                     addPointSegment.setColorFilter(Color.rgb(255, 255, 255));
-                    myListSegmentation.changeModeTouch(0);
+                        myListSegmentation.changeModeTouch(0);
                     flagPointSegmentation = false;
+                }
+            }
+        });
+
+        pencilSegment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int modeTouch = myListSegmentation.getModeTouch();
+                if(!flagPencilSegmentation) {
+                    Animation.animationScale(pencilSegment, TIME_ANIMATION, SCALE_ANIMATION, SCALE_ANIMATION);
+                    eraserSegments.setColorFilter(Color.rgb(255, 255, 255));
+                    addPointSegment.setColorFilter(Color.rgb(255, 255, 255));
+                    extendsImage.setColorFilter(Color.rgb(255, 255, 255));
+                    pencilSegment.setColorFilter(Color.rgb(255, 127, 80));
+                    myListSegmentation.changeModeTouch(4);
+                    flagPencilSegmentation = true;
+                }else{
+                    pencilSegment.setColorFilter(Color.rgb(255, 255, 255));
+                        myListSegmentation.changeModeTouch(0);
+                    flagPencilSegmentation = false;
                 }
             }
         });
@@ -370,15 +409,16 @@ public class MainActivity extends AppCompatActivity {
                     myListFigures.changeModeTouch();
                 }else {
 
-                    if(myListSegmentation.getModeTouch()==0 || myListSegmentation.getModeTouch()==2) {
+                    if(myListSegmentation.getModeTouch()==0 || myListSegmentation.getModeTouch()==2
+                            || myListSegmentation.getModeTouch()==3 || myListSegmentation.getModeTouch()==4) {
+                        eraserSegments.setColorFilter(Color.rgb(255, 255, 255)); //white
+                        pencilSegment.setColorFilter(Color.rgb(255, 255, 255)); //white
+                        addPointSegment.setColorFilter(Color.rgb(255, 255, 255)); //white
                         extendsImage.setColorFilter(Color.rgb(255, 127, 80)); //orange
                         myListSegmentation.changeModeTouch(1);
                     }else{
                         extendsImage.setColorFilter(Color.rgb(255, 255, 255)); //white
-                        if(flagEraserSegmentation)
-                            myListSegmentation.changeModeTouch(2);
-                        else
-                            myListSegmentation.changeModeTouch(0);
+                        myListSegmentation.changeModeTouch(0);
                     }
                 }
             }
@@ -1199,7 +1239,6 @@ public class MainActivity extends AppCompatActivity {
         clearSegments = findViewById(R.id.clearSegments);
         menu_left = findViewById(R.id.contenedor_menu_left);
         menu_right = findViewById(R.id.contenedor_menu_right);
-        contenedor_description = findViewById(R.id.contenedor_description);
         //contenedor_description.setBackgroundColor(Color.parseColor("#80000000"));
         menu_left.setBackgroundColor(Color.parseColor("#80000000"));
         menu_right.setBackgroundColor(Color.parseColor("#80000000"));
@@ -1221,6 +1260,7 @@ public class MainActivity extends AppCompatActivity {
         backMenuRight = findViewById(R.id.back_menu_right_1);
         //Segmentation
         addPointSegment = findViewById(R.id.addPointSegment);
+        pencilSegment =  findViewById(R.id.pencilSegment);
         cardView = findViewById(R.id.zoomImage_1); //CARD
         cardView.setVisibility(View.GONE);
         zoomImageLayout = findViewById(R.id.zoomLayoutImageRx_1); //Layout Zoom Image Ray-X
@@ -1275,13 +1315,14 @@ public class MainActivity extends AppCompatActivity {
         flagAnimationColors=true;
         flagSegmentation = false;
         flagEraserSegmentation = false;
+        flagPencilSegmentation = false;
         flagPreviewSegmentation = false;
         flagVariant = false;
         flagBorders = false;
         flagCalor = false;
         flagColors = false;
         try{
-            nameImage = R.drawable.rx_image_1;
+            nameImage = R.drawable.rx_image_6;
             img = Utils.loadResource(getApplicationContext(),nameImage);
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inScaled = false;

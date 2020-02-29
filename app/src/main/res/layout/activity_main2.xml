@@ -58,9 +58,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
-
                     </LinearLayout>
-
                     <androidx.cardview.widget.CardView
                         android:id="@+id/zoomImage_1"
                         android:layout_width="120dp"
@@ -76,7 +74,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="vertical">
-
                             <LinearLayout
                                 android:id="@+id/zoomLayoutImageRx_1"
                                 android:layout_width="0dp"
@@ -816,11 +813,16 @@
 
                     <ImageView
                         android:id="@+id/addPointSegment"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/filled_circle_16px" />
-
+                    <ImageView
+                        android:id="@+id/pencilSegment"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_marginBottom="15dp"
+                        android:src="@drawable/ic_create_black_24dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -925,33 +927,7 @@
                 android:layout_height="25dp"
                 android:src="@drawable/expand_26px" />
         </LinearLayout>
-        <LinearLayout
-            android:id="@+id/contenedor_description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:gravity="center"
-            android:layout_marginLeft="40dp"
-            android:layout_marginRight="40dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:paddingBottom="15dp"
-            android:orientation="horizontal"
-            >
 
-            <EditText
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Description"
-                android:textColor="@android:color/white"
-                android:textColorHint="#ffffff"
-                android:textStyle="bold">
-
-            </EditText>
-        </LinearLayout>
         <LinearLayout
             android:id="@+id/getFigures"
             android:layout_width="wrap_content"

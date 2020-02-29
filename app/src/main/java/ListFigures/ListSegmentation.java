@@ -52,7 +52,8 @@ public class ListSegmentation extends View {
     //Mode Touch
     private boolean touchEvent = false;
     private boolean flag = true;
-    private int modeTouch = 0; //Mode 0 is Normal ... Mode 1 is zoomMode ... //Mode 2 is eraser .. //Mode 3 is Point Segmentation
+    private int modeTouch = 0; //Mode 0 is Normal ... Mode 1 is zoomMode
+    // ... //Mode 2 is eraser .. //Mode 3 is Point Segmentation...//Mode 4 is Pencil Segmentatio
     private boolean flagPreview = false;
     private  LinearLayout layout;
     private boolean upMode = false;
@@ -143,7 +144,7 @@ public class ListSegmentation extends View {
      * @param _startX Define the position of the segment
      * @param _startY Define the position of the segment
      * @param _radius Define the radius od the segment*/
-    public void addCircleSegmentation(float _startX, float _startY, float _radius,int index) {
+    public void addCircleSegmentation(float _startX, float _startY, float _radius) {
         float[] intervals = new float[]{0.0f, 0.0f};
         float phase = 0;
         DashPathEffect dashPathEffect = new DashPathEffect(intervals, phase);
@@ -155,17 +156,10 @@ public class ListSegmentation extends View {
         pencil.setStyle(Paint.Style.FILL);
         pencil.setPathEffect(dashPathEffect);
         Circle aux = new Circle(_startX, _startY,  _radius, pencil,color);
-        if (index == 1) {
-            this.segmentation.add(aux);
-            invalidate();
-            figureSelected = this.segmentation.size() - 1;
-        }else{
-            this.segmentation.add(0,aux);
-            invalidate();
-            figureSelected = 0;
-
-        }
-        zoomList.addCircleSegmentation(_startX*this.viewZoom.getWidth()/this.getWidth(),_startY*this.viewZoom.getHeight()/this.getHeight(), _radius*this.viewZoom.getWidth()/this.getWidth(),pencil,index);
+        this.segmentation.add(aux);
+        invalidate();
+        figureSelected = this.segmentation.size() - 1;
+        zoomList.addCircleSegmentation(_startX*this.viewZoom.getWidth()/this.getWidth(),_startY*this.viewZoom.getHeight()/this.getHeight(), _radius*this.viewZoom.getWidth()/this.getWidth(),pencil,1);
         zoomList.invalidate();
     }
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -282,7 +276,7 @@ public class ListSegmentation extends View {
         for(int i=0;i<segmentation.size();i++){
             if (segmentation.get(i) instanceof Circle) {
                 Circle temp = (Circle) segmentation.get(i);
-                if(i==segmentation.size()-1 || i == 0){
+                if(modeTouch == 4 && i== figureSelected){
                     temp.getPaint().setStyle(Paint.Style.STROKE);
                     temp.getPaint().setStrokeWidth(6);
                 }else{
@@ -327,12 +321,25 @@ public class ListSegmentation extends View {
 
     public void changeModeTouch( int mode){
         modeTouch = mode;
-        zoomList.modeTouch = mode;
+        zoomList.modeTouch = mode; //recordar que vamos a cambiar el modo touch
         zoomList.invalidate();
     }
     public int getModeTouch(){
         return modeTouch;
     }
+    /**
+     * Method toString show list of figures content
+     * @return content of the list*/
+    public String toString(){
+        StringBuilder listJson = new StringBuilder("[\n");
+        for(int i=0;i<this.segmentation.size();i++) {
+            listJson.append(segmentation.get(i).toString()).append("\n");
+            if (i < this.segmentation.size() - 1)
+                listJson.append(",");
+        }
+        return listJson+"]";
+    }//End Method
+    /*
 
     /**
      * Method check check the dimensions of the figure Point in its container
@@ -378,6 +385,29 @@ public class ListSegmentation extends View {
             temp.setCenterY(temp.getRadius()+1);
         }
     }//End Method
+
+    public int dpToPx(int dp){
+        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+        int px = Math.round(dp*(displayMetrics.xdpi/DisplayMetrics.DENSITY_DEFAULT));
+        return px;
+    }
+
+    public int pxToDp(int px){
+        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+        int dp = Math.round(px/(displayMetrics.xdpi/DisplayMetrics.DENSITY_DEFAULT));
+        return px;
+    }
+
+    public void moveZoom(float touchX, float touchY){ //ESTO DEBE TESTEARSE CON UN DISPOSITIVO DE DIFERENTE DIMENSION
+        boolean flagMoveZoom = false;
+        if(touchX>= dpToPx(45) && touchX<=dpToPx(165+25) && touchY >= dpToPx(8) && touchY <= dpToPx(128+35)){
+            flagMoveZoom = true;
+        }
+        if (flagMoveZoom)
+            this.cardView.setTranslationX(pxToDp((int)generalWidth/2-45));
+        else
+            this.cardView.setTranslationX(0);
+    }
     /**
      * Method onTouchEvent
      * @param event Events of touch*/
@@ -452,26 +482,40 @@ public class ListSegmentation extends View {
                     this.cardView.setVisibility(VISIBLE);
                     zoomList.invalidate();
                 }else if(modeTouch == 3){//point independient Segmentation
-                    addCircleSegmentation((getX - mPositionX) / mScaleFactor, (getY - mPositionY) / mScaleFactor, 9, 1); //9 is radius acceptable
+                    addCircleSegmentation((getX - mPositionX) / mScaleFactor, (getY - mPositionY) / mScaleFactor, 9); //9 is radius acceptable
                     this.viewZoom.setVisibility(View.VISIBLE);
                     this.cardView.setVisibility(VISIBLE);
                     zoomList.invalidate();
+                }else if(modeTouch == 4){ //pencil Segment
+                    for (int i = 0; i < segmentation.size(); i++) {
+                        if (segmentation.get(i) instanceof Circle) {
+                            Circle temp = (Circle) segmentation.get(i);
+                            //distance with the origin
+                            float distance = distancePoint_to_Point(getX, getY, temp.getCenterX()*mScaleFactor+mPositionX, temp.getCenterY()*mScaleFactor+mPositionY);
+                            if (distance <= acceptDistance*mScaleFactor) { //Move
+                                zoomList.figureSelected = i;
+                                this.figureSelected = i;
+                            }
+                        }
+                    }
                 }
             break;
         }
         case MotionEvent.ACTION_MOVE: {
+                //System.out.println("touch --> "+event.getX()+" : "+event.getY());
                 final int pointerIndex = event.findPointerIndex(mActivePointerId);
                 getX = event.getX(pointerIndex);
                 getY = event.getY(pointerIndex);
+                moveZoom(getX,getY);
                 touchX = event.getX(pointerIndex);
                 touchY = event.getY(pointerIndex);
                 zoomList.touchX = (event.getX()-mPositionX)/mScaleFactor*this.viewZoom.getWidth()/this.getWidth();
                 zoomList.touchY = (event.getY()-mPositionY)/mScaleFactor*this.viewZoom.getHeight()/this.getHeight();
-                if(modeTouch == 0 || modeTouch == 1) { //Touch segments
-                    if (figureSelected == segmentation.size() - 1 || figureSelected == 0) {
-                        int index = 1;
-                        if(figureSelected == 0)
-                            index = 0;
+                if(modeTouch == 0 || modeTouch == 1 || modeTouch == 4) { //Touch segments
+                    if(modeTouch == 4 && segmentation.isEmpty()){
+                        addCircleSegmentation((getX - mPositionX) / mScaleFactor, (getY - mPositionY) / mScaleFactor, 9);  //9 is radius acceptable
+                    }
+                    if (figureSelected >-1 && modeTouch == 4) {
                         if (!segmentation.isEmpty()) {
                             boolean drawS = false;
                             Circle aux = (Circle) segmentation.get(figureSelected);
@@ -485,10 +529,10 @@ public class ListSegmentation extends View {
                                 this.cardView.setVisibility(VISIBLE);
                             }
                             if (drawS) {
-                                addCircleSegmentation((getX - mPositionX) / mScaleFactor, (getY - mPositionY) / mScaleFactor, 9, index); //9 is radius acceptable
+                                addCircleSegmentation((getX - mPositionX) / mScaleFactor, (getY - mPositionY) / mScaleFactor, 9); //9 is radius acceptable
                             }
                         } else {
-                            addCircleSegmentation((getX - mPositionX) / mScaleFactor, (getY - mPositionY) / mScaleFactor, 9,index);  //9 is radius acceptable
+                            addCircleSegmentation((getX - mPositionX) / mScaleFactor, (getY - mPositionY) / mScaleFactor, 9);  //9 is radius acceptable
                         }
                     }else if (this.figureSelected > -1 && !segmentation.isEmpty()) {
                         if( !scaleGestureDetector.isInProgress()) {
@@ -544,6 +588,7 @@ public class ListSegmentation extends View {
             break;
         }
             case MotionEvent.ACTION_UP: {
+                System.out.println("dimensiones->   "+generalWidth + ":"+ generalHeight); //test
                 mActivePointerId = INVALID_POINTER_ID;
                 touchEvent = false;
                 upMode = false;
@@ -558,6 +603,7 @@ public class ListSegmentation extends View {
                 break;
             }
             case MotionEvent.ACTION_POINTER_UP: {
+
                 final int pointerIndex = event.getActionIndex();
                 final int pointerId = event.getPointerId(pointerIndex);
                 for (int i = 0; i < segmentation.size(); i++) {
