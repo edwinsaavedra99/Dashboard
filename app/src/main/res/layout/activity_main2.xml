@@ -991,14 +991,16 @@
                 android:src="@drawable/delete_16px" />
         </LinearLayout>
 
+
         <LinearLayout
+            android:background="@drawable/thumb_drawable"
             android:id="@+id/control"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/thumb_drawable"
             android:gravity="center"
             android:orientation="vertical"
             android:visibility="gone"
+
             >
             <ImageView
                 android:id="@+id/uppAll"
@@ -1094,7 +1096,5 @@
                     android:src="@drawable/double_down_26px" />
             </LinearLayout>
         </LinearLayout>
-
-
     </RelativeLayout>
 </LinearLayout>

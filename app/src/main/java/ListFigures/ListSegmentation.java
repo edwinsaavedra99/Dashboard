@@ -47,6 +47,10 @@ public class ListSegmentation extends View {
         return figureSelected;
     }
 
+    public CardView getCardView() {
+        return cardView;
+    }
+
     private LinearLayout viewZoom;
     private LinearLayout content;
     private CardView cardView;
@@ -587,13 +591,13 @@ public class ListSegmentation extends View {
                                 Circle temp_z = (Circle) zoomList.segmentation.get(figureSelected);
                                 //checkCircle check dimensions of the circle
 
-                                if((getX-mPositionX)/mScaleFactor+temp.getRadius() < generalWidth &&
-                                        (getX-mPositionX)/mScaleFactor-temp.getRadius()>0 ){
+                                if((getX-mPositionX)/mScaleFactor < generalWidth &&
+                                        (getX-mPositionX)/mScaleFactor>0 ){
                                     temp.setCenterX((getX-mPositionX)/mScaleFactor);
                                     temp_z.setCenterX(temp.getCenterX() * this.viewZoom.getWidth() / this.getWidth());
                                 }
-                                    if(    (getY-mPositionY)/mScaleFactor+temp.getRadius()<generalHeight
-                                            && (getY-mPositionY)/mScaleFactor-temp.getRadius()>0){
+                                    if(    (getY-mPositionY)/mScaleFactor<generalHeight
+                                            && (getY-mPositionY)/mScaleFactor>0){
                                         temp.setCenterY((getY-mPositionY)/mScaleFactor);
                                         temp_z.setCenterY(temp.getCenterY() * this.viewZoom.getHeight() / this.getHeight());
                                     }
@@ -646,7 +650,6 @@ public class ListSegmentation extends View {
             break;
         }
             case MotionEvent.ACTION_UP: {
-                System.out.println("dimensiones->   "+generalWidth + ":"+ generalHeight); //test
                 mActivePointerId = INVALID_POINTER_ID;
                 touchEvent = false;
                 upMode = false;
