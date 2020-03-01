@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean flagBorders;
     private boolean flagCalor;
     private boolean flagColors;
-
+    private boolean flagControl;
     //Scroll
     private LinearLayout menu_left;
     private LinearLayout menu_right;
@@ -117,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView clearSegments;
     private ImageView eraserSegments;
     private ImageView preview;
+    private ImageView controlMenu;
     private CardView cardView;
     //Colors
     private ArrayList<ImageView> listColors;
@@ -192,6 +193,15 @@ public class MainActivity extends AppCompatActivity {
     private ImageView sortLeft;
     private ImageView sortRight;
     private ImageView touchControl;
+    private ImageView allSortUp;
+    private ImageView allSortDown;
+    private ImageView allSortLeft;
+    private ImageView allSortRight;
+    private ImageView controlZ;
+    private ImageView controlY;
+    private ImageView closeControl;
+    private ImageView aristas;
+    private int scaleSort;
     //img original format Bitmap
     private Bitmap original;
     private Mat img;
@@ -204,7 +214,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //ORIENTATION FALSE
-
         setTheme(R.style.AppTheme);
         //Add Layout Activity XML
         super.onCreate(savedInstanceState);
@@ -213,31 +222,90 @@ public class MainActivity extends AppCompatActivity {
         OpenCVLoader.initDebug();
         //Initializing Properties
         initialProperties();
-
-
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        sortUp.setOnClickListener(new View.OnClickListener() {
+        controlMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(myListSegmentation.getFigureSelected()>-1){
-
-                        Circle a = (Circle) myListSegmentation.getSegmentation().get(myListSegmentation.getFigureSelected());
-                        a.setCenterY(a.getCenterY() - 5);
-                        myListSegmentation.invalidate();
-
+                if(!flagControl){
+                    Animation.animationScale(controlMenu, TIME_ANIMATION, SCALE_ANIMATION, SCALE_ANIMATION);
+                    controlMenu.setColorFilter(Color.rgb(255, 127, 80));
+                    control.setVisibility(View.VISIBLE);
+                    flagControl = true;
+                }else{
+                    control.setVisibility(View.GONE);
+                    controlMenu.setColorFilter(Color.rgb(255, 255, 255));
+                    flagControl = false;
                 }
             }
         });
-
-      /*  sortUp.setOnLongClickListener(new View.OnLongClickListener() {
+        sortUp.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
-                longClick = true;
-                return true;
+            public void onClick(View v) {
+            if(myListSegmentation.getFigureSelected()>-1){
+                Circle a = (Circle) myListSegmentation.getSegmentation().get(myListSegmentation.getFigureSelected());
+                Circle a1 = (Circle) myListSegmentation.getZoomList().getSegmentation().get(myListSegmentation.getZoomList().getFigureSelected());
+                myListSegmentation.getViewZoom().setPivotY((a.getCenterY()-myListSegmentation.getmPositionY())/myListSegmentation.getmScaleFactor()*myListSegmentation.getViewZoom().getHeight()/myListSegmentation.getHeight());
+                if(a.getCenterY() - scaleSort+a.getRadius()<myListSegmentation.getHeight() &&
+                    a.getCenterY() - scaleSort-a.getRadius()>0) {
+                    a.setCenterY(a.getCenterY() - scaleSort);
+                    a1.setCenterY(a.getCenterY() * myListSegmentation.getViewZoom().getHeight() / myListSegmentation.getHeight());
+                }
+                myListSegmentation.invalidate();
+                myListSegmentation.getZoomList().invalidate();
             }
-        });*/
-
-
+            }
+        });
+        sortDown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(myListSegmentation.getFigureSelected()>-1){
+                    Circle a = (Circle) myListSegmentation.getSegmentation().get(myListSegmentation.getFigureSelected());
+                    Circle a1 = (Circle) myListSegmentation.getZoomList().getSegmentation().get(myListSegmentation.getZoomList().getFigureSelected());
+                    myListSegmentation.getViewZoom().setPivotY((a.getCenterY()-myListSegmentation.getmPositionY())/myListSegmentation.getmScaleFactor()*myListSegmentation.getViewZoom().getHeight()/myListSegmentation.getHeight());
+                    if(a.getCenterY() + scaleSort+a.getRadius()<myListSegmentation.getHeight() &&
+                            a.getCenterY() + scaleSort-a.getRadius()>0) {
+                        a.setCenterY(a.getCenterY() + scaleSort);
+                        a1.setCenterY(a.getCenterY() * myListSegmentation.getViewZoom().getHeight() / myListSegmentation.getHeight());
+                    }
+                    myListSegmentation.invalidate();
+                    myListSegmentation.getZoomList().invalidate();
+                }
+            }
+        });
+        sortRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(myListSegmentation.getFigureSelected()>-1){
+                    Circle a = (Circle) myListSegmentation.getSegmentation().get(myListSegmentation.getFigureSelected());
+                    Circle a1 = (Circle) myListSegmentation.getZoomList().getSegmentation().get(myListSegmentation.getZoomList().getFigureSelected());
+                    myListSegmentation.getViewZoom().setPivotX((a.getCenterX()-myListSegmentation.getmPositionX())/myListSegmentation.getmScaleFactor()*myListSegmentation.getViewZoom().getWidth()/myListSegmentation.getWidth());
+                    if(a.getCenterX() + scaleSort+a.getRadius()<myListSegmentation.getWidth() &&
+                            a.getCenterX() + scaleSort-a.getRadius()>0) {
+                        a.setCenterX(a.getCenterX() + scaleSort);
+                        a1.setCenterX(a.getCenterX() * myListSegmentation.getViewZoom().getWidth() / myListSegmentation.getWidth());
+                    }
+                    myListSegmentation.invalidate();
+                    myListSegmentation.getZoomList().invalidate();
+                }
+            }
+        });
+        sortLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(myListSegmentation.getFigureSelected()>-1){
+                    Circle a = (Circle) myListSegmentation.getSegmentation().get(myListSegmentation.getFigureSelected());
+                    Circle a1 = (Circle) myListSegmentation.getZoomList().getSegmentation().get(myListSegmentation.getZoomList().getFigureSelected());
+                    myListSegmentation.getViewZoom().setPivotX((a.getCenterX()-myListSegmentation.getmPositionX())/myListSegmentation.getmScaleFactor()*myListSegmentation.getViewZoom().getWidth()/myListSegmentation.getWidth());
+                    if(a.getCenterX() - scaleSort+a.getRadius()<myListSegmentation.getWidth() &&
+                            a.getCenterX() - scaleSort-a.getRadius()>0) {
+                        a.setCenterX(a.getCenterX() - scaleSort);
+                        a1.setCenterX(a.getCenterX() * myListSegmentation.getViewZoom().getWidth() / myListSegmentation.getWidth());
+                    }
+                    myListSegmentation.invalidate();
+                    myListSegmentation.getZoomList().invalidate();
+                }
+            }
+        });
         touchControl.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -258,10 +326,10 @@ public class MainActivity extends AppCompatActivity {
                         final int pointerIndex = event.findPointerIndex(mActivePointerId);
                         getX = event.getX(pointerIndex);
                         getY = event.getY(pointerIndex);
-                        if((control.getTranslationX()-(getPastX-getX))-40>=0 && (control.getTranslationX()-(getPastX-getX))+120<=myListSegmentation.getGeneralWidth()){
+                        if((control.getTranslationX()-(getPastX-getX))-40>=0 && (control.getTranslationX()-(getPastX-getX))+280<=myListSegmentation.getGeneralWidth()){
                             control.setTranslationX((control.getTranslationX()-(getPastX-getX))-40);
                         }
-                        if((control.getTranslationY()-(getPastY-getY))+120<=myListSegmentation.getGeneralHeight()&& (control.getTranslationY()-(getPastY-getY))-40>=0){
+                        if((control.getTranslationY()-(getPastY-getY))+280<=myListSegmentation.getGeneralHeight()&& (control.getTranslationY()-(getPastY-getY))-40>=0){
                             control.setTranslationY((control.getTranslationY()-(getPastY-getY))-40);
                         }
                         getPastX = getX;
@@ -351,6 +419,10 @@ public class MainActivity extends AppCompatActivity {
                         extendsImage.setColorFilter(Color.rgb(255, 255, 255)); //white
                     Animation.animationScale(segmentation, TIME_ANIMATION, SCALE_ANIMATION, SCALE_ANIMATION);
                     segmentation.setColorFilter(Color.rgb(255, 127, 80));
+                    if(flagControl)
+                        control.setVisibility(View.VISIBLE);
+                    else
+                        control.setVisibility(View.GONE);
                     layoutImageRx.setVisibility(View.GONE);
                     layoutImageRx1.setVisibility(View.VISIBLE);
                     scrollLeft1.setVisibility(View.GONE);
@@ -371,6 +443,7 @@ public class MainActivity extends AppCompatActivity {
                     else
                         scrollLeft1.setVisibility(View.GONE);
                     layoutImageRx1.setVisibility(View.GONE);
+                    control.setVisibility(View.GONE);
                     layoutImageRx.setVisibility(View.VISIBLE);
                     flagSegmentation = false;
                 }
@@ -1338,12 +1411,21 @@ public class MainActivity extends AppCompatActivity {
         //Back and Checks
         backMenuRight = findViewById(R.id.back_menu_right_1);
         //Control
+        controlMenu = findViewById(R.id.controlOption);
         control = findViewById(R.id.control);
         touchControl = findViewById(R.id.move);
         sortDown = findViewById(R.id.boot);
         sortLeft = findViewById(R.id.izquierda);
         sortRight = findViewById(R.id.derecha);
         sortUp = findViewById(R.id.upp);
+        allSortDown = findViewById(R.id.downAll);
+        allSortLeft = findViewById(R.id.izquierdaAll);
+        allSortRight = findViewById(R.id.derechaAll);
+        allSortUp = findViewById(R.id.uppAll);
+        controlZ = findViewById(R.id.controlZ);
+        controlY = findViewById(R.id.controlY);
+        closeControl = findViewById(R.id.closeControl1);
+        aristas = findViewById(R.id.arista);
         ControlMenu controlMenu = new ControlMenu(control,touchControl,sortLeft,sortRight,sortUp,sortDown);
 
         //Segmentation
@@ -1360,8 +1442,8 @@ public class MainActivity extends AppCompatActivity {
         changeColorSegments = findViewById(R.id.changeColorSegments);
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        control.setTranslationX(metrics.widthPixels/2-80); //convertir a DP
-        control.setTranslationY(metrics.heightPixels/2-80); //convertir a DP
+        control.setTranslationX(metrics.widthPixels/2-80*2); //convertir a DP
+        control.setTranslationY(metrics.heightPixels/2-80*2); //convertir a DP
         //Filters
         openCv = findViewById(R.id.openCV);
         openCv1 = findViewById(R.id.openCV1);
@@ -1413,6 +1495,7 @@ public class MainActivity extends AppCompatActivity {
         flagBorders = false;
         flagCalor = false;
         flagColors = false;
+        flagControl = false;
         try{
             nameImage = R.drawable.rx_image_1;
             img = Utils.loadResource(getApplicationContext(),nameImage);
@@ -1496,6 +1579,7 @@ public class MainActivity extends AppCompatActivity {
             if(Util.getCollections()[i]!=null)
                 listColors.get(i).setColorFilter(Color.rgb(Util.getCollections()[i][0],Util.getCollections()[i][1],Util.getCollections()[i][2]));
         }
+        scaleSort = 5;
         //--End Initializing
     }//End Method
 }//End Class

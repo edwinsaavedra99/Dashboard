@@ -70,6 +70,21 @@ public class ListSegmentation extends View {
         return generalWidth;
     }
 
+    public LinearLayout getViewZoom() {
+        return viewZoom;
+    }
+
+    public float getmPositionX() {
+        return mPositionX;
+    }
+
+    public float getmPositionY() {
+        return mPositionY;
+    }
+
+    public float getmScaleFactor() {
+        return mScaleFactor;
+    }
 
     private float scaleZoomLayout = 3.0f;
     //Mode Touch
@@ -112,8 +127,6 @@ public class ListSegmentation extends View {
         this.viewZoom.addView(zoomList);
         this.controlMenu = controlMenu;
         invalidate();
-        //controlMenu.getGeneral().setTranslationX(content.getWidth()/2);
-        //controlMenu.getGeneral().setTranslationY(content.getHeight()/2);
     }//Closing the class constructor
     public void loadImage(Bitmap mImage){
         mBoard = new BitmapDrawable(getResources(),mImage);
@@ -125,6 +138,11 @@ public class ListSegmentation extends View {
         flagPreview = !flagPreview;
         zoomList.flagPreview = flagPreview;
     }
+
+    public ListZoomSegmentation getZoomList() {
+        return zoomList;
+    }
+
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener{
         @Override
         public boolean onScale(ScaleGestureDetector scaleGestureDetector){
@@ -568,7 +586,19 @@ public class ListSegmentation extends View {
                                 Circle temp = (Circle) segmentation.get(figureSelected);
                                 Circle temp_z = (Circle) zoomList.segmentation.get(figureSelected);
                                 //checkCircle check dimensions of the circle
-                                if (checkCircle(temp)) {
+
+                                if((getX-mPositionX)/mScaleFactor+temp.getRadius() < generalWidth &&
+                                        (getX-mPositionX)/mScaleFactor-temp.getRadius()>0 ){
+                                    temp.setCenterX((getX-mPositionX)/mScaleFactor);
+                                    temp_z.setCenterX(temp.getCenterX() * this.viewZoom.getWidth() / this.getWidth());
+                                }
+                                    if(    (getY-mPositionY)/mScaleFactor+temp.getRadius()<generalHeight
+                                            && (getY-mPositionY)/mScaleFactor-temp.getRadius()>0){
+                                        temp.setCenterY((getY-mPositionY)/mScaleFactor);
+                                        temp_z.setCenterY(temp.getCenterY() * this.viewZoom.getHeight() / this.getHeight());
+                                    }
+                                invalidate();
+                               /* if (checkCircle(temp)) {
                                     //temp.setCenterX((temp.getCenterX() - (getPastX - getX)));
                                     temp.setCenterX((getX-mPositionX)/mScaleFactor);
                                     //temp.setCenterY((temp.getCenterY() - (getPastY - getY)));
@@ -579,7 +609,7 @@ public class ListSegmentation extends View {
                                     zoomList.invalidate();
                                 } else {
                                     adaptCircle(temp);
-                                }
+                                }*/
                             }
                         }
                     }else{
@@ -622,8 +652,10 @@ public class ListSegmentation extends View {
                 upMode = false;
                 invalidate();
                 zoomList.invalidate();
-                this.viewZoom.setVisibility(View.INVISIBLE);
-                this.cardView.setVisibility(GONE);
+                if(figureSelected<=-1) {
+                    this.viewZoom.setVisibility(View.INVISIBLE);
+                    this.cardView.setVisibility(GONE);
+                }
                 break;
             }
             case MotionEvent.ACTION_CANCEL: {

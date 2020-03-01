@@ -71,6 +71,14 @@ public class ListZoomSegmentation extends View {
         invalidate();
     }//End Method
 
+    public ArrayList<Figure> getSegmentation() {
+        return segmentation;
+    }
+
+    public int getFigureSelected() {
+        return figureSelected;
+    }
+
     /**
      * Method after : remove one segment : deleteFigure the selected figure is deleted*/
     public void after(){

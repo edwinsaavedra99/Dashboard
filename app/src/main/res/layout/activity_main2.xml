@@ -880,7 +880,20 @@
                         android:layout_height="30dp"
                         android:layout_marginBottom="10dp"
                         android:src="@drawable/eraser_24px" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="Control"
+                        android:textColor="#FFFFFF"
+                        android:textSize="10sp" />
 
+                    <ImageView
+                        android:id="@+id/controlOption"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="10dp"
+                        android:src="@drawable/automatic_100px" />
 
                 </LinearLayout>
                 <LinearLayout
@@ -985,14 +998,34 @@
             android:background="@drawable/thumb_drawable"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="visible"
-
+            android:visibility="gone"
             >
             <ImageView
+                android:id="@+id/uppAll"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/double_up_26px" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_marginRight="20dp"
+                android:id="@+id/controlZ"
+                android:layout_width="25dp"
+                android:src="@drawable/undo_26px"
+                android:layout_height="25dp" />
+            <ImageView
                 android:id="@+id/upp"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:src="@drawable/sort_up_24px" />
+            <ImageView
+                android:layout_marginLeft="20dp"
+                android:id="@+id/arista"
+                android:src="@drawable/increase_profits_32px"
+                android:layout_width="25dp"
+                android:layout_height="25dp" />
+        </LinearLayout>
             <LinearLayout
                 android:layout_gravity="center"
                 android:orientation="horizontal"
@@ -1000,27 +1033,66 @@
                 android:layout_height="wrap_content">
                 <ImageView
                     android:layout_marginTop="10dp"
+                    android:id="@+id/izquierdaAll"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/double_left_26px" />
+                <ImageView
+                    android:layout_marginTop="10dp"
                     android:id="@+id/izquierda"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:src="@drawable/sort_left_24px" />
                 <ImageView
                     android:id="@+id/move"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp" />
+                    android:layout_width="45dp"
+                    android:layout_height="45dp" />
                 <ImageView
                     android:layout_marginTop="10dp"
                     android:id="@+id/derecha"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:src="@drawable/sort_right_24px" />
+                <ImageView
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/derechaAll"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/double_right_26px" />
             </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_marginRight="20dp"
+                android:id="@+id/closeControl1"
+                android:layout_width="25dp"
+                android:src="@drawable/delete_16px"
+                android:layout_height="25dp" />
             <ImageView
                 android:id="@+id/boot"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:src="@drawable/sort_down_24px" />
+            <ImageView
+                android:layout_marginLeft="20dp"
+                android:id="@+id/controlY"
+                android:layout_width="25dp"
+                android:src="@drawable/redo_26px"
+                android:layout_height="25dp" />
+        </LinearLayout>
 
+            <LinearLayout
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/downAll"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/double_down_26px" />
+            </LinearLayout>
         </LinearLayout>
 
 
