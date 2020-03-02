@@ -223,6 +223,12 @@ public class MainActivity extends AppCompatActivity {
         //Initializing Properties
         initialProperties();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        closeControl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myListSegmentation.deleteMemory();
+            }
+        });
         controlZ.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
