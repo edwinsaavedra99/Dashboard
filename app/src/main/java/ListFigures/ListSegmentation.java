@@ -222,19 +222,27 @@ public class ListSegmentation extends View {
         return false;
     }
     public boolean controlZ(){
-        int index = MemoryFigure.controlZinMemory(); /*TEST*/ System.out.println("index: "+index);
+        int index;
+        if(1==0)
+            index = MemoryFigure.controlZwithControlY();
+        else
+            index = MemoryFigure.controlZinMemory();
+         /*TEST*/ System.out.println("index: "+index);
         if(index != -1 ) {
-            ElementMemory elementMemory = MemoryFigure.memoryList.get(index);
-            switch (MemoryFigure.memoryList.get(index).getCodMemoryList()) {
+            ElementMemory elementMemory = null;
+            if(1==0) {
+                elementMemory = MemoryFigure.memoryList.get(index);
+            }else {
+                elementMemory = MemoryFigure.memoryList.get(index);
+            }
+            switch (elementMemory.getCodMemoryList()) {
                 case 1:{
-                    if(segmentation.size() - 1 >= 0 && zoomList.segmentation.size() - 1 >= 0) {
-                        segmentation.remove(elementMemory.getIndexInList());
-                        zoomList.segmentation.remove(elementMemory.getIndexInList());
-                    }
+                    segmentation.remove(elementMemory.getIndexInList());
+                    zoomList.segmentation.remove(elementMemory.getIndexInList());
                     break;
                 }
                 case 2:{
-                    Circle a = (Circle) MemoryFigure.memoryList.get(index).getMemoryList().get(0);
+                    Circle a = (Circle) elementMemory.getMemoryList().get(0);
                     addCircleSegmentation(a.getCenterX(), a.getCenterY(), a.getRadius(),elementMemory.getIndexInList());
                     figureSelected = -1;
                     break;
@@ -254,28 +262,28 @@ public class ListSegmentation extends View {
         return false;
     }
     public boolean controlY() {
-        //if (MemoryFigure.indexControlZ)
-        //if(MemoryFigure.indexControlZ == MemoryFigure.memoryList.size()){
-            //    MemoryFigure.controlZinMemory();
-            //
-    //}
-       /*     MemoryFigure.controlYinMemory();
-            int index = MemoryFigure.indexControlZ;
-            if (index>-1 && index < MemoryFigure.memoryList.size()) {
-                if (MemoryFigure.codMemoryList.get(index) == 1) { //add
-                    Circle a = (Circle) MemoryFigure.memoryList.get(index).get(0);
-                    addCircleSegmentation(a.getCenterX(), a.getCenterY(), a.getRadius());
+        int index = MemoryFigure.controlYinMemory();
+        if(index != -1 ) {
+            ElementMemory elementMemory = MemoryFigure.memoryListCtrlZ.get(index);
+            switch (elementMemory.getCodMemoryList()) {
+                case 1: {
+                    Circle a = (Circle) elementMemory.getMemoryList().get(0);
+                    addCircleSegmentation(a.getCenterX(), a.getCenterY(), a.getRadius(),elementMemory.getIndexInList());
                     figureSelected = -1;
-                } else if (MemoryFigure.codMemoryList.get(index) == 2 && segmentation.size() - 1 != -1 && zoomList.segmentation.size() - 1 != -1) { //remove
-                    segmentation.remove(segmentation.size() - 1);
-                    zoomList.segmentation.remove(zoomList.segmentation.size() - 1);
-                } else if (MemoryFigure.codMemoryList.get(index) == 3) {
+                    break;
+                }
+                case 2: {
+                    segmentation.remove(elementMemory.getIndexInList());
+                    zoomList.segmentation.remove(elementMemory.getIndexInList());
+                    break;
+                }
+                case 3: {
                     segmentation.clear();
                     zoomList.segmentation.clear();
+                    break;
                 }
             }
-
-*/
+        }
         invalidate();
         zoomList.invalidate();
         return false;
