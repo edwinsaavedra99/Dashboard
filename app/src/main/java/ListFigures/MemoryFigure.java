@@ -5,38 +5,34 @@ import java.util.ArrayList;
 import Figures.Figure;
 
 public class MemoryFigure {
-    static ArrayList<Figure> memoryList = new ArrayList<Figure>();
+    static ArrayList<ArrayList<Figure>> memoryList = new ArrayList<ArrayList<Figure>>();
     static ArrayList<Integer> codMemoryList = new ArrayList<Integer>();
     static ArrayList<Integer> indexInList = new ArrayList<Integer>();
-    static int lenghtMemory = 5;
+    static int lenghtMemory = 30;
     static int indexControlZ = -1;
-    static void addElementMemory(int cod, int index, Figure figure){
-        memoryList.add(figure);
-        codMemoryList.add(cod);
-        indexInList.add(index);
-        indexControlZ++;
-        if(memoryList.size() > lenghtMemory){
-            indexControlZ--;
-            memoryList.remove(0);
-            codMemoryList.remove(0);
-            indexInList.remove(0);
-        }
+
+    static void addElementMemory(int cod, int index, ArrayList<Figure> figure){
+        //if(memoryList.size() > lenghtMemory){
+//            memoryList.remove(0);
+  //          codMemoryList.remove(0);
+    //        indexInList.remove(0);
+            indexControlZ++;
+  //      }
+//        }else {
+        memoryList.add(indexControlZ, figure);
+        codMemoryList.add(indexControlZ, cod);
+        indexInList.add(indexControlZ, index);
     }
     static int controlZinMemory(){
-        if(indexControlZ -1 >=0)
+        if(indexControlZ >=0)
             indexControlZ--;
-        int aux = codMemoryList.size()-1;
-        if(aux <= -1){
-            return -1;
-        }else {
-            return codMemoryList.get(aux);
-        }
+        return indexControlZ;
     }
     static int controlYinMemory(){
-        if(indexControlZ +1 < lenghtMemory){
+        if(indexControlZ +1 < memoryList.size()){
             indexControlZ++;
         }
-        return codMemoryList.get(indexControlZ);
+        return indexControlZ;
     }
 
 }
