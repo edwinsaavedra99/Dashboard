@@ -10,6 +10,7 @@ public class MemoryFigure {
     static ArrayList<Integer> indexInList = new ArrayList<Integer>();
     static int lenghtMemory = 30;
     static int indexControlZ = -1;
+    static int indexControlY = -1;
 
     static void addElementMemory(int cod, int index, ArrayList<Figure> figure){
         //if(memoryList.size() > lenghtMemory){
@@ -23,16 +24,15 @@ public class MemoryFigure {
         codMemoryList.add(indexControlZ, cod);
         indexInList.add(indexControlZ, index);
     }
-    static int controlZinMemory(){
-        if(indexControlZ >=0)
+    static void controlZinMemory(){
+        if(indexControlZ >=0) {
             indexControlZ--;
-        return indexControlZ;
+        }
     }
-    static int controlYinMemory(){
+    static void controlYinMemory(){
         if(indexControlZ +1 < memoryList.size()){
             indexControlZ++;
         }
-        return indexControlZ;
     }
 
 }

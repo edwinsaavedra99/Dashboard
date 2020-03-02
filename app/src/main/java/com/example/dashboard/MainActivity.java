@@ -1673,7 +1673,7 @@ public class MainActivity extends AppCompatActivity {
             if(Util.getCollections()[i]!=null)
                 listColors.get(i).setColorFilter(Color.rgb(Util.getCollections()[i][0],Util.getCollections()[i][1],Util.getCollections()[i][2]));
         }
-        scaleSort = 5;
+        scaleSort = 3;
         //--End Initializing
     }//End Method
 }//End Class
