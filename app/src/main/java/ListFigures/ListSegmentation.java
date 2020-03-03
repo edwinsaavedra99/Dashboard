@@ -110,18 +110,20 @@ public class ListSegmentation extends View {
     private Bitmap mImage;
     private  int mImageWidth;
     private int mImageHeight;
+    private int dimen;
     //Control
-    private  ControlMenu controlMenu;
+    private  DisplayMetrics metrics;
     /**
     /**
      * Class Constructor
      * @param context The View
      * @param viewZoom : layout zoom Image RX*/
-    public ListSegmentation (Context context, LinearLayout viewZoom, CardView cardView, LinearLayout content, ControlMenu controlMenu){
+    public ListSegmentation (Context context, LinearLayout viewZoom, CardView cardView, LinearLayout content, DisplayMetrics metrics, int dimen){
         super(context);
         this.content = content;
         this.viewZoom = viewZoom;
         layout = content;
+        this.dimen =dimen;
         scaleGestureDetector = new ScaleGestureDetector(context, new ListSegmentation.ScaleListener());
         this.viewZoom.setVisibility(INVISIBLE);
         this.cardView = cardView;
@@ -130,7 +132,7 @@ public class ListSegmentation extends View {
         segmentationMin = new ArrayList<>();
         zoomList = new ListZoomSegmentation(context);
         this.viewZoom.addView(zoomList);
-        this.controlMenu = controlMenu;
+        this.metrics = metrics;
         invalidate();
     }//Closing the class constructor
     public void loadImage(Bitmap mImage){
@@ -222,19 +224,9 @@ public class ListSegmentation extends View {
         return false;
     }
     public boolean controlZ(){
-        int index;
-        if(1==0)
-            index = MemoryFigure.controlZwithControlY();
-        else
-            index = MemoryFigure.controlZinMemory();
-         /*TEST*/ System.out.println("index: "+index);
+        int index = MemoryFigure.controlZinMemory();
         if(index != -1 ) {
-            ElementMemory elementMemory = null;
-            if(1==0) {
-                elementMemory = MemoryFigure.memoryList.get(index);
-            }else {
-                elementMemory = MemoryFigure.memoryList.get(index);
-            }
+            ElementMemory elementMemory =MemoryFigure.memoryList.get(index);
             switch (elementMemory.getCodMemoryList()) {
                 case 1:{
                     segmentation.remove(elementMemory.getIndexInList());
@@ -532,13 +524,17 @@ public class ListSegmentation extends View {
     }
 
     public void moveZoom(float touchX, float touchY){ //ESTO DEBE TESTEARSE CON UN DISPOSITIVO DE DIFERENTE DIMENSION
+        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
         boolean flagMoveZoom = false;
-        if(touchX>= dpToPx(45) && touchX<=dpToPx(165+25) && touchY >= dpToPx(8) && touchY <= dpToPx(128+35)){
+        if(touchX>= dpToPx(45) && touchX<=dpToPx(165+40) && touchY >= dpToPx(8) && touchY <= dpToPx(128+35)){
             flagMoveZoom = true;
         }
-        if (flagMoveZoom)
-            this.cardView.setTranslationX(pxToDp((int)generalWidth/2-45));
-        else
+        //int d = (int) getContext().getResources().getDimension(getContext().R.)
+        //debe trasladarse segun las dimensiones de la pantalla 120 - 120 45
+        if (flagMoveZoom) {
+            this.cardView.setTranslationX(displayMetrics.widthPixels);
+            this.cardView.setTranslationX(this.cardView.getTranslationX()-dimen);
+        }else
             this.cardView.setTranslationX(0);
     }
     public void add(float getX,float getY){

@@ -61,6 +61,7 @@ public class ListFigure  extends View {
         myFigures = new ArrayList<>();
         layout = _layout;
         scaleGestureDetector = new ScaleGestureDetector(context, new ScaleListener());
+        figureSelected = -1;
         initialStyleFigure();
         invalidate();
     }//Closing the class constructor
@@ -247,6 +248,25 @@ public class ListFigure  extends View {
             return false;
         }
     }//End Method
+
+    public boolean isSelectedFigure(){
+        return this.figureSelected != -1;
+    }
+    public boolean setDescriptionFigure(String description){
+        if (myFigures.size()>0 && this.figureSelected != -1 ) {
+            myFigures.get(this.figureSelected).setDescription(description);
+            return true;
+        }else{
+            return false;
+        }
+    }
+    public String getDescriptionFigure(){
+        if (myFigures.size()>0 && this.figureSelected != -1 ) {
+            return myFigures.get(this.figureSelected).getDescription();
+        }else{
+            return "";
+        }
+    }
     /**
      * Method changeColour the selected figure changes color
      * */

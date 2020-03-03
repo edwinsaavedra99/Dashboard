@@ -1,16 +1,16 @@
 package com.example.dashboard;
 //Imports
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -19,7 +19,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -28,6 +30,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
+
+import com.google.android.material.textfield.TextInputEditText;
+
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
@@ -65,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     //Edit and delete Figures
     private ImageView deleteFigures;
     private ImageView changeColor;
+    private ImageView infoFigures;
     private int[] colour = {183, 149, 11};
     //Zoom Image
     private ImageView extendsImage;
@@ -208,6 +214,7 @@ public class MainActivity extends AppCompatActivity {
     private int nameImage;
     private boolean longClick = false;
     private int mActivePointerId = INVALID_POINTER_ID;
+    private LinearLayout rootLayout;
     //--End Attributes of class
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @SuppressLint("ClickableViewAccessibility")
@@ -218,11 +225,27 @@ public class MainActivity extends AppCompatActivity {
         //Add Layout Activity XML
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+        getSupportActionBar().hide();
         //Load OpenCV
         OpenCVLoader.initDebug();
         //Initializing Properties
+        //
         initialProperties();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+       infoFigures.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(myListFigures.isSelectedFigure())
+                    showInfoDialog();
+                else{
+                    Toast toast;
+                    toast = Toast.makeText(getApplicationContext(),"Please selected figure ",Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+
+            }
+        });
         closeControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -395,6 +418,8 @@ public class MainActivity extends AppCompatActivity {
         touchControl.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                DisplayMetrics metrics = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(metrics);
                 float getX = event.getX();
                 float getY = event.getY();
                 float getPastX=0;
@@ -412,10 +437,10 @@ public class MainActivity extends AppCompatActivity {
                         final int pointerIndex = event.findPointerIndex(mActivePointerId);
                         getX = event.getX(pointerIndex);
                         getY = event.getY(pointerIndex);
-                        if((control.getTranslationX()-(getPastX-getX))-40>=0 && (control.getTranslationX()-(getPastX-getX))+280<=myListSegmentation.getGeneralWidth()){
+                        if((control.getTranslationX()-(getPastX-getX))-40>=0 && (control.getTranslationX()-(getPastX-getX))+280<=metrics.widthPixels){
                             control.setTranslationX((control.getTranslationX()-(getPastX-getX))-40);
                         }
-                        if((control.getTranslationY()-(getPastY-getY))+280<=myListSegmentation.getGeneralHeight()&& (control.getTranslationY()-(getPastY-getY))-40>=0){
+                        if((control.getTranslationY()-(getPastY-getY))+280<=metrics.heightPixels&& (control.getTranslationY()-(getPastY-getY))-40>=0){
                             control.setTranslationY((control.getTranslationY()-(getPastY-getY))-40);
                         }
                         getPastX = getX;
@@ -1464,7 +1489,36 @@ public class MainActivity extends AppCompatActivity {
         canvas.drawText(description,bounds.left,bounds.top-pencil2.ascent(),pencil2);
         return  textBitmap;
     }
+    private void showInfoDialog() {
 
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("INFO FIGURE: ");
+        dialog.setMessage("Please description figure");
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View login_layout = inflater.inflate(R.layout.layout_info_figure,null);
+        final TextInputEditText editDescription = login_layout.findViewById(R.id.txt_description);
+        editDescription.setText(myListFigures.getDescriptionFigure());
+        dialog.setView(login_layout);
+        dialog.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast toast;
+                if(myListFigures.setDescriptionFigure(editDescription.getText().toString()))
+                    toast = Toast.makeText(getApplicationContext(),"Save Successfully",Toast.LENGTH_SHORT);
+                else
+                    toast = Toast.makeText(getApplicationContext(),"No Save ",Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
+        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+
+    }
     /**
      * Method initial Properties Initializing Properties of Activity
      * */
@@ -1484,6 +1538,7 @@ public class MainActivity extends AppCompatActivity {
         creatorLines = findViewById(R.id.addLine);
         creatorEllipses = findViewById(R.id.addEllipse);
         creatorPoints = findViewById(R.id.addPoint);
+        infoFigures = findViewById(R.id.infoFigures);
         deleteFigures = findViewById(R.id.deleteFigures);
         changeColor = findViewById(R.id.changeColor);
         segmentation = findViewById(R.id.segmentation);
@@ -1527,7 +1582,10 @@ public class MainActivity extends AppCompatActivity {
         closeControl = findViewById(R.id.closeControl1);
         aristas = findViewById(R.id.arista);
         ControlMenu controlMenu = new ControlMenu(control,touchControl,sortLeft,sortRight,sortUp,sortDown);
-
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        control.setTranslationX(metrics.widthPixels/2-80*2); //convertir a DP
+        control.setTranslationY(metrics.heightPixels/2-80*2); //convertir a DP
         //Segmentation
         addPointSegment = findViewById(R.id.addPointSegment);
         pencilSegment =  findViewById(R.id.pencilSegment);
@@ -1536,14 +1594,11 @@ public class MainActivity extends AppCompatActivity {
         zoomImageLayout = findViewById(R.id.zoomLayoutImageRx_1); //Layout Zoom Image Ray-X
         zoomImageLayout.setVisibility(View.INVISIBLE);
         layoutImageRx1 = findViewById(R.id.layoutImageRx_1); //Layout Image Ray-X
-        myListSegmentation = new ListSegmentation(this, zoomImageLayout, cardView,layoutImageRx1,controlMenu);
+        int d = (int) getResources().getDimension(R.dimen.traslate_zoom);
+        myListSegmentation = new ListSegmentation(this, zoomImageLayout, cardView,layoutImageRx1,metrics,d);
         layoutImageRx1.addView(myListSegmentation);
         deleteSegments = findViewById(R.id.deleteSegments);
         changeColorSegments = findViewById(R.id.changeColorSegments);
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        control.setTranslationX(metrics.widthPixels/2-80*2); //convertir a DP
-        control.setTranslationY(metrics.heightPixels/2-80*2); //convertir a DP
         //Filters
         openCv = findViewById(R.id.openCV);
         openCv1 = findViewById(R.id.openCV1);

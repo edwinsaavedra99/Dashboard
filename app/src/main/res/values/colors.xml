@@ -2,5 +2,14 @@
 <resources>
     <color name="colorPrimary">#123663</color>
     <color name="colorPrimaryDark">#80000000</color>
-    <color name="colorAccent">#ffffff</color>
+    <color name="colorAccent">#123663</color>
+    <color name="color_app_cuerpo">#164f70</color>
+    <color name="bottomText">#6b6b76</color>
+    <color name="rippleEffectColor">#f816a463</color>
+    <color name="btnSignIn">#1fbad6</color>
+    <color name="btnRegister">#83838c</color>
+    <color name="frame">#000000</color>
+    <color name="coloApp">#283747</color>
+    <color name="coloAzul">#21618C</color>
+    <color name="coloNaranja">#873600</color>
 </resources>

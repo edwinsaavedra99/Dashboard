@@ -10,6 +10,7 @@ public abstract class Figure {
     //Class Attributes
     private Paint paint;
     private int[] colour;
+    private String description;
     /**
      * Class Constructor
      * @param _paint Define the style and plotted to draw the figure
@@ -17,8 +18,15 @@ public abstract class Figure {
     Figure(Paint _paint, int[] _colour){
         paint = _paint;
         colour = _colour;
+        description = "";
     }//Closing the class constructor
     // Methods Getters and Setters
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
+    }
     public int[] getColour() {
         return colour;
     }
