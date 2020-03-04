@@ -372,15 +372,27 @@ public class ListSegmentation extends View {
      * Method onDraw draw the segment
      * @param canvas area of draw*/
     protected void onDraw(Canvas canvas) {
-        generalWidth = canvas.getWidth();
-        generalHeight = canvas.getHeight();
+        int altoCa = getBottom();
+        int anchoCa = getRight();
+        float medioCa = (float) altoCa/anchoCa;
+        int altoIm = mBoard.getIntrinsicHeight();
+        int anchoIm = mBoard.getIntrinsicWidth();
+        float medioIm = (float)altoIm/anchoIm;
+        int alto,ancho;
+        if(medioCa<medioIm){
+            ancho = anchoCa;
+            alto =(int)(medioIm*ancho);
+        }else{
+            alto = altoCa;
+            ancho = (int) (alto/medioIm);
+        }
+        generalWidth = ancho;
+        generalHeight = alto;
         if(mBoard !=null){
             canvas.save();
-            int altoCa = getBottom();
-            int anchoCa = getRight();
-            mBoard.setBounds(0,0,anchoCa,altoCa);
-            mImageHeight = altoCa;
-            mImageWidth = anchoCa;
+            mBoard.setBounds(0,0,ancho,alto);
+            mImageHeight = alto;
+            mImageWidth = ancho;
             if(mPositionX*-1<0){
                 mPositionX = 0;
             }else if((mPositionX*-1)>mImageWidth*mScaleFactor-getWidth()){

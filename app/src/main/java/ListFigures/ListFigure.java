@@ -316,18 +316,17 @@ public class ListFigure  extends View {
         double distance = Math.sqrt(valX * valX + valY * valY);
         return (float) distance;
     }//Closing the Method
+
+
+
     /**
      * Method onDraw draw the figure geometric
      * @param canvas area of draw*/
     @SuppressLint("CanvasSize")
     protected void onDraw(Canvas canvas) {
-        generalWidth = canvas.getWidth();
-        generalHeight = canvas.getHeight();
-        if(mBoard !=null){
-            canvas.save();
-            int altoCa = getBottom();
-            int anchoCa = getRight();
-            /*float medioCa = (float) altoCa/anchoCa;
+        int altoCa = getBottom();
+        int anchoCa = getRight();
+        float medioCa = (float) altoCa/anchoCa;
             int altoIm = mBoard.getIntrinsicHeight();
             int anchoIm = mBoard.getIntrinsicWidth();
             float medioIm = (float)altoIm/anchoIm;
@@ -339,10 +338,13 @@ public class ListFigure  extends View {
                 alto = altoCa;
                 ancho = (int) (alto/medioIm);
             }
-            mBoard.setBounds(0,0,ancho,alto);*/
-            mBoard.setBounds(0,0,anchoCa,altoCa);
-            mImageHeight = altoCa;
-            mImageWidth = anchoCa;
+        generalWidth = ancho;
+        generalHeight = alto;
+        if(mBoard !=null){
+            canvas.save();
+            mBoard.setBounds(0,0,ancho,alto);
+            mImageHeight = alto;
+            mImageWidth = ancho;
             if(mPositionX*-1<0){
                 mPositionX = 0;
             }else if((mPositionX*-1)>mImageWidth*mScaleFactor-getWidth()){
@@ -453,9 +455,9 @@ public class ListFigure  extends View {
      * Method checkCircle check the dimensions of the figure Circle in its container
      * @param temp Circle figure */
     public boolean checkCircle(Circle temp){
-        return temp.getCenterX()+temp.getRadius() < getWidth() &&
+        return temp.getCenterX()+temp.getRadius() < generalWidth &&
                 temp.getCenterX()-temp.getRadius()>0 &&
-                temp.getCenterY()+temp.getRadius()< getHeight() &&
+                temp.getCenterY()+temp.getRadius()< generalHeight &&
                 temp.getCenterY()-temp.getRadius()>0;
     }//End Method
     /**

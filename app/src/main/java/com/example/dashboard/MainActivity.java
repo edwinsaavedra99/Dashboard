@@ -293,9 +293,9 @@ public class MainActivity extends AppCompatActivity {
                 if(myListSegmentation.getFigureSelected()>-1) {
                     Circle a = (Circle) myListSegmentation.getSegmentation().get(myListSegmentation.getFigureSelected());
                     Circle a1 = (Circle) myListSegmentation.getZoomList().getSegmentation().get(myListSegmentation.getZoomList().getFigureSelected());
-                    myListSegmentation.getViewZoom().setPivotY(myListSegmentation.getViewZoom().getHeight() / myListSegmentation.getHeight());
+                    myListSegmentation.getViewZoom().setPivotY(myListSegmentation.getViewZoom().getHeight() /  myListSegmentation.getGeneralHeight());
                     a.setCenterY(0);
-                    a1.setCenterY(a.getCenterY() * myListSegmentation.getViewZoom().getHeight() / myListSegmentation.getHeight());
+                    a1.setCenterY(a.getCenterY() * myListSegmentation.getViewZoom().getHeight() / myListSegmentation.getGeneralHeight());
                     myListSegmentation.invalidate();
                     myListSegmentation.getZoomList().invalidate();
                 }
@@ -307,9 +307,9 @@ public class MainActivity extends AppCompatActivity {
                 if(myListSegmentation.getFigureSelected()>-1) {
                     Circle a = (Circle) myListSegmentation.getSegmentation().get(myListSegmentation.getFigureSelected());
                     Circle a1 = (Circle) myListSegmentation.getZoomList().getSegmentation().get(myListSegmentation.getZoomList().getFigureSelected());
-                    myListSegmentation.getViewZoom().setPivotX(myListSegmentation.getViewZoom().getWidth() / myListSegmentation.getWidth());
+                    myListSegmentation.getViewZoom().setPivotX(myListSegmentation.getViewZoom().getWidth() / myListSegmentation.getGeneralWidth());
                     a.setCenterX(0);
-                    a1.setCenterX(a.getCenterX() * myListSegmentation.getViewZoom().getWidth() / myListSegmentation.getWidth());
+                    a1.setCenterX(a.getCenterX() * myListSegmentation.getViewZoom().getWidth() / myListSegmentation.getGeneralWidth());
                     myListSegmentation.invalidate();
                     myListSegmentation.getZoomList().invalidate();
                 }
@@ -321,9 +321,9 @@ public class MainActivity extends AppCompatActivity {
                 if(myListSegmentation.getFigureSelected()>-1) {
                     Circle a = (Circle) myListSegmentation.getSegmentation().get(myListSegmentation.getFigureSelected());
                     Circle a1 = (Circle) myListSegmentation.getZoomList().getSegmentation().get(myListSegmentation.getZoomList().getFigureSelected());
-                    myListSegmentation.getViewZoom().setPivotX((myListSegmentation.getWidth()) * myListSegmentation.getViewZoom().getWidth() / myListSegmentation.getWidth());
-                    a.setCenterX(myListSegmentation.getWidth());
-                    a1.setCenterX(a.getCenterX() * myListSegmentation.getViewZoom().getWidth() / myListSegmentation.getWidth());
+                    myListSegmentation.getViewZoom().setPivotX((myListSegmentation.getGeneralWidth()) * myListSegmentation.getViewZoom().getWidth() / myListSegmentation.getGeneralWidth());
+                    a.setCenterX(myListSegmentation.getGeneralWidth());
+                    a1.setCenterX(a.getCenterX() * myListSegmentation.getViewZoom().getWidth() / myListSegmentation.getGeneralWidth());
                     myListSegmentation.invalidate();
                     myListSegmentation.getZoomList().invalidate();
                 }
@@ -335,9 +335,9 @@ public class MainActivity extends AppCompatActivity {
                 if(myListSegmentation.getFigureSelected()>-1) {
                     Circle a = (Circle) myListSegmentation.getSegmentation().get(myListSegmentation.getFigureSelected());
                     Circle a1 = (Circle) myListSegmentation.getZoomList().getSegmentation().get(myListSegmentation.getZoomList().getFigureSelected());
-                    myListSegmentation.getViewZoom().setPivotY((myListSegmentation.getHeight())  * myListSegmentation.getViewZoom().getHeight() / myListSegmentation.getHeight());
-                    a.setCenterY(myListSegmentation.getHeight());
-                    a1.setCenterY(a.getCenterY() * myListSegmentation.getViewZoom().getHeight() / myListSegmentation.getHeight());
+                    myListSegmentation.getViewZoom().setPivotY(( myListSegmentation.getGeneralHeight())  * myListSegmentation.getViewZoom().getHeight() /  myListSegmentation.getGeneralHeight());
+                    a.setCenterY( myListSegmentation.getGeneralHeight());
+                    a1.setCenterY(a.getCenterY() * myListSegmentation.getViewZoom().getHeight() /  myListSegmentation.getGeneralHeight());
                     myListSegmentation.invalidate();
                     myListSegmentation.getZoomList().invalidate();
                 }
@@ -349,13 +349,13 @@ public class MainActivity extends AppCompatActivity {
             if(myListSegmentation.getFigureSelected()>-1){
                 Circle a = (Circle) myListSegmentation.getSegmentation().get(myListSegmentation.getFigureSelected());
                 Circle a1 = (Circle) myListSegmentation.getZoomList().getSegmentation().get(myListSegmentation.getZoomList().getFigureSelected());
-                myListSegmentation.getViewZoom().setPivotY((a.getCenterY())*myListSegmentation.getViewZoom().getHeight()/myListSegmentation.getHeight());
+                myListSegmentation.getViewZoom().setPivotY((a.getCenterY())*myListSegmentation.getViewZoom().getHeight()/ myListSegmentation.getGeneralHeight());
                 if(a.getCenterY() - scaleSort>=0) {
                     a.setCenterY(a.getCenterY() - scaleSort);
                 }else{
                     a.setCenterY(0);
                 }
-                a1.setCenterY(a.getCenterY() * myListSegmentation.getViewZoom().getHeight() / myListSegmentation.getHeight());
+                a1.setCenterY(a.getCenterY() * myListSegmentation.getViewZoom().getHeight() /  myListSegmentation.getGeneralHeight());
                 myListSegmentation.invalidate();
                 myListSegmentation.getZoomList().invalidate();
             }
@@ -367,13 +367,13 @@ public class MainActivity extends AppCompatActivity {
                 if(myListSegmentation.getFigureSelected()>-1){
                     Circle a = (Circle) myListSegmentation.getSegmentation().get(myListSegmentation.getFigureSelected());
                     Circle a1 = (Circle) myListSegmentation.getZoomList().getSegmentation().get(myListSegmentation.getZoomList().getFigureSelected());
-                    myListSegmentation.getViewZoom().setPivotY((a.getCenterY())*myListSegmentation.getViewZoom().getHeight()/myListSegmentation.getHeight());
-                    if(a.getCenterY() + scaleSort<=myListSegmentation.getHeight() ) {
+                    myListSegmentation.getViewZoom().setPivotY((a.getCenterY())*myListSegmentation.getViewZoom().getHeight()/ myListSegmentation.getGeneralHeight());
+                    if(a.getCenterY() + scaleSort<= myListSegmentation.getGeneralHeight() ) {
                         a.setCenterY(a.getCenterY() + scaleSort);
                     }else{
                         a.setCenterY(myListSegmentation.getHeight());
                     }
-                    a1.setCenterY(a.getCenterY() * myListSegmentation.getViewZoom().getHeight() / myListSegmentation.getHeight());
+                    a1.setCenterY(a.getCenterY() * myListSegmentation.getViewZoom().getHeight() /  myListSegmentation.getGeneralHeight());
                     myListSegmentation.invalidate();
                     myListSegmentation.getZoomList().invalidate();
                 }
@@ -385,13 +385,13 @@ public class MainActivity extends AppCompatActivity {
                 if(myListSegmentation.getFigureSelected()>-1){
                     Circle a = (Circle) myListSegmentation.getSegmentation().get(myListSegmentation.getFigureSelected());
                     Circle a1 = (Circle) myListSegmentation.getZoomList().getSegmentation().get(myListSegmentation.getZoomList().getFigureSelected());
-                    myListSegmentation.getViewZoom().setPivotX((a.getCenterX())*myListSegmentation.getViewZoom().getWidth()/myListSegmentation.getWidth());
-                    if(a.getCenterX() + scaleSort<=myListSegmentation.getWidth()) {
+                    myListSegmentation.getViewZoom().setPivotX((a.getCenterX())*myListSegmentation.getViewZoom().getWidth()/myListSegmentation.getGeneralWidth());
+                    if(a.getCenterX() + scaleSort<=myListSegmentation.getGeneralWidth()) {
                         a.setCenterX(a.getCenterX() + scaleSort);
                     }else{
-                        a.setCenterX(myListSegmentation.getWidth());
+                        a.setCenterX(myListSegmentation.getGeneralWidth());
                     }
-                    a1.setCenterX(a.getCenterX() * myListSegmentation.getViewZoom().getWidth() / myListSegmentation.getWidth());
+                    a1.setCenterX(a.getCenterX() * myListSegmentation.getViewZoom().getWidth() / myListSegmentation.getGeneralWidth());
                     myListSegmentation.invalidate();
                     myListSegmentation.getZoomList().invalidate();
                 }
@@ -403,13 +403,13 @@ public class MainActivity extends AppCompatActivity {
                 if(myListSegmentation.getFigureSelected()>-1){
                     Circle a = (Circle) myListSegmentation.getSegmentation().get(myListSegmentation.getFigureSelected());
                     Circle a1 = (Circle) myListSegmentation.getZoomList().getSegmentation().get(myListSegmentation.getZoomList().getFigureSelected());
-                    myListSegmentation.getViewZoom().setPivotX((a.getCenterX())*myListSegmentation.getViewZoom().getWidth()/myListSegmentation.getWidth());
+                    myListSegmentation.getViewZoom().setPivotX((a.getCenterX())*myListSegmentation.getViewZoom().getWidth()/myListSegmentation.getGeneralWidth());
                     if(a.getCenterX() - scaleSort-a.getRadius()>=0) {
                         a.setCenterX(a.getCenterX() - scaleSort);
                     }else{
                         a.setCenterX(0);
                     }
-                    a1.setCenterX(a.getCenterX() * myListSegmentation.getViewZoom().getWidth() / myListSegmentation.getWidth());
+                    a1.setCenterX(a.getCenterX() * myListSegmentation.getViewZoom().getWidth() /myListSegmentation.getGeneralWidth());
                     myListSegmentation.invalidate();
                     myListSegmentation.getZoomList().invalidate();
                 }
@@ -437,10 +437,10 @@ public class MainActivity extends AppCompatActivity {
                         final int pointerIndex = event.findPointerIndex(mActivePointerId);
                         getX = event.getX(pointerIndex);
                         getY = event.getY(pointerIndex);
-                        if((control.getTranslationX()-(getPastX-getX))-40>=0 && (control.getTranslationX()-(getPastX-getX))+280<=metrics.widthPixels){
+                        if((control.getTranslationX()-(getPastX-getX))-40>=0 && (control.getTranslationX()-(getPastX-getX))+((int)(getResources().getDimension(R.dimen.translate_control)))<=metrics.widthPixels){
                             control.setTranslationX((control.getTranslationX()-(getPastX-getX))-40);
                         }
-                        if((control.getTranslationY()-(getPastY-getY))+280<=metrics.heightPixels&& (control.getTranslationY()-(getPastY-getY))-40>=0){
+                        if((control.getTranslationY()-(getPastY-getY))+((int)(getResources().getDimension(R.dimen.translate_control)))<= metrics.heightPixels && (control.getTranslationY()-(getPastY-getY))-40>=0){
                             control.setTranslationY((control.getTranslationY()-(getPastY-getY))-40);
                         }
                         getPastX = getX;
@@ -1584,8 +1584,8 @@ public class MainActivity extends AppCompatActivity {
         ControlMenu controlMenu = new ControlMenu(control,touchControl,sortLeft,sortRight,sortUp,sortDown);
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        control.setTranslationX(metrics.widthPixels/2-80*2); //convertir a DP
-        control.setTranslationY(metrics.heightPixels/2-80*2); //convertir a DP
+        control.setTranslationX(metrics.widthPixels/2-((int)(getResources().getDimension(R.dimen.initial_position_control)))*2); //convertir a DP
+        control.setTranslationY(metrics.heightPixels/2-((int)(getResources().getDimension(R.dimen.initial_position_control)))*2); //convertir a DP
         //Segmentation
         addPointSegment = findViewById(R.id.addPointSegment);
         pencilSegment =  findViewById(R.id.pencilSegment);
