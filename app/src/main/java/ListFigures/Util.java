@@ -13,7 +13,7 @@ public class Util {
     private static int[] color8 = {95, 106, 106};
     private static int[] color9 = {46, 64, 83};
     private static int[] color10 = {0, 0, 255};
-    private static int[] color11 = {0, 0, 0};
+    private static int[] color11 = {255, 0, 90};
     private static int[] color12 = {138, 43, 226};
     private static int[] color13 = {127, 255, 0};
     private static int[] color14 = {95, 158, 160};

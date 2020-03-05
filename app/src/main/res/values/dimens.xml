@@ -3,4 +3,5 @@
     <dimen name="traslate_zoom">210dp</dimen>
     <dimen name="initial_position_control">80dp</dimen>
     <dimen name="translate_control">140dp</dimen>
+    <dimen name="icon_filter">100dp</dimen>
 </resources>

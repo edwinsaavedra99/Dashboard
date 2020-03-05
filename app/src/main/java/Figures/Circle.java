@@ -46,16 +46,9 @@ public class Circle extends Figure{
     }//Closing the methods getters and setters
     /**
      * Method toString show class content
-     * @param format Define the writing format
      * @return content of the class*/
-    public String toString(String format){
-        switch (format){
-            case "json":
-                return "{\"id\":1,\"cx\"="+this.getCenterX()+",\"cy\"="+this.getCenterY()+",\"r\"="+this.getRadius()+"}" ;
-            case "xml":
-                return "Implement Format XML";
-            default:
-                return "Format no exits";
-        }
+    public String toString(int id){
+                return "{\"id\":"+id+",\"cx\"="+this.getCenterX()+",\"cy\"="+this.getCenterY()+",\"r\"="+this.getRadius()+"}" ;
+
     }//End Method toString
 }//Close Class

@@ -38,10 +38,16 @@ class MyFilters {
 
     Bitmap filterCanny(){
         Mat img_result = img.clone();
-        Imgproc.cvtColor(img_result,img_result,Imgproc.COLOR_RGB2BGRA);
-        Imgproc.Canny(img,img_result,80,90);
-        Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(),img_result.rows(),Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(img_result,img_bitmap);
+        Bitmap img_bitmap = null;
+        try{
+            Imgproc.cvtColor(img_result,img_result,Imgproc.COLOR_RGB2BGRA);
+        }catch(Exception e){
+            System.out.println("EXCEPTION IN COLOR CHANNEL");
+        }finally {
+            Imgproc.Canny(img,img_result,80,90);
+            img_bitmap = Bitmap.createBitmap(img_result.cols(),img_result.rows(),Bitmap.Config.ARGB_8888);
+            Utils.matToBitmap(img_result,img_bitmap);
+        }
         return img_bitmap;
     }
     Bitmap filterRGB(){
@@ -52,25 +58,37 @@ class MyFilters {
     }
     Bitmap filterMorph(){
         Mat img_result = img.clone();
-        Imgproc.cvtColor(img_result,img_result,Imgproc.COLOR_RGB2BGRA);
-        Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE,new Size(3,3));
-        Imgproc.morphologyEx(img,img_result,Imgproc.MORPH_GRADIENT,kernel);
-        Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(),img_result.rows(),Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(img_result,img_bitmap);
+        Bitmap img_bitmap = null;
+        try{
+            Imgproc.cvtColor(img_result,img_result,Imgproc.COLOR_RGB2BGRA);
+        }catch(Exception e){
+            System.out.println("EXCEPTION IN COLOR CHANNEL");
+        }finally {
+            Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, new Size(3, 3));
+            Imgproc.morphologyEx(img, img_result, Imgproc.MORPH_GRADIENT, kernel);
+            img_bitmap = Bitmap.createBitmap(img_result.cols(), img_result.rows(), Bitmap.Config.ARGB_8888);
+            Utils.matToBitmap(img_result, img_bitmap);
+        }
         return img_bitmap;
     }
     Bitmap filerSepia(){
         Mat  mSepiaKernel;
+        Bitmap img_bitmap = null;
         mSepiaKernel = new Mat(4, 4, CvType.CV_32F);
         mSepiaKernel.put(0, 0, /* R */0.189f, 0.769f, 0.393f, 0f);
         mSepiaKernel.put(1, 0, /* G */0.168f, 0.686f, 0.349f, 0f);
         mSepiaKernel.put(2, 0, /* B */0.131f, 0.534f, 0.272f, 0f);
         mSepiaKernel.put(3, 0, /* A */0.000f, 0.000f, 0.000f, 1f);
         Mat img_result = img.clone();
-        Imgproc.cvtColor(img_result, img_result, Imgproc.COLOR_BGR2RGBA);
-        Core.transform(img_result, img_result, mSepiaKernel);
-        Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(), img_result.rows(), Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(img_result, img_bitmap);
+        try{
+            Imgproc.cvtColor(img_result, img_result, Imgproc.COLOR_BGR2RGBA);
+            Core.transform(img_result, img_result, mSepiaKernel);
+        }catch (Exception e){
+            System.out.println("Error controlado");
+        }finally {
+            img_bitmap = Bitmap.createBitmap(img_result.cols(), img_result.rows(), Bitmap.Config.ARGB_8888);
+            Utils.matToBitmap(img_result, img_bitmap);
+        }
         return img_bitmap;
     }
     Bitmap filterColor(int colorMap){
@@ -97,10 +115,16 @@ class MyFilters {
     }
     Bitmap filterReduceColorsGray(int numColors){
         Mat img_result = img.clone();
-        Imgproc.cvtColor(img_result,img_result,Imgproc.COLOR_BGR2GRAY);
-        img_result = reduceColorsGray(img_result, numColors);
-        Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(), img_result.rows(), Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(img_result, img_bitmap);
+        Bitmap img_bitmap = null;
+        try{
+            Imgproc.cvtColor(img_result,img_result,Imgproc.COLOR_BGR2GRAY);
+        }catch(Exception e){
+            System.out.println("EXCEPTION IN COLOR CHANNEL");
+        }finally {
+            img_result = reduceColorsGray(img_result, numColors);
+            img_bitmap = Bitmap.createBitmap(img_result.cols(), img_result.rows(), Bitmap.Config.ARGB_8888);
+            Utils.matToBitmap(img_result, img_bitmap);
+        }
         return img_bitmap;
     }
     Bitmap filterReduceColors(int numColorRed, int numColorGreen , int numColorBlue){
@@ -114,20 +138,32 @@ class MyFilters {
     }
     Bitmap filterPencil(){
         Mat img_result = img.clone();
-        Imgproc.cvtColor(img_result,img_result,Imgproc.COLOR_BGR2GRAY);
-        Imgproc.adaptiveThreshold(img_result,img_result,255, Imgproc.ADAPTIVE_THRESH_MEAN_C,Imgproc.THRESH_BINARY,9,2);
-        Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(), img_result.rows(), Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(img_result, img_bitmap);
+        Bitmap img_bitmap = null;
+        try{
+            Imgproc.cvtColor(img_result,img_result,Imgproc.COLOR_BGR2GRAY);
+        }catch (Exception e ){
+            System.out.println("Error controlado in imgproc");
+        }finally {
+            Imgproc.adaptiveThreshold(img_result,img_result,255, Imgproc.ADAPTIVE_THRESH_MEAN_C,Imgproc.THRESH_BINARY,9,2);
+            img_bitmap = Bitmap.createBitmap(img_result.cols(), img_result.rows(), Bitmap.Config.ARGB_8888);
+            Utils.matToBitmap(img_result, img_bitmap);
+        }
         return img_bitmap;
     }
     Bitmap filterCarton(int numColorRed, int numColorGreen , int numColorBlue){
         Mat img1 = new Mat();
         Bitmap aux = image;
+        Bitmap img_bitmap = null;
         Utils.bitmapToMat(aux, img1);
-        Imgproc.cvtColor(img1, img1, Imgproc.COLOR_BGRA2BGR);
-        Mat img_result = cartoon(img1, numColorRed, numColorGreen, numColorBlue);
-        Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(), img_result.rows(), Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(img_result, img_bitmap);
+        try{
+            Imgproc.cvtColor(img1, img1, Imgproc.COLOR_BGRA2BGR);
+        }catch(Exception e ){
+            System.out.println("Error in channel image");
+        }finally {
+            Mat img_result = cartoon(img1, numColorRed, numColorGreen, numColorBlue);
+            img_bitmap = Bitmap.createBitmap(img_result.cols(), img_result.rows(), Bitmap.Config.ARGB_8888);
+            Utils.matToBitmap(img_result, img_bitmap);
+        }
         return img_bitmap;
     }
 
@@ -170,11 +206,23 @@ class MyFilters {
     private Mat cartoon(Mat img, int numRed, int numGreen, int numBlue) {
         Mat reducedColorImage = reduceColors(img, numRed, numGreen, numBlue);
         Mat result = new Mat();
-        Imgproc.cvtColor(img, result, Imgproc.COLOR_BGR2GRAY);
-        Imgproc.medianBlur(result, result, 15);
-        Imgproc.adaptiveThreshold(result, result, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, 15, 2);
-        Imgproc.cvtColor(result, result, Imgproc.COLOR_GRAY2BGR);
-        Core.bitwise_and(reducedColorImage, result, result);
+        try{
+            Imgproc.cvtColor(img, result, Imgproc.COLOR_BGR2GRAY);
+        }catch(Exception e){
+
+        }finally {
+            Imgproc.medianBlur(result, result, 15);
+            Imgproc.adaptiveThreshold(result, result, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, 15, 2);
+
+        }
+
+        try{
+            Imgproc.cvtColor(result, result, Imgproc.COLOR_GRAY2BGR);
+        }catch (Exception e1 ){
+
+        }finally {
+            Core.bitwise_and(reducedColorImage, result, result);
+        }
         return result;
     }
 }

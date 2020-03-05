@@ -36,6 +36,10 @@ import com.google.android.material.textfield.TextInputEditText;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
+
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -55,10 +59,10 @@ public class MainActivity extends AppCompatActivity {
     public static int TIME_ANIMATION = 100;
     public static float SCALE_ANIMATION = 1.1f;
     //Class Attributes--
-    /*/Load and Save data
+    //Load and Save data
     private String nameFile;
     private String nameBinder;
-    private File file;*/
+    private File file;
     //Insert Figures
     private ImageView saveData;
     private ImageView saveFigures;
@@ -290,14 +294,10 @@ public class MainActivity extends AppCompatActivity {
         allSortUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(myListSegmentation.getFigureSelected()>-1) {
-                    Circle a = (Circle) myListSegmentation.getSegmentation().get(myListSegmentation.getFigureSelected());
-                    Circle a1 = (Circle) myListSegmentation.getZoomList().getSegmentation().get(myListSegmentation.getZoomList().getFigureSelected());
-                    myListSegmentation.getViewZoom().setPivotY(myListSegmentation.getViewZoom().getHeight() /  myListSegmentation.getGeneralHeight());
-                    a.setCenterY(0);
-                    a1.setCenterY(a.getCenterY() * myListSegmentation.getViewZoom().getHeight() / myListSegmentation.getGeneralHeight());
-                    myListSegmentation.invalidate();
-                    myListSegmentation.getZoomList().invalidate();
+                if(!myListSegmentation.allSortUp()){
+                    Toast toast;
+                    toast = Toast.makeText(getApplicationContext(),"Please selected figure ",Toast.LENGTH_SHORT);
+                    toast.show();
                 }
             }
         });
@@ -492,11 +492,14 @@ public class MainActivity extends AppCompatActivity {
                 Animation.animationScale(deleteFigures,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
                 Toast toast;
                 //myListSegmentation ... ESTAS AQUI !!
-                if(myListFigures.deleteFigure())
+                /*if(myListFigures.toString())
                     toast = Toast.makeText(getApplicationContext(),"Data Save Successfully",Toast.LENGTH_SHORT);
                 else
                     toast = Toast.makeText(getApplicationContext(),"Data not Save",Toast.LENGTH_SHORT);
-                toast.show();
+                toast.show();*/
+                System.out.println(myListSegmentation.toString());
+
+                //myListSegmentation.toString();
             }
         });
         preview.setOnClickListener(new View.OnClickListener() {
@@ -1519,6 +1522,16 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
 
     }
+
+    public static Bitmap scaleDown(Bitmap realImage,float maxImageSize , boolean filter){
+        float ratio = Math.min((float) maxImageSize/realImage.getWidth(),(float) maxImageSize/realImage.getHeight());
+        int width = Math.round((float) ratio * realImage.getWidth());
+        int height = Math.round((float) ratio * realImage.getHeight());
+        Bitmap newImage = Bitmap.createScaledBitmap(realImage,width,height,filter);
+        return newImage;
+    }
+
+
     /**
      * Method initial Properties Initializing Properties of Activity
      * */
@@ -1533,11 +1546,16 @@ public class MainActivity extends AppCompatActivity {
         saveData = findViewById(R.id.saveData);
         saveFigures = findViewById(R.id.saveFigures);
         creatorCircles = findViewById(R.id.addCircle);
-        creatorCircles.setColorFilter(Color.rgb(255,255,255));
+        String  sectionColor = "#C3ACAC";
+        creatorCircles.setColorFilter(Color.parseColor(sectionColor));
         creatorRectangles = findViewById(R.id.addRectangle);
+        creatorRectangles.setColorFilter(Color.parseColor(sectionColor));
         creatorLines = findViewById(R.id.addLine);
+        creatorLines.setColorFilter(Color.parseColor(sectionColor));
         creatorEllipses = findViewById(R.id.addEllipse);
+        creatorEllipses.setColorFilter(Color.parseColor(sectionColor));
         creatorPoints = findViewById(R.id.addPoint);
+        creatorPoints.setColorFilter(Color.parseColor(sectionColor));
         infoFigures = findViewById(R.id.infoFigures);
         deleteFigures = findViewById(R.id.deleteFigures);
         changeColor = findViewById(R.id.changeColor);
@@ -1652,7 +1670,7 @@ public class MainActivity extends AppCompatActivity {
         flagColors = false;
         flagControl = false;
         try{
-            nameImage = R.drawable.rx_image_1;
+            nameImage = R.drawable.rx_image_10;
             img = Utils.loadResource(getApplicationContext(),nameImage);
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inScaled = false;
@@ -1665,43 +1683,49 @@ public class MainActivity extends AppCompatActivity {
         myListSegmentation.loadImage(this.original);
         myFilters = new MyFilters(this.img,this.original);
         zoomImageLayout.setBackground(new BitmapDrawable(getResources(),myFilters.filterRGB()));
+        //Resize Image Icon Filter
+        int d1 = (int) getResources().getDimension(R.dimen.icon_filter);
+        Bitmap scaleIconsBitmap = scaleDown(this.original,d1,true);
+        Mat img_result_aux = new Mat();
+        Imgproc.resize(img,img_result_aux,new Size(d1,d1));
+        MyFilters myFilters = new MyFilters(img_result_aux,scaleIconsBitmap);
         //Icons with filter
-        groupVariantOpenCv.setImageBitmap(makeTransparent(myFilters.cropBitmap(myFilters.filterRGB()),80,"Variant"));
-        groupBordersOpenCv.setImageBitmap(makeTransparent(myFilters.cropBitmap(myFilters.filterCanny()),80,"Borders"));
-        groupCalorOpenCv.setImageBitmap(makeTransparent(myFilters.cropBitmap(myFilters.filterColor(2)),80,"Calor"));
-        groupColorsOpenCv.setImageBitmap(makeTransparent(myFilters.cropBitmap(myFilters.filterSummer()),80,"Colors"));
-        openCv.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterCanny()),"Canny"));
-        openCv1.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filerSepia()),"Sepia"));
-        openCv2.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterMorph()),"Morph"));
-        openCv3.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterRGB()),"Normal"));
-        normalOpencv.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterRGB()),"Normal"));
-        normalOpencv1.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterRGB()),"Normal"));
-        normalOpencv2.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterRGB()),"Normal"));
-        openCv4.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterSummer()),"Green"));
-        openCv5.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterPink()),"Pink"));
-        openCv6.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterReduceColorsGray(5)),"Gray"));
-        openCv7.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterReduceColors(80,15,10)),"Dark"));
-        openCv8.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterPencil()),"Pencil"));
-        openCv9.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterCarton(80,15,10)),"Cartoon"));
-        openCv10.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(0)),"Autumn"));
-        openCv11.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(1)),"Bone"));
-        openCv12.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(2)),"Jet"));
-        openCv13.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(3)),"Winter"));
-        openCv14.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(4)),"Rainbown"));
-        openCv15.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(5)),"Ocean"));
-        openCv16.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(7)),"Spring"));
-        openCv17.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(8)),"Cool"));
-        openCv18.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(9)),"Hsv"));
-        openCv19.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(11)),"Hot"));
-        openCv20.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(12)),"Parula"));
-        openCv21.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(13)),"Magma"));
-        openCv22.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(14)),"Inferno"));
-        openCv23.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(15)),"Plasma"));
-        openCv24.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(16)),"Viridis"));
-        openCv25.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(17)),"Cividis"));
-        openCv26.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(18)),"Twilight"));
-        openCv27.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(19)),"Shifted"));
-        openCv28.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterColor(20)),"Turbo"));
+        groupVariantOpenCv.setImageBitmap(makeTransparent(myFilters.filterRGB(),80,"Variant"));
+        groupBordersOpenCv.setImageBitmap(makeTransparent(myFilters.filterCanny(),80,"Borders"));
+        groupCalorOpenCv.setImageBitmap(makeTransparent(myFilters.filterColor(2),80,"Calor"));
+        groupColorsOpenCv.setImageBitmap(makeTransparent(myFilters.filterSummer(),80,"Colors"));
+        openCv.setImageBitmap(makeText(myFilters.filterCanny(),"Canny"));
+        openCv1.setImageBitmap(makeText(myFilters.filerSepia(),"Sepia"));
+        openCv2.setImageBitmap(makeText(myFilters.filterMorph(),"Morph"));
+        openCv3.setImageBitmap(makeText(myFilters.filterRGB(),"Normal"));
+        normalOpencv.setImageBitmap(makeText(myFilters.filterRGB(),"Normal"));
+        normalOpencv1.setImageBitmap(makeText(myFilters.filterRGB(),"Normal"));
+        normalOpencv2.setImageBitmap(makeText(myFilters.filterRGB(),"Normal"));
+        openCv4.setImageBitmap(makeText(myFilters.filterSummer(),"Green"));
+        openCv5.setImageBitmap(makeText(myFilters.filterPink(),"Pink"));
+        openCv6.setImageBitmap(makeText(myFilters.filterReduceColorsGray(5),"Gray"));
+        openCv7.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterReduceColors(80,15,10)),"Dark"));//arreglar
+        openCv8.setImageBitmap(makeText(myFilters.filterPencil(),"Pencil"));
+        openCv9.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterCarton(80,15,10)),"Cartoon"));//arreglar
+        openCv10.setImageBitmap(makeText(myFilters.filterColor(0),"Autumn"));
+        openCv11.setImageBitmap(makeText(myFilters.filterColor(1),"Bone"));
+        openCv12.setImageBitmap(makeText(myFilters.filterColor(2),"Jet"));
+        openCv13.setImageBitmap(makeText(myFilters.filterColor(3),"Winter"));
+        openCv14.setImageBitmap(makeText(myFilters.filterColor(4),"Rainbown"));
+        openCv15.setImageBitmap(makeText(myFilters.filterColor(5),"Ocean"));
+        openCv16.setImageBitmap(makeText(myFilters.filterColor(7),"Spring"));
+        openCv17.setImageBitmap(makeText(myFilters.filterColor(8),"Cool"));
+        openCv18.setImageBitmap(makeText(myFilters.filterColor(9),"Hsv"));
+        openCv19.setImageBitmap(makeText(myFilters.filterColor(11),"Hot"));
+        openCv20.setImageBitmap(makeText(myFilters.filterColor(12),"Parula"));
+        openCv21.setImageBitmap(makeText(myFilters.filterColor(13),"Magma"));
+        openCv22.setImageBitmap(makeText(myFilters.filterColor(14),"Inferno"));
+        openCv23.setImageBitmap(makeText(myFilters.filterColor(15),"Plasma"));
+        openCv24.setImageBitmap(makeText(myFilters.filterColor(16),"Viridis"));
+        openCv25.setImageBitmap(makeText(myFilters.filterColor(17),"Cividis"));
+        openCv26.setImageBitmap(makeText(myFilters.filterColor(18),"Twilight"));
+        openCv27.setImageBitmap(makeText(myFilters.filterColor(19),"Shifted"));
+        openCv28.setImageBitmap(makeText(myFilters.filterColor(20),"Turbo"));
         //Icons Color
         listColors = new ArrayList<>();
         color1 = findViewById(R.id.color1); listColors.add(color1);
