@@ -33,6 +33,8 @@ import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
@@ -42,11 +44,19 @@ import org.opencv.imgproc.Imgproc;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import Figures.Circle;
 import ListFigures.ListFigure;
 import ListFigures.ListSegmentation;
 import ListFigures.Util;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
@@ -60,9 +70,7 @@ public class MainActivity extends AppCompatActivity {
     public static float SCALE_ANIMATION = 1.1f;
     //Class Attributes--
     //Load and Save data
-    private String nameFile;
-    private String nameBinder;
-    private File file;
+
     //Insert Figures
     private ImageView saveData;
     private ImageView saveFigures;
@@ -106,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean flagCalor;
     private boolean flagColors;
     private boolean flagControl;
+    private boolean flagAristas;
     //Scroll
     private LinearLayout menu_left;
     private LinearLayout menu_right;
@@ -189,6 +198,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView openCv26;
     private ImageView openCv27;
     private ImageView openCv28;
+    private ImageView openCvHttp;
     private ImageView groupVariantOpenCv;
     private ImageView groupBordersOpenCv;
     private ImageView groupCalorOpenCv;
@@ -214,6 +224,7 @@ public class MainActivity extends AppCompatActivity {
     private int scaleSort;
     //img original format Bitmap
     private Bitmap original;
+    private Bitmap auxOriginal = null;
     private Mat img;
     private int nameImage;
     private boolean longClick = false;
@@ -272,6 +283,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+            }
+        });
+        aristas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!flagAristas){
+                    Animation.animationScale(aristas,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
+                    aristas.setColorFilter(Color.rgb(255, 127, 80));
+                    myListSegmentation.changeModeTouch(5);
+                    flagAristas = true;
+                }else{
+                    aristas.setColorFilter(Color.rgb(255, 255, 255));
+                    flagAristas = false;
+                }
+                myListSegmentation.newEdge();
             }
         });
         controlMenu.setOnClickListener(new View.OnClickListener() {
@@ -659,6 +685,7 @@ public class MainActivity extends AppCompatActivity {
                 backFilters.setVisibility(View.VISIBLE);
                 notViewFilters();
                 flagVariant = false;
+
                 flagBorders = false;
                 flagCalor = false;
                 flagColors = false;
@@ -1260,7 +1287,12 @@ public class MainActivity extends AppCompatActivity {
                 addFilter(myFilters.filterColor(20));
             }
         });
-
+        openCvHttp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addFilter(auxOriginal);
+            }
+        });
         groupVariantOpenCv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1531,7 +1563,58 @@ public class MainActivity extends AppCompatActivity {
         return newImage;
     }
 
+    public void enviar(){
 
+        MediaType MEDIA_TYPE =
+                MediaType.parse("application/json");
+        String image="";
+        final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,
+                TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(
+
+                        60,TimeUnit.SECONDS).build();
+        JSONObject postdata = new JSONObject();
+        try {
+            postdata.put("image", myListSegmentation.getBase64String());
+            postdata.put("type", "clahe");
+        } catch(JSONException e){
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(MEDIA_TYPE,
+                postdata.toString());
+        final Request request = new Request.Builder()
+                .url("http://192.168.12.97:5000/filters") /*URL ... INDEX PX DE WILMER*/
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                System.out.println("Wilmer ERROR :" + e);
+                auxOriginal = myFilters.filterRGB();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response)
+                    throws IOException {
+                if (response.isSuccessful()){
+                    final String responseData = response.body().string();
+                    System.out.println("**************RESPUESTA ****************");
+                    System.out.println(responseData);
+                    System.out.println("**************RESPUESTA ****************");
+                    auxOriginal = myListSegmentation.decodeBase64AndSetImage(responseData);
+                    /*runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String json="";
+                            auxOriginal = myListSegmentation.decodeBase64AndSetImage(responseData);
+                            System.out.println("RECIBIDO CON EXITO");
+                        }
+                    });*/
+                }
+            }
+        });
+    }
     /**
      * Method initial Properties Initializing Properties of Activity
      * */
@@ -1654,6 +1737,7 @@ public class MainActivity extends AppCompatActivity {
         normalOpencv = findViewById(R.id.openCVNormal);
         normalOpencv1 = findViewById(R.id.openCVNormal01);
         normalOpencv2 = findViewById(R.id.openCVNormal02);
+        openCvHttp = findViewById(R.id.openCVhttp);
         //IMAGE
         test1 = findViewById(R.id.test);
         img = null;
@@ -1669,8 +1753,9 @@ public class MainActivity extends AppCompatActivity {
         flagCalor = false;
         flagColors = false;
         flagControl = false;
+        flagAristas = false;
         try{
-            nameImage = R.drawable.rx_image_10;
+            nameImage = R.drawable.rx_image_femur;
             img = Utils.loadResource(getApplicationContext(),nameImage);
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inScaled = false;
@@ -1726,6 +1811,8 @@ public class MainActivity extends AppCompatActivity {
         openCv26.setImageBitmap(makeText(myFilters.filterColor(18),"Twilight"));
         openCv27.setImageBitmap(makeText(myFilters.filterColor(19),"Shifted"));
         openCv28.setImageBitmap(makeText(myFilters.filterColor(20),"Turbo"));
+        //enviar();
+        //openCvHttp.setImageBitmap(makeText(auxOriginal,"CLAHE"));
         //Icons Color
         listColors = new ArrayList<>();
         color1 = findViewById(R.id.color1); listColors.add(color1);
@@ -1759,6 +1846,7 @@ public class MainActivity extends AppCompatActivity {
                 listColors.get(i).setColorFilter(Color.rgb(Util.getCollections()[i][0],Util.getCollections()[i][1],Util.getCollections()[i][2]));
         }
         scaleSort = 3;
+
         //--End Initializing
     }//End Method
 }//End Class
