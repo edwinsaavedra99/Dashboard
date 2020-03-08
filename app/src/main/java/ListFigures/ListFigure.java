@@ -3,16 +3,25 @@ package ListFigures;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Base64;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.LinearLayout;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import Figures.*;
 
@@ -79,6 +88,21 @@ public class ListFigure  extends View {
         }else{
             modeTouch = 0;
         }
+    }
+    public JSONArray dataFigures() throws JSONException {
+        JSONArray jsonArray =new JSONArray();
+        for(int i = 0 ;i<this.myFigures.size();i++){
+            Circle aux = (Circle) myFigures.get(i);
+            jsonArray.put(aux.getJSON(i));
+        }
+        return jsonArray;
+    }//End Method
+    public ArrayList<Figure> getMyFigures() {
+        return myFigures;
+    }
+
+    public void setMyFigures(ArrayList<Figure> myFigures) {
+        this.myFigures = myFigures;
     }
 
     public float getGeneralHeight() {
@@ -248,6 +272,22 @@ public class ListFigure  extends View {
             return false;
         }
     }//End Method
+
+    @SuppressLint("WrongThread")
+    public String getBase64String(){ //1 - formato STRING -- 2 - formato ARRAYLIST
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        mImage.compress(Bitmap.CompressFormat.JPEG,40,byteArrayOutputStream);
+        byte[] bytes = byteArrayOutputStream.toByteArray();
+//        System.out.println(Base64.encodeToString(bytes,Base64.DEFAULT));
+        return Base64.encodeToString(bytes,Base64.DEFAULT);
+
+    }
+    public Bitmap decodeBase64AndSetImage(String complete){
+        String image = complete.substring(complete.indexOf(",")+1);
+        InputStream stream = new ByteArrayInputStream(Base64.decode(image.getBytes(),Base64.DEFAULT));
+        Bitmap bitmap = BitmapFactory.decodeStream(stream);
+        return bitmap;
+    }
 
     public boolean isSelectedFigure(){
         return this.figureSelected != -1;

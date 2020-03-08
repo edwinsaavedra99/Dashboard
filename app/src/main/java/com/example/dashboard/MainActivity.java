@@ -17,9 +17,9 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -31,7 +31,9 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.example.dashboard.Services.FiguresService;
 import com.example.dashboard.Services.FiltersService;
+import com.example.dashboard.Services.LandMarkService;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONArray;
@@ -43,22 +45,13 @@ import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 import Figures.Circle;
 import ListFigures.ListFigure;
 import ListFigures.ListSegmentation;
 import ListFigures.Util;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
@@ -506,7 +499,7 @@ public class MainActivity extends AppCompatActivity {
                     toast = Toast.makeText(getApplicationContext(),"Data not Save",Toast.LENGTH_SHORT);
                 toast.show();*/
                 //System.out.println(myListSegmentation.toString());
-                enviarLandMark();
+                saveLandMarks();
                 System.out.println("DATA ENVIADA");
                 //myListSegmentation.toString();
             }
@@ -1595,70 +1588,41 @@ public class MainActivity extends AppCompatActivity {
         Bitmap newImage = Bitmap.createScaledBitmap(realImage,width,height,filter);
         return newImage;
     }
-    public void enviarLandMark(){
-        MediaType MEDIA_TYPE =
-                MediaType.parse("application/json");
-        String image="";
-        final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,
-                TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(
-
-                60,TimeUnit.SECONDS).build();
-        JSONObject postdata = new JSONObject();
+    public void saveLandMarks(){
         try {
-            //postdata.put("image", myListSegmentation.getBase64String());
-            postdata.put("image", "");
-            JSONObject posdate123 = new JSONObject();
-            posdate123.put("imageX",myListSegmentation.getGeneralWidth());
-            posdate123.put("imagey",myListSegmentation.getGeneralHeight());
-            posdate123.put("profileItems",null);
-            posdate123.put("landmarksNumber",0);
-            posdate123.put("landmarks",myListSegmentation.dataSegments());
-            posdate123.put("landmarksCreated",myListSegmentation.getSegmentation().size());
-            posdate123.put("profileName","Edwin");
-            posdate123.put("imageName","image_rx_jpg");
-            postdata.put("information",posdate123);
-            System.out.println(postdata.toString());
-            //System.out.println(myListSegmentation.getBase64String());
-           // dataFiles.writeJSONFile(postdata.toString());
+            LandMarkService.sendLandMarks(myListSegmentation.getBase64String(),myListSegmentation);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+    }
+    public void saveFigures(){
+        try {
+            FiguresService.sendFigures(myListFigures.getBase64String(),myListFigures);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+    }
+    public void openLandMarks(){
+        try {
+            String rpta = LandMarkService.readLandMarks();
+            JSONObject landMarks = new JSONObject(rpta);
+            String image = landMarks.getString("image");
+            myListSegmentation.loadImage(myListSegmentation.decodeBase64AndSetImage(image));
+            JSONObject information = landMarks.getJSONObject("information");
+            JSONArray jsonArray = information.getJSONArray("landmarks");
+            float imageX = Float.parseFloat(information.getString("imageX"));
+            float imagey = Float.parseFloat(information.getString("imagey"));
+            myListSegmentation.readDataSegments(jsonArray,imageX,imagey);
 
-        } catch(JSONException e){
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        } catch (JSONException e) {
             e.printStackTrace();
         }
-        RequestBody body = RequestBody.create(MEDIA_TYPE,
-                postdata.toString());
-        final Request request = new Request.Builder()
-                .url("http://192.168.12.97:5000/landmark") /*URL ... INDEX PX DE WILMER*/
-                .post(body)
-                .addHeader("Content-Type", "application/json")
-                .build();
+    }
 
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                System.out.println("Wilmer ERROR :" + e);
-                //auxOriginal = myFilters.filterRGB();
-            }
+    public void openFigures(){
 
-            @Override
-            public void onResponse(Call call, Response response)
-                    throws IOException {
-                if (response.isSuccessful()){
-                    final String responseData = response.body().string();
-                    System.out.println("**************RESPUESTA ****************");
-                    System.out.println(responseData);
-                    System.out.println("**************RESPUESTA ****************");
-                   // auxOriginal = myListSegmentation.decodeBase64AndSetImage(responseData);
-                    /*runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            String json="";
-                            auxOriginal = myListSegmentation.decodeBase64AndSetImage(responseData);
-                            System.out.println("RECIBIDO CON EXITO");
-                        }
-                    });*/
-                }
-            }
-        });
     }
 
     public void getFilterService(String nameFilter){
@@ -1807,6 +1771,10 @@ public class MainActivity extends AppCompatActivity {
         flagAristas = false;
         try{
             nameImage = R.drawable.rx_image_10;
+            Uri uriImage = Uri.parse("android.resource://"+getPackageName()+"/"+nameImage);
+            System.out.println("RECURSOS ******************");
+            System.out.println(uriImage.toString());
+
             img = Utils.loadResource(getApplicationContext(),nameImage);
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inScaled = false;

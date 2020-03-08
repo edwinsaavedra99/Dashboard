@@ -29,6 +29,7 @@ public class Circle extends Figure{
         radius = _radius;
     }//Closing the class constructor
 
+
     //Methods Getters and Setters
     public void setRadius(float _radius){
         radius = _radius;

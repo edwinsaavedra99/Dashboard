@@ -757,6 +757,21 @@ public class ListSegmentation extends View {
         return jsonArray;
     }//End Method
 
+    public void readDataSegments(JSONArray jsonArray,float width, float height) throws JSONException {
+        figureSelected = -1;
+        segmentation.clear();
+        zoomList.segmentation.clear();
+        for (int i = 0; i< jsonArray.length(); i++){
+            JSONObject aux = jsonArray.getJSONObject(i);
+            int[] colour = {Integer.parseInt(aux.getString("r")), Integer.parseInt(aux.getString("g")),Integer.parseInt(aux.getString("b"))};
+            float x = Float.parseFloat(aux.getString("x"))*generalWidth/width;
+            float y = Float.parseFloat(aux.getString("y"))*generalHeight/height;
+            addCircleSegmentation(x,y,9,-1,(aux.getString("comment")),colour);
+        }
+        invalidate();
+        zoomList.invalidate();
+    }
+
     public String toString(){
 
         String a =  "\"imageX\":"+generalWidth+","+
