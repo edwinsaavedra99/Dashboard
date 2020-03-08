@@ -259,12 +259,22 @@ public class MainActivity extends AppCompatActivity {
        infoFigures.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(myListFigures.isSelectedFigure())
-                    showInfoDialog();
-                else{
-                    Toast toast;
-                    toast = Toast.makeText(getApplicationContext(),"Please selected figure ",Toast.LENGTH_SHORT);
-                    toast.show();
+                if(flagSegmentation==false) {
+                    if (myListFigures.isSelectedFigure())
+                        showInfoDialog(true);
+                    else {
+                        Toast toast;
+                        toast = Toast.makeText(getApplicationContext(), "Please selected figure ", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                }else{
+                    if (myListSegmentation.isSelectedFigure())
+                        showInfoDialog(false);
+                    else {
+                        Toast toast;
+                        toast = Toast.makeText(getApplicationContext(), "Please selected figure ", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
                 }
 
             }
@@ -1539,23 +1549,33 @@ public class MainActivity extends AppCompatActivity {
         canvas.drawText(description,bounds.left,bounds.top-pencil2.ascent(),pencil2);
         return  textBitmap;
     }
-    private void showInfoDialog() {
+    private void showInfoDialog(final boolean flagSegmentation) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle("INFO FIGURE: ");
         dialog.setMessage("Please description figure");
         LayoutInflater inflater = LayoutInflater.from(this);
         View login_layout = inflater.inflate(R.layout.layout_info_figure,null);
         final TextInputEditText editDescription = login_layout.findViewById(R.id.txt_description);
-        editDescription.setText(myListFigures.getDescriptionFigure());
+        if(flagSegmentation)
+            editDescription.setText(myListFigures.getDescriptionFigure());
+        else
+            editDescription.setText(myListSegmentation.getDescriptionFigure());
         dialog.setView(login_layout);
         dialog.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Toast toast;
-                if(myListFigures.setDescriptionFigure(editDescription.getText().toString()))
-                    toast = Toast.makeText(getApplicationContext(),"Save Successfully",Toast.LENGTH_SHORT);
-                else
-                    toast = Toast.makeText(getApplicationContext(),"No Save ",Toast.LENGTH_SHORT);
+                if(flagSegmentation) {
+                    if (myListFigures.setDescriptionFigure(editDescription.getText().toString()))
+                        toast = Toast.makeText(getApplicationContext(), "Save Successfully", Toast.LENGTH_SHORT);
+                    else
+                        toast = Toast.makeText(getApplicationContext(), "No Save ", Toast.LENGTH_SHORT);
+                }else{
+                    if (myListSegmentation.setDescriptionFigure(editDescription.getText().toString()))
+                        toast = Toast.makeText(getApplicationContext(), "Save Successfully", Toast.LENGTH_SHORT);
+                    else
+                        toast = Toast.makeText(getApplicationContext(), "No Save ", Toast.LENGTH_SHORT);
+                }
                 toast.show();
             }
         });

@@ -106,9 +106,10 @@ public class ListZoomSegmentation extends View {
      * @param _startX Define the position of the segment
      * @param _startY Define the position of the segment
      * @param _radius Define the radius od the segment*/
-    public void addCircleSegmentation(float _startX, float _startY, float _radius, Paint pencil,int index) {
+    public void addCircleSegmentation(float _startX, float _startY, float _radius, Paint pencil,int index,String description,int colour[]) {
         pencil.setStrokeWidth(1);
-        Circle aux = new Circle(_startX, _startY, _radius, pencil,color);
+        Circle aux = new Circle(_startX, _startY, _radius, pencil,colour);
+        aux.setDescription(description);
         if(index == -1 ) {
             this.segmentation.add(aux);
             figureSelected = this.segmentation.size() - 1;
