@@ -209,7 +209,7 @@ class MyFilters {
         try{
             Imgproc.cvtColor(img, result, Imgproc.COLOR_BGR2GRAY);
         }catch(Exception e){
-
+            System.out.println("error in filter cartoon");
         }finally {
             Imgproc.medianBlur(result, result, 15);
             Imgproc.adaptiveThreshold(result, result, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, 15, 2);
@@ -219,7 +219,7 @@ class MyFilters {
         try{
             Imgproc.cvtColor(result, result, Imgproc.COLOR_GRAY2BGR);
         }catch (Exception e1 ){
-
+            System.out.println("error in filter cartoon");
         }finally {
             Core.bitwise_and(reducedColorImage, result, result);
         }

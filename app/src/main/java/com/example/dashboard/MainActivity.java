@@ -111,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean flagPointSegmentation;
     private boolean flagPencilSegmentation;
     private boolean flagPreviewSegmentation;
+    private boolean flagHttp;
     private boolean flagVariant;
     private boolean flagBorders;
     private boolean flagCalor;
@@ -212,6 +213,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView normalOpencv;
     private ImageView normalOpencv1;
     private ImageView normalOpencv2;
+    private ImageView normalOpencv3;
     //Control
     private LinearLayout control;
     private ImageView sortUp;
@@ -640,6 +642,7 @@ public class MainActivity extends AppCompatActivity {
                 notViewFilters();
                 flagVariant = false;
                 flagBorders = false;
+                flagHttp = false;
                 flagCalor = false;
                 flagColors = false;
             }
@@ -656,6 +659,7 @@ public class MainActivity extends AppCompatActivity {
                 backFilters.setVisibility(View.VISIBLE);
                 notViewFilters();
                 flagVariant = false;
+                flagHttp = false;
                 flagBorders = false;
                 flagCalor = false;
                 flagColors = false;
@@ -1054,6 +1058,12 @@ public class MainActivity extends AppCompatActivity {
                 addFilter(myFilters.filterRGB());
             }
         });
+        normalOpencv3.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            public void onClick(View v) {
+                addFilter(myFilters.filterRGB());
+            }
+        });
         //Filter morph
         openCv2.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -1252,10 +1262,47 @@ public class MainActivity extends AppCompatActivity {
                 addFilter(myFilters.filterColor(20));
             }
         });
+        getOpenCvHttp1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addFilter(myFilters.filterRGB());
+            }
+        });
+        getOpenCvHttp2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addFilter(myFilters.filterRGB());
+            }
+        });
+        getOpenCvHttp3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addFilter(myFilters.filterRGB());
+            }
+        });
+        getOpenCvHttp4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addFilter(myFilters.filterRGB());
+            }
+        });
         openCvHttp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addFilter(auxOriginal);
+                //addFilter(auxOriginal);
+                notViewFilters();
+                if(!flagHttp) {
+                    getOpenCvHttp1.setVisibility(View.VISIBLE);
+                    getOpenCvHttp2.setVisibility(View.VISIBLE);
+                    getOpenCvHttp3.setVisibility(View.VISIBLE);
+                    getOpenCvHttp4.setVisibility(View.VISIBLE);
+                    normalOpencv3.setVisibility(View.VISIBLE);
+                    flagBorders = false;
+                    flagCalor = false;
+                    flagColors = false;
+                    flagVariant = false;
+                }
+                flagHttp = !flagHttp;
             }
         });
         groupVariantOpenCv.setOnClickListener(new View.OnClickListener() {
@@ -1438,6 +1485,11 @@ public class MainActivity extends AppCompatActivity {
         normalOpencv.setVisibility(View.GONE);
         normalOpencv1.setVisibility(View.GONE);
         normalOpencv2.setVisibility(View.GONE);
+        normalOpencv3.setVisibility(View.GONE);
+        getOpenCvHttp1.setVisibility(View.GONE);
+        getOpenCvHttp2.setVisibility(View.GONE);
+        getOpenCvHttp3.setVisibility(View.GONE);
+        getOpenCvHttp4.setVisibility(View.GONE);
     }
 
     public Bitmap makeTransparent(Bitmap src,int value,String description){
@@ -1451,7 +1503,7 @@ public class MainActivity extends AppCompatActivity {
         final Paint pencil = new Paint();
         Typeface tipoFuente = Typeface.create(Typeface.DEFAULT,Typeface.NORMAL);
         pencil.setTypeface(tipoFuente);
-        pencil.setTextSize(30);
+        pencil.setTextSize(40*width/height);
         pencil.setTextAlign(Paint.Align.CENTER);
         pencil.setColor(Color.WHITE);
         canvas.drawBitmap(src,0,0,paint);
@@ -1468,12 +1520,11 @@ public class MainActivity extends AppCompatActivity {
 
         final Paint paint = new Paint();
         final Paint pencil2 = new Paint();
-
         Typeface tipoFuente = Typeface.create(Typeface.DEFAULT,Typeface.NORMAL);
         pencil2.setTypeface(tipoFuente);
-        pencil2.setTextSize(30);
-
-        Rect areRect = new Rect(0,height-60,width,height);
+        pencil2.setTextSize(40*width/height);
+        int sizeDimen =  (int) (height/2+200*width/height);
+        Rect areRect = new Rect(0,sizeDimen-65*width/height,width,sizeDimen);
         pencil2.setColor(Color.BLACK);
 
         canvas.drawBitmap(src,0,0,paint);
@@ -1711,6 +1762,7 @@ public class MainActivity extends AppCompatActivity {
         normalOpencv = findViewById(R.id.openCVNormal);
         normalOpencv1 = findViewById(R.id.openCVNormal01);
         normalOpencv2 = findViewById(R.id.openCVNormal02);
+        normalOpencv3 = findViewById(R.id.openCVNormal03);
         openCvHttp = findViewById(R.id.openCVhttp);
         getOpenCvHttp1 = findViewById(R.id.openCVhttp1);
         getOpenCvHttp2 = findViewById(R.id.openCVhttp2);
@@ -1727,13 +1779,14 @@ public class MainActivity extends AppCompatActivity {
         flagPencilSegmentation = false;
         flagPreviewSegmentation = false;
         flagVariant = false;
+        flagHttp = false;
         flagBorders = false;
         flagCalor = false;
         flagColors = false;
         flagControl = false;
         flagAristas = false;
         try{
-            nameImage = R.drawable.rx_image_femur;
+            nameImage = R.drawable.rx_image_10;
             img = Utils.loadResource(getApplicationContext(),nameImage);
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inScaled = false;
@@ -1745,12 +1798,14 @@ public class MainActivity extends AppCompatActivity {
         myListFigures.loadImage(this.original);
         myListSegmentation.loadImage(this.original);
         myFilters = new MyFilters(this.img,this.original);
-        //zoomImageLayout.setBackground(new BitmapDrawable(getResources(),myFilters.filterRGB()));
         //Resize Image Icon Filter
         int d1 = (int) getResources().getDimension(R.dimen.icon_filter);
-        Bitmap scaleIconsBitmap = scaleDown(this.original,d1,true);
+        //int d1 = 70;
+        //Bitmap.createScaledBitmap(realImage,width,height,filter)
+        Bitmap scaleIconsBitmap = scaleDown(this.original,400,true);
+        //Bitmap scaleIconsBitmap = Bitmap.createScaledBitmap(this.original,(int)(this.original.getWidth()/3),(int)(this.original.getHeight()/3),true);
         Mat img_result_aux = new Mat();
-        Imgproc.resize(img,img_result_aux,new Size(d1,d1));
+        Imgproc.resize(img,img_result_aux,new Size(scaleIconsBitmap.getWidth(),scaleIconsBitmap.getHeight()));
         MyFilters myFilters = new MyFilters(img_result_aux,scaleIconsBitmap);
         //Icons with filter
         groupVariantOpenCv.setImageBitmap(makeTransparent(myFilters.filterColor(5),80,"Variant"));
@@ -1765,12 +1820,13 @@ public class MainActivity extends AppCompatActivity {
         normalOpencv.setImageBitmap(makeText(myFilters.filterRGB(),"Normal"));
         normalOpencv1.setImageBitmap(makeText(myFilters.filterRGB(),"Normal"));
         normalOpencv2.setImageBitmap(makeText(myFilters.filterRGB(),"Normal"));
+        normalOpencv3.setImageBitmap(makeText(myFilters.filterRGB(),"Normal"));
         openCv4.setImageBitmap(makeText(myFilters.filterSummer(),"Green"));
         openCv5.setImageBitmap(makeText(myFilters.filterPink(),"Pink"));
         openCv6.setImageBitmap(makeText(myFilters.filterReduceColorsGray(5),"Gray"));
-        openCv7.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterReduceColors(80,15,10)),"Dark"));//arreglar
+        openCv7.setImageBitmap(makeText(myFilters.filterReduceColors(80,15,10),"Dark"));//arreglar
         openCv8.setImageBitmap(makeText(myFilters.filterPencil(),"Pencil"));
-        openCv9.setImageBitmap(makeText(myFilters.cropBitmap(myFilters.filterCarton(80,15,10)),"Cartoon"));//arreglar
+        openCv9.setImageBitmap(makeText(myFilters.filterCarton(80,15,10),"Cartoon"));//arreglar
         openCv10.setImageBitmap(makeText(myFilters.filterColor(0),"Autumn"));
         openCv11.setImageBitmap(makeText(myFilters.filterColor(1),"Bone"));
         openCv12.setImageBitmap(makeText(myFilters.filterColor(2),"Jet"));
@@ -1791,7 +1847,12 @@ public class MainActivity extends AppCompatActivity {
         openCv27.setImageBitmap(makeText(myFilters.filterColor(19),"Shifted"));
         openCv28.setImageBitmap(makeText(myFilters.filterColor(20),"Turbo"));
         //enviar();
-        //openCvHttp.setImageBitmap(makeText(auxOriginal,"CLAHE"));
+        getOpenCvHttp1.setImageBitmap(makeText(makeTransparent(myFilters.filterRGB(),90,""),"Clahe"));
+        getOpenCvHttp2.setImageBitmap(makeText(makeTransparent(myFilters.filterRGB(),90,""),"ClaheGh"));
+        getOpenCvHttp3.setImageBitmap(makeText(makeTransparent(myFilters.filterRGB(),90,""),"GuidedFilter"));
+        getOpenCvHttp4.setImageBitmap(makeText(makeTransparent(myFilters.filterRGB(),90,""),"Wiener"));
+
+
         //Icons Color
         listColors = new ArrayList<>();
         color1 = findViewById(R.id.color1); listColors.add(color1);

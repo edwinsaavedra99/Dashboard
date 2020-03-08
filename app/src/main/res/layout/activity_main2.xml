@@ -223,36 +223,48 @@
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
                     <ImageView
                         android:id="@+id/openCV1"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
                     <ImageView
                         android:id="@+id/openCV6"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
                     <ImageView
                         android:id="@+id/openCV7"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
                     <ImageView
                         android:id="@+id/openCV11"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
                     <ImageView
                         android:id="@+id/openCV15"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
 
                     <ImageView
@@ -260,24 +272,32 @@
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         />
                     <ImageView
                         android:id="@+id/openCVNormal"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         />
                     <ImageView
                         android:id="@+id/openCV"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                          />
                     <ImageView
                         android:id="@+id/openCV2"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
 
                     <ImageView
@@ -285,12 +305,16 @@
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
                     <ImageView
                         android:id="@+id/openCV9"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
 
                     <ImageView
@@ -298,11 +322,15 @@
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         />
                     <ImageView
                         android:id="@+id/openCVNormal01"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:layout_marginBottom="15dp"
                         />
                     <ImageView
@@ -310,36 +338,48 @@
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
                     <ImageView
                         android:id="@+id/openCV14"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
                     <ImageView
                         android:id="@+id/openCV18"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
                     <ImageView
                         android:id="@+id/openCV28"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
                     <ImageView
                         android:id="@+id/openCVGroupColors"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         />
                     <ImageView
                         android:id="@+id/openCVNormal02"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         />
 
                     <ImageView
@@ -347,60 +387,80 @@
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
                     <ImageView
                         android:id="@+id/openCV5"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
                     <ImageView
                         android:id="@+id/openCV10"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
                     <ImageView
                         android:id="@+id/openCV13"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
                     <ImageView
                         android:id="@+id/openCV16"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
                     <ImageView
                         android:id="@+id/openCV17"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
                     <ImageView
                         android:id="@+id/openCV19"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
                     <ImageView
                         android:id="@+id/openCV20"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
                     <ImageView
                         android:id="@+id/openCV21"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
                     <ImageView
                         android:id="@+id/openCV22"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
 
                     <ImageView
@@ -408,6 +468,8 @@
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
 
                     <ImageView
@@ -415,18 +477,24 @@
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
                     <ImageView
                         android:id="@+id/openCV25"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
                     <ImageView
                         android:id="@+id/openCV26"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
 
                     <ImageView
@@ -434,13 +502,23 @@
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
                     <ImageView
                         android:id="@+id/openCVhttp"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
+                    <ImageView
+                        android:id="@+id/openCVNormal03"
+                        android:layout_width="@dimen/icon_filter"
+                        android:layout_height="@dimen/icon_filter"
+                        android:layout_marginBottom="15dp"
+                        android:src="@drawable/ic_collections_black_24dp" />
 
                     <ImageView
                         android:id="@+id/openCVhttp1"
