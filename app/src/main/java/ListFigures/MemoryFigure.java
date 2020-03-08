@@ -22,6 +22,20 @@ class MemoryFigure {
         indexControlY = -1;
         cont = -1;
     }
+
+    static void addElementMemory(int cod, int index, int indexTwo, ArrayList<Figure> figure){
+        indexControlZ++;
+        if (memoryList.size() > indexControlZ) {
+            memoryList.subList(indexControlZ, memoryList.size()).clear();
+        }
+        ElementMemory elementMemory = new ElementMemory(figure,cod,index,indexTwo);
+        memoryList.add(elementMemory);
+        memoryListCtrlZ.clear();
+        memoryListCtrlZwithCtrlY.clear();
+        indexControlY = -1;
+        cont = -1;
+    }
+
     static int controlZinMemory(){
         int aux = indexControlZ;
         if(aux!=-1) {

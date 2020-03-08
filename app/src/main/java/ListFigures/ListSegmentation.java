@@ -17,11 +17,16 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 
 import com.example.dashboard.ControlMenu;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,6 +49,7 @@ public class ListSegmentation extends View {
     private ArrayList<Figure> segmentation;
     private ArrayList<Figure> segmentationMin;
     private int[] color = {183, 149, 11};
+
 
     public ArrayList<Figure> getSegmentation() {
         return segmentation;
@@ -75,7 +81,9 @@ public class ListSegmentation extends View {
     private Circle circle02 = null;
     private int indexCircle01 = -1;
     private int indexCircle02 = -1;
+
     private int contador=0;
+    private int alto=0,ancho= 0;
 
     public float getGeneralHeight() {
         return generalHeight;
@@ -122,6 +130,7 @@ public class ListSegmentation extends View {
     private  int mImageWidth;
     private int mImageHeight;
     private int dimen;
+    private int scaleSort = 3;
     //Control
     private  DisplayMetrics metrics;
     /**
@@ -147,11 +156,13 @@ public class ListSegmentation extends View {
         invalidate();
     }//Closing the class constructor
     public void loadImage(Bitmap mImage){
+        invalidate();
+        //zoomList.loadImage(mImage,generalHeight,generalWidth);
+        zoomList.loadImage(mImage,generalHeight,generalWidth);
         this.mImage = mImage;
         mBoard = new BitmapDrawable(getResources(),mImage);
         invalidate();
         requestLayout();
-        zoomList.loadImage(mImage);
 //        getBase64String();
     }
     public void getFlagPreview(){
@@ -170,6 +181,8 @@ public class ListSegmentation extends View {
             float m_MIN_ZOOM = 1.0f;
             float m_MAX_ZOOM = 3.0f;
             mScaleFactor = Math.max(m_MIN_ZOOM,Math.min(mScaleFactor, m_MAX_ZOOM));
+            zoomList.setmScaleFactor(mScaleFactor);
+            zoomList.invalidate();
             invalidate();
             return true;
         }
@@ -235,8 +248,7 @@ public class ListSegmentation extends View {
 
         }
         invalidate();
-        //figureSelected = this.segmentation.size() - 1;
-        zoomList.addCircleSegmentation(_startX*this.viewZoom.getWidth()/this.getWidth(),_startY*this.viewZoom.getHeight()/this.getHeight(), _radius*this.viewZoom.getWidth()/this.getWidth(),pencil,1);
+        zoomList.addCircleSegmentation(_startX,_startY, _radius,pencil,index);
         zoomList.invalidate();
     }
     public boolean deleteMemory(){
@@ -245,12 +257,13 @@ public class ListSegmentation extends View {
     }
     public boolean controlZ(){
         int index = MemoryFigure.controlZinMemory();
-        if(index != -1 ) {
+        if(index!= -1 ) {
             ElementMemory elementMemory =MemoryFigure.memoryList.get(index);
             switch (elementMemory.getCodMemoryList()) {
                 case 1:{
                     segmentation.remove(elementMemory.getIndexInList());
                     zoomList.segmentation.remove(elementMemory.getIndexInList());
+                    figureSelected = -1;
                     break;
                 }
                 case 2:{
@@ -263,6 +276,40 @@ public class ListSegmentation extends View {
                     for (int i = 0; i < elementMemory.getMemoryList().size(); i++) {
                         Circle a = (Circle) elementMemory.getMemoryList().get(i);
                         addCircleSegmentation(a.getCenterX(), a.getCenterY(), a.getRadius(),-1);
+                    }
+                    figureSelected = -1;
+                    break;
+                }
+                case 4:{ //move
+                    if( elementMemory.getMemoryList().size() ==2) {
+                        Circle afterMove = (Circle) elementMemory.getMemoryList().get(0);
+                        Circle beforeMove = (Circle) elementMemory.getMemoryList().get(1);
+                        int indexElement = elementMemory.getIndexInList();
+                        Circle aux = (Circle) segmentation.get(indexElement);
+                        Circle aux01 = (Circle) zoomList.segmentation.get(indexElement);
+                        aux.setCenterX(afterMove.getCenterX());
+                        aux.setCenterY(afterMove.getCenterY());
+                        aux01.setCenterX(aux.getCenterX());
+                        aux01.setCenterY(aux.getCenterY());
+                    }
+                    figureSelected = -1;
+                    break;
+                }
+                case 5:{ //Edge
+                    if( elementMemory.getMemoryList().size() ==2) {
+                        Circle firstPoint = (Circle) elementMemory.getMemoryList().get(0);
+                        Circle secondPoint = (Circle) elementMemory.getMemoryList().get(1);
+                        int indexFirstElement = elementMemory.getIndexInList();
+                        int indexSecondElement = elementMemory.getIndexTwoList();
+                        if(indexFirstElement>indexSecondElement) {
+                            segmentation.remove(indexFirstElement);
+                            zoomList.segmentation.remove(indexFirstElement);
+                            addCircleSegmentation(secondPoint.getCenterX(),secondPoint.getCenterY(),secondPoint.getRadius(),indexSecondElement);
+                        }else{
+                            segmentation.remove(indexFirstElement+1);
+                            zoomList.segmentation.remove(indexFirstElement+1);
+                            addCircleSegmentation(secondPoint.getCenterX(),secondPoint.getCenterY(),secondPoint.getRadius(),indexSecondElement);
+                        }
                     }
                     figureSelected = -1;
                     break;
@@ -287,11 +334,46 @@ public class ListSegmentation extends View {
                 case 2: {
                     segmentation.remove(elementMemory.getIndexInList());
                     zoomList.segmentation.remove(elementMemory.getIndexInList());
+                    figureSelected = -1;
                     break;
                 }
                 case 3: {
                     segmentation.clear();
                     zoomList.segmentation.clear();
+                    figureSelected = -1;
+                    break;
+                }
+                case 4:{ //move
+                    if( elementMemory.getMemoryList().size() ==2) {
+                        Circle afterMove = (Circle) elementMemory.getMemoryList().get(0);
+                        Circle beforeMove = (Circle) elementMemory.getMemoryList().get(1);
+                        int indexElement = elementMemory.getIndexInList();
+                        Circle aux = (Circle) segmentation.get(indexElement);
+                        Circle aux01 = (Circle) zoomList.segmentation.get(indexElement);
+                        aux.setCenterX(beforeMove.getCenterX());
+                        aux.setCenterY(beforeMove.getCenterY());
+                        aux01.setCenterX(aux.getCenterX());
+                        aux01.setCenterY(aux.getCenterY());
+                    }
+                    figureSelected = -1;
+                    break;
+                }
+                case 5:{ //edge
+                    if( elementMemory.getMemoryList().size() ==2) {
+                        Circle firstPoint = (Circle) elementMemory.getMemoryList().get(0);
+                        Circle secondPoint = (Circle) elementMemory.getMemoryList().get(1);
+                        int indexFirstElement = elementMemory.getIndexInList();
+                        int indexSecondElement = elementMemory.getIndexTwoList();
+                        if(indexFirstElement>indexSecondElement) {//esta mal
+                            segmentation.remove(indexSecondElement);
+                            zoomList.segmentation.remove(indexSecondElement);
+                            addCircleSegmentation(secondPoint.getCenterX(), secondPoint.getCenterY(), secondPoint.getRadius(), indexFirstElement);
+                        }else{
+                            segmentation.remove(indexSecondElement);
+                            zoomList.segmentation.remove(indexSecondElement);
+                            addCircleSegmentation(secondPoint.getCenterX(),secondPoint.getCenterY(),secondPoint.getRadius(),indexFirstElement+1);
+                        }
+                    }
                     break;
                 }
             }
@@ -308,17 +390,124 @@ public class ListSegmentation extends View {
         circle02 = null;
         contador = 0;
     }
-
-    public boolean allSortUp(){
-        if(figureSelected>-1 && segmentation.size()>0) {
+    public boolean sortMoveControl(int option){
+        if(figureSelected>-1 && figureSelected<segmentation.size() && segmentation.size()>0) {
+            ArrayList<Figure> listMemoryMove = new ArrayList<>();
             Circle a = (Circle) segmentation.get(figureSelected);
+            Circle auxMemoryAfterMove = new Circle(a.getCenterX(),a.getCenterY(),a.getRadius(),a.getPaint(),a.getColour());
             Circle a1 = (Circle) zoomList.segmentation.get(zoomList.figureSelected);
-            viewZoom.setPivotY( viewZoom.getHeight() / generalHeight);
-            a.setCenterY(0);
-            a1.setCenterY(a.getCenterY() * viewZoom.getHeight() / generalHeight);
-            invalidate();
-            viewZoom.invalidate();
-            return true;
+            listMemoryMove.add(auxMemoryAfterMove);
+            switch (option) {
+                case 1: { //sortup
+                    zoomList.setmPositionY(dpToPx(60) - a.getCenterY()*mScaleFactor);
+                    if(a.getCenterY() - scaleSort>=0) {
+                        a.setCenterY(a.getCenterY() - scaleSort);
+                    }else{
+                        a.setCenterY(0);
+                    }
+                    Circle auxMemoryBeforeMove = new Circle(a.getCenterX(),a.getCenterY(),a.getRadius(),a.getPaint(),a.getColour());
+                    listMemoryMove.add(auxMemoryBeforeMove);
+                    a1.setCenterY(a.getCenterY());
+                    invalidate();
+                    viewZoom.invalidate();
+                    MemoryFigure.addElementMemory(4,figureSelected,listMemoryMove);
+                    return true;
+                }
+                case 2: { //sortleft
+                    zoomList.setmPositionX(dpToPx(60) - a.getCenterX()*mScaleFactor);
+                    if(a.getCenterX() - scaleSort >=0) {
+                        a.setCenterX(a.getCenterX() - scaleSort);
+                    }else{
+                        a.setCenterX(0);
+                    }
+                    Circle auxMemoryBeforeMove = new Circle(a.getCenterX(),a.getCenterY(),a.getRadius(),a.getPaint(),a.getColour());
+                    listMemoryMove.add(auxMemoryBeforeMove);
+                    a1.setCenterX(a.getCenterX());
+                    invalidate();
+                    viewZoom.invalidate();
+                    MemoryFigure.addElementMemory(4,figureSelected,listMemoryMove);
+                    return true;
+                }
+                case 3: { //sortRight
+                    zoomList.setmPositionX(dpToPx(60) - a.getCenterX() *mScaleFactor);
+                    if(a.getCenterX() + scaleSort <=generalWidth) {
+                        a.setCenterX(a.getCenterX() + scaleSort);
+                    }else{
+                        a.setCenterX(generalWidth);
+                    }
+                    Circle auxMemoryBeforeMove = new Circle(a.getCenterX(),a.getCenterY(),a.getRadius(),a.getPaint(),a.getColour());
+                    listMemoryMove.add(auxMemoryBeforeMove);
+                    a1.setCenterX(a.getCenterX());
+                    invalidate();
+                    viewZoom.invalidate();
+                    MemoryFigure.addElementMemory(4,figureSelected,listMemoryMove);
+                    return true;
+                }
+                case 4: { //sortDown
+                    zoomList.setmPositionY(dpToPx(60) - a.getCenterY()*mScaleFactor );
+                    if(a.getCenterY() + scaleSort <=generalHeight) {
+                        a.setCenterY(a.getCenterY() + scaleSort);
+                    }else{
+                        a.setCenterY(generalHeight);
+                    }
+                    Circle aux1 = new Circle(a.getCenterX(),a.getCenterY(),a.getRadius(),a.getPaint(),a.getColour());
+                    Circle auxMemoryBeforeMove = new Circle(a.getCenterX(),a.getCenterY(),a.getRadius(),a.getPaint(),a.getColour());
+                    listMemoryMove.add(auxMemoryBeforeMove);
+                    a1.setCenterY(a.getCenterY());
+                    invalidate();
+                    viewZoom.invalidate();
+                    MemoryFigure.addElementMemory(4,figureSelected,listMemoryMove);
+                    return true;
+                }
+                case 5: { //allSortUp
+                    zoomList.setmPositionY((dpToPx(60)));
+                    a.setCenterY(0);
+                    Circle aux1 = new Circle(a.getCenterX(),a.getCenterY(),a.getRadius(),a.getPaint(),a.getColour());
+                    Circle auxMemoryBeforeMove = new Circle(a.getCenterX(),a.getCenterY(),a.getRadius(),a.getPaint(),a.getColour());
+                    listMemoryMove.add(auxMemoryBeforeMove);
+                    a1.setCenterY(a.getCenterY());
+                    invalidate();
+                    viewZoom.invalidate();
+                    MemoryFigure.addElementMemory(4,figureSelected,listMemoryMove);
+                    return true;
+                }
+                case 6:{ //allSortLeft
+                    zoomList.setmPositionX(dpToPx(60));
+                    a.setCenterX(0);
+                    Circle aux1 = new Circle(a.getCenterX(),a.getCenterY(),a.getRadius(),a.getPaint(),a.getColour());
+                    Circle auxMemoryBeforeMove = new Circle(a.getCenterX(),a.getCenterY(),a.getRadius(),a.getPaint(),a.getColour());
+                    listMemoryMove.add(auxMemoryBeforeMove);
+                    a1.setCenterX(a.getCenterX());
+                    invalidate();
+                    viewZoom.invalidate();
+                    MemoryFigure.addElementMemory(4,figureSelected,listMemoryMove);
+                    return true;
+                }
+                case 7:{ //alsortRight
+                    zoomList.setmPositionX(dpToPx(60) - generalWidth*mScaleFactor);
+                    a.setCenterX(generalWidth);
+                    Circle aux1 = new Circle(a.getCenterX(),a.getCenterY(),a.getRadius(),a.getPaint(),a.getColour());
+                    Circle auxMemoryBeforeMove = new Circle(a.getCenterX(),a.getCenterY(),a.getRadius(),a.getPaint(),a.getColour());
+                    listMemoryMove.add(auxMemoryBeforeMove);
+                    a1.setCenterX(a.getCenterX());
+                    invalidate();
+                    viewZoom.invalidate();
+                    MemoryFigure.addElementMemory(4,figureSelected,listMemoryMove);
+                    return true;
+                }
+                case 8:{ //alSortDown
+                    zoomList.setmPositionY(dpToPx(60) - generalHeight*mScaleFactor);
+                    a.setCenterY(generalHeight);
+                    Circle aux1 = new Circle(a.getCenterX(),a.getCenterY(),a.getRadius(),a.getPaint(),a.getColour());
+                    Circle auxMemoryBeforeMove = new Circle(a.getCenterX(),a.getCenterY(),a.getRadius(),a.getPaint(),a.getColour());
+                    listMemoryMove.add(auxMemoryBeforeMove);
+                    a1.setCenterY(a.getCenterY());
+                    invalidate();
+                    viewZoom.invalidate();
+                    MemoryFigure.addElementMemory(4,figureSelected,listMemoryMove);
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -387,7 +576,7 @@ public class ListSegmentation extends View {
                 return true;
             }
         }else{
-            if (segmentation.size() >0 && this.figureSelected != -1) {
+            if (segmentation.size() >0 && this.figureSelected != -1 && figureSelected<segmentation.size()) {
                 segmentation.get(this.figureSelected).setColour(colour);
                 segmentation.get(this.figureSelected).getPaint().setARGB(255,colour[0],colour[1],colour[2]);
                 invalidate(); //Redraw
@@ -423,7 +612,6 @@ public class ListSegmentation extends View {
         int altoIm = mBoard.getIntrinsicHeight();
         int anchoIm = mBoard.getIntrinsicWidth();
         float medioIm = (float)altoIm/anchoIm;
-        int alto,ancho;
         if(medioCa<medioIm){
             ancho = anchoCa;
             alto =(int)(medioIm*ancho);
@@ -433,6 +621,7 @@ public class ListSegmentation extends View {
         }
         generalWidth = ancho;
         generalHeight = alto;
+        zoomList.loadImage(mImage,generalHeight,generalWidth);
         if(mBoard !=null){
             canvas.save();
             mBoard.setBounds(0,0,ancho,alto);
@@ -468,6 +657,10 @@ public class ListSegmentation extends View {
                 if(i == figureSelected){
                     canvas.drawCircle(temp.getCenterX(),temp.getCenterY(),acceptDistance,Util.Circle(temp.getColour()));
                 }
+                if(modeTouch == 5 ){
+                    if( indexCircle02!=indexCircle01  && (i ==indexCircle01 || i == indexCircle02 ))
+                    canvas.drawCircle(temp.getCenterX(),temp.getCenterY(),acceptDistance,Util.CircleTransparent(temp.getColour()));
+                }
             }
         }
         if(modeTouch ==2 && upMode){
@@ -484,8 +677,7 @@ public class ListSegmentation extends View {
             canvas.drawCircle((touchX-mPositionX)/mScaleFactor,(touchY-mPositionY)/mScaleFactor,acceptDistance/2,pencil);
             canvas.drawCircle((touchX-mPositionX)/mScaleFactor,(touchY-mPositionY)/mScaleFactor,acceptDistance*2,pencil);
         }
-        if(flagPreview && !segmentation.isEmpty()){ //DEMO TRAZADO SEGMENTATION
-            //segmentationMin = distanceMin(segmentation);
+        if(flagPreview && !segmentation.isEmpty()){
             segmentationMin = segmentation;
             for(int i=0;i< segmentationMin.size();i++){
                 if ( segmentationMin.get(i) instanceof Circle) {
@@ -528,16 +720,37 @@ public class ListSegmentation extends View {
     /**
      * Method toString show list of figures content
      * @return content of the list*/
-    public String toString(){
-        StringBuilder listJson = new StringBuilder("[\n");
+    public JSONArray dataSegments() throws JSONException {
+        JSONArray jsonArray =new JSONArray();
+        /*StringBuilder listJson = new StringBuilder("[\n");
         for(int i=0;i<this.segmentation.size();i++) {
             Circle aux = (Circle) segmentation.get(i);
-            listJson.append(aux.toString(i)).append("\n");
+            listJson.append(aux.getJSON(i)).append("\n");
             if (i < this.segmentation.size() - 1)
                 listJson.append(",");
+        }*/
+        //jsonArray.
+        for(int i = 0 ;i<this.segmentation.size();i++){
+            Circle aux = (Circle) segmentation.get(i);
+            jsonArray.put(aux.getJSON(i));
         }
-        return listJson+"]";
+        return jsonArray;
     }//End Method
+
+    public String toString(){
+
+        String a =  "\"imageX\":"+generalWidth+","+
+                "\"imagey\":"+generalHeight+"," +
+                "\"profileItems\":"+null+","+
+                "\"landmarksNumber\":"+0+","+
+                //"\"landmarks\":"+dataSegments()+","+
+                "\"landmarksCreated\":"+segmentation.size()+","+
+                "\"profileName\":"+"Edwin"+","+
+                "\"imageName\":"+"image_rx_10.jpg";
+        //System.out.println(a);
+        return a;
+    }
+    //public JSONObject
     /*
 
     /**
@@ -631,6 +844,7 @@ public class ListSegmentation extends View {
      * Method onTouchEvent
      * @param event Events of touch*/
     private int mActivePointerId = INVALID_POINTER_ID;
+    private ArrayList<Figure> listMemoryMove  = new ArrayList<>();;
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @SuppressLint("ClickableViewAccessibility")
     public boolean onTouchEvent(MotionEvent event) {
@@ -647,16 +861,11 @@ public class ListSegmentation extends View {
         if(modeTouch == 1) {
             scaleGestureDetector.onTouchEvent(event);
         }
-        zoomList.acceptDistance = acceptDistance*this.viewZoom.getWidth()/this.getWidth();
-        zoomList.touchX = (event.getX()-mPositionX)/mScaleFactor*this.viewZoom.getWidth()/this.getWidth();
-        zoomList.touchY = (event.getY()-mPositionY)/mScaleFactor*this.viewZoom.getHeight()/this.getHeight();
-        this.viewZoom.setPivotX((getX-mPositionX)/mScaleFactor*this.viewZoom.getWidth()/this.getWidth());
-        this.viewZoom.setPivotY((getY-mPositionY)/mScaleFactor*this.viewZoom.getHeight()/this.getHeight());
-        //scale in zoom of ZoomLayout
-        this.viewZoom.setScaleX(scaleZoomLayout*mScaleFactor);
-        this.viewZoom.setScaleY(scaleZoomLayout*mScaleFactor);
-        this.viewZoom.setTranslationY(15);
-        this.viewZoom.setTranslationX(15);
+        //zoomList.acceptDistance = acceptDistance*this.viewZoom.getWidth()/this.getWidth();
+        zoomList.touchX = (event.getX()-mPositionX)/mScaleFactor;
+        zoomList.touchY = (event.getY()-mPositionY)/mScaleFactor;
+        zoomList.setmPositionX(dpToPx(60)-event.getX()+mPositionX);
+        zoomList.setmPositionY(dpToPx(60)-event.getY()+mPositionY);
         this.viewZoom.invalidate();
         invalidate();
         switch (acct) {
@@ -667,10 +876,11 @@ public class ListSegmentation extends View {
                 mActivePointerId = event.getPointerId(0);
                 touchX = event.getX(pointerIndex);
                 touchY = event.getY(pointerIndex);
-                zoomList.touchX = (event.getX()-mPositionX)/mScaleFactor*this.viewZoom.getWidth()/this.getWidth();
-                zoomList.touchY = (event.getY()-mPositionY)/mScaleFactor*this.viewZoom.getHeight()/this.getHeight();
+                zoomList.touchX = (event.getX()-mPositionX)/mScaleFactor;
+                zoomList.touchY = (event.getY()-mPositionY)/mScaleFactor;
                 this.figureSelected = -1;
                 zoomList.figureSelected = -1;
+                zoomList.setTouchEvent(true);
                 zoomList.invalidate();
                 invalidate();
                 getPastX = getX;
@@ -692,7 +902,10 @@ public class ListSegmentation extends View {
                                 if (distance <= acceptDistance*mScaleFactor) { //Move
                                     zoomList.figureSelected = i;
                                     this.figureSelected = i;
-                                    System.out.println("item selected : "+figureSelected);
+                                    //intento 1 de controlz en movimiento
+                                    Circle auxMemoryAfterMove = new Circle(temp.getCenterX(), temp.getCenterY(), temp.getRadius(), temp.getPaint(), temp.getColour());
+                                    listMemoryMove.add(auxMemoryAfterMove);
+                                    System.out.println("listmemory : "+listMemoryMove.size());
                                 }
                             }
                         }
@@ -719,7 +932,7 @@ public class ListSegmentation extends View {
                             }
                         }
                     }
-                }else if(modeTouch == 5){ //editEdge
+                }else if(modeTouch == 5){ //editEdge --- aun esta en testing
                     for (int i = 0; i < segmentation.size(); i++) {
                         if (segmentation.get(i) instanceof Circle) {
                             Circle temp = (Circle) segmentation.get(i);
@@ -728,7 +941,9 @@ public class ListSegmentation extends View {
                             if (distance <= acceptDistance*mScaleFactor) { //Move
                                 zoomList.figureSelected = i;
                                 this.figureSelected = i;
-                                contador++;
+                                if(contador != 1 || indexCircle01 != i) {
+                                    contador++;
+                                }
                                 if(contador == 1) {
                                     circle01 = (Circle) segmentation.get(i);
                                     indexCircle01 = i;
@@ -741,18 +956,29 @@ public class ListSegmentation extends View {
                             }
                         }
                     }
-                    if(circle01!=null && circle02 !=null&&indexCircle01!=-1&& indexCircle02!=-1 ){
-
-                        //segmentation.add(indexCircle01,circle02);
+                    if(circle01!=null && circle02 !=null&&indexCircle01!=-1&& indexCircle02!=-1 &&indexCircle01 !=indexCircle02 ){
+                        ArrayList<Figure> dataMemoryEdge = new ArrayList<>();
+                        dataMemoryEdge.add(segmentation.get(indexCircle01));
+                        dataMemoryEdge.add(segmentation.get(indexCircle02));
+                        MemoryFigure.addElementMemory(5,indexCircle01,indexCircle02,dataMemoryEdge);
                         if(indexCircle02<indexCircle01) {
                             segmentation.remove(indexCircle02);
+                            zoomList.segmentation.remove(indexCircle02);
                             addCircleSegmentation(circle02.getCenterX(), circle02.getCenterY(), circle02.getRadius(), indexCircle01);
                         }else{
                             segmentation.remove(indexCircle02);
+                            zoomList.segmentation.remove(indexCircle02);
                             addCircleSegmentation(circle02.getCenterX(), circle02.getCenterY(), circle02.getRadius(), indexCircle01+1);
                         }
                         newEdge();
+                        Toast toast;
+                        toast = Toast.makeText(getContext(),"\tSuccessful Change,\n Select Two New Points",Toast.LENGTH_LONG);
+                        toast.show();
                         figureSelected = -1;
+                    }else{
+                        Toast toast;
+                        toast = Toast.makeText(getContext(),"Select Points, Please",Toast.LENGTH_SHORT);
+                        toast.show();
                     }
                     invalidate();
                 }
@@ -766,8 +992,8 @@ public class ListSegmentation extends View {
                 moveZoom(getX,getY);
                 touchX = event.getX(pointerIndex);
                 touchY = event.getY(pointerIndex);
-                zoomList.touchX = (event.getX()-mPositionX)/mScaleFactor*this.viewZoom.getWidth()/this.getWidth();
-                zoomList.touchY = (event.getY()-mPositionY)/mScaleFactor*this.viewZoom.getHeight()/this.getHeight();
+                zoomList.touchX = (event.getX()-mPositionX)/mScaleFactor;
+                zoomList.touchY = (event.getY()-mPositionY)/mScaleFactor;
                 if(modeTouch == 0 || modeTouch == 1 || modeTouch == 4 || modeTouch == 5) { //Touch segments
                     if(modeTouch == 4 && segmentation.isEmpty()){
                         addCircleSegmentation((getX - mPositionX) / mScaleFactor, (getY - mPositionY) / mScaleFactor, 9,-1);  //9 is radius acceptable
@@ -780,9 +1006,9 @@ public class ListSegmentation extends View {
                             color = aux.getColour();
                             float centerX = aux.getCenterX() * mScaleFactor + mPositionX - event.getX(pointerIndex);
                             float centerY = aux.getCenterY() * mScaleFactor + mPositionY - event.getY(pointerIndex);
-                            //60 y 70 is the interval of segmentation acceptDistance = 30
-                            if (Math.sqrt(centerX * centerX + centerY * centerY) > acceptDistance * 2 * mScaleFactor
-                                    && Math.sqrt(centerX * centerX + centerY * centerY) < (acceptDistance * 2 + 10) * mScaleFactor) {
+                            //60 is distance between  segments
+                            if (Math.sqrt(centerX * centerX + centerY * centerY) > (acceptDistance *2) * mScaleFactor
+                                   ) {
                                 drawS = true;
                                 this.viewZoom.setVisibility(View.VISIBLE);
                                 this.cardView.setVisibility(VISIBLE);
@@ -805,36 +1031,23 @@ public class ListSegmentation extends View {
                             System.out.println("ESTA SECCION DE CODIGO SE ESTA  EJECUTANDO");
                             add(getX,getY);
                         }
-                    }else if (this.figureSelected > -1 && !segmentation.isEmpty()) {
+                    }else if (this.figureSelected > -1 && !segmentation.isEmpty() && modeTouch !=5) {
                         if( !scaleGestureDetector.isInProgress()) {
                             if (figureSelected<segmentation.size() && segmentation.get(figureSelected) instanceof Circle) {
                                 Circle temp = (Circle) segmentation.get(figureSelected);
                                 Circle temp_z = (Circle) zoomList.segmentation.get(figureSelected);
-                                //checkCircle check dimensions of the circle
+                                    if ((getX - mPositionX) / mScaleFactor <= generalWidth &&
+                                            (getX - mPositionX) / mScaleFactor >= 0) {
+                                        temp.setCenterX((getX - mPositionX) / mScaleFactor);
+                                        temp_z.setCenterX(temp.getCenterX());
 
-                                if((getX-mPositionX)/mScaleFactor <= generalWidth &&
-                                        (getX-mPositionX)/mScaleFactor>=0 ){
-                                    temp.setCenterX((getX-mPositionX)/mScaleFactor);
-                                    temp_z.setCenterX(temp.getCenterX() * this.viewZoom.getWidth() / this.getWidth());
-                                }
-                                    if(    (getY-mPositionY)/mScaleFactor<=generalHeight
-                                            && (getY-mPositionY)/mScaleFactor>=0){
-                                        temp.setCenterY((getY-mPositionY)/mScaleFactor);
-                                        temp_z.setCenterY(temp.getCenterY() * this.viewZoom.getHeight() / this.getHeight());
+                                    }
+                                    if ((getY - mPositionY) / mScaleFactor <= generalHeight
+                                            && (getY - mPositionY) / mScaleFactor >= 0) {
+                                        temp.setCenterY((getY - mPositionY) / mScaleFactor);
+                                        temp_z.setCenterY(temp.getCenterY());
                                     }
                                 invalidate();
-                               /* if (checkCircle(temp)) {
-                                    //temp.setCenterX((temp.getCenterX() - (getPastX - getX)));
-                                    temp.setCenterX((getX-mPositionX)/mScaleFactor);
-                                    //temp.setCenterY((temp.getCenterY() - (getPastY - getY)));
-                                    temp.setCenterY((getY-mPositionY)/mScaleFactor);
-                                    invalidate();
-                                    temp_z.setCenterX(temp.getCenterX() * this.viewZoom.getWidth() / this.getWidth());
-                                    temp_z.setCenterY(temp.getCenterY() * this.viewZoom.getHeight() / this.getHeight());
-                                    zoomList.invalidate();
-                                } else {
-                                    adaptCircle(temp);
-                                }*/
                             }
                         }
                     }else{
@@ -876,13 +1089,25 @@ public class ListSegmentation extends View {
             case MotionEvent.ACTION_UP: {
                 mActivePointerId = INVALID_POINTER_ID;
                 touchEvent = false;
+                zoomList.setTouchEvent(false);
                 upMode = false;
                 invalidate();
                 zoomList.invalidate();
                 if(figureSelected<=-1) {
                     this.viewZoom.setVisibility(View.INVISIBLE);
                     this.cardView.setVisibility(GONE);
+                }else{
+                    if (figureSelected < segmentation.size()){
+                        Circle a = (Circle) segmentation.get(figureSelected);
+                        Circle auxMemoryBeforeMove = new Circle(a.getCenterX(),a.getCenterY(),a.getRadius(),a.getPaint(),a.getColour());
+                        if(listMemoryMove.size() == 1 ){
+                            listMemoryMove.add(auxMemoryBeforeMove);
+                            MemoryFigure.addElementMemory(4,figureSelected,listMemoryMove);
+                        }
+                        System.out.println("test de move"+listMemoryMove.size());
+                    }
                 }
+                listMemoryMove.clear();
                 break;
             }
             case MotionEvent.ACTION_CANCEL: {

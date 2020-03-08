@@ -7,6 +7,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -26,6 +28,7 @@ import static android.view.MotionEvent.INVALID_POINTER_ID;
  * @version 3
  */
 public class ListZoomSegmentation extends View {
+
     //Class Attributes
     protected ArrayList<Figure> segmentation;
     private ArrayList<Figure> segmentationMin;
@@ -36,11 +39,50 @@ public class ListZoomSegmentation extends View {
     protected float generalWidth = 0;
     protected float touchX = 0;
     protected float touchY = 0;
+    private float mPositionX;
+    private float mPositionY;
     protected int modeTouch = 0;
     private Bitmap mImage;
     private  int mImageWidth;
     private int mImageHeight;
+    private float alto=0,ancho=0;
+    private Drawable mBoard;
     protected boolean flagPreview = false;
+    private float mScaleFactor = 1.0f;
+    private boolean touchEvent = false;
+
+    public boolean isTouchEvent() {
+        return touchEvent;
+    }
+
+    public void setTouchEvent(boolean touchEvent) {
+        this.touchEvent = touchEvent;
+    }
+
+    public float getmScaleFactor() {
+        return mScaleFactor;
+    }
+
+    public void setmScaleFactor(float mScaleFactor) {
+        this.mScaleFactor = mScaleFactor;
+    }
+
+    public float getmPositionX() {
+        return mPositionX;
+    }
+
+    public float getmPositionY() {
+        return mPositionY;
+    }
+
+    public void setmPositionX(float mPositionX) {
+        this.mPositionX = mPositionX;
+    }
+
+    public void setmPositionY(float mPositionY) {
+        this.mPositionY = mPositionY;
+    }
+
     /**
      * Class Constructor
      * @param context The View*/
@@ -51,6 +93,14 @@ public class ListZoomSegmentation extends View {
         invalidate();
     }//Closing the class constructor
 
+    public float getGeneralHeight() {
+        return generalHeight;
+    }
+
+    public float getGeneralWidth() {
+        return generalWidth;
+    }
+
     /**
      * Method addCircleSegmentation add a circle in the list of segments Zoom
      * @param _startX Define the position of the segment
@@ -59,14 +109,14 @@ public class ListZoomSegmentation extends View {
     public void addCircleSegmentation(float _startX, float _startY, float _radius, Paint pencil,int index) {
         pencil.setStrokeWidth(1);
         Circle aux = new Circle(_startX, _startY, _radius, pencil,color);
-        if (index == 1) {
+        if(index == -1 ) {
             this.segmentation.add(aux);
-            invalidate();
             figureSelected = this.segmentation.size() - 1;
-        }else{
+        }else if(index == 0) {
             this.segmentation.add(0,aux);
-            invalidate();
-            figureSelected = 0;
+        }else{
+            this.segmentation.add(index,aux);
+
         }
         invalidate();
     }//End Method
@@ -127,23 +177,31 @@ public class ListZoomSegmentation extends View {
         }
 
     }//End Method
-    public void loadImage(Bitmap mImage){
-        //mImage = img;
-        float aspectRatio = (float) mImage.getHeight()/mImage.getWidth();
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        mImageWidth = displayMetrics.widthPixels;
-        mImageHeight = Math.round(mImageWidth*aspectRatio);
-        this.mImage =  Bitmap.createScaledBitmap(mImage,mImageWidth,mImageHeight,false);
+    public void loadImage(Bitmap mImage,float alto,float ancho){
+        this.mImage = mImage;
+        mBoard = new BitmapDrawable(getResources(),mImage);
+        generalWidth =ancho;
+        generalHeight = alto;
         invalidate();
-        //requestLayout();
+        requestLayout();
+        invalidate();
     }
     /**
      * Method onDraw draw the segment
      * @param canvas area of draw*/
     protected void onDraw(Canvas canvas) {
-        generalWidth = canvas.getWidth();
-        generalHeight = canvas.getHeight();
-
+        int alto,ancho;
+        alto = (int) generalHeight;
+        ancho = (int) generalWidth;
+        if(mBoard !=null){
+            canvas.save();
+            mBoard.setBounds(0,0,(int)ancho,(int)alto);
+            mImageHeight =(int) alto;
+            mImageWidth = (int)ancho;
+            canvas.translate(mPositionX,mPositionY);
+            canvas.scale(mScaleFactor,mScaleFactor);
+            mBoard.draw(canvas);
+        }
         for(int i=0;i<segmentation.size();i++){
             if (segmentation.get(i) instanceof Circle) {
                 Circle temp = (Circle) segmentation.get(i);
@@ -162,7 +220,7 @@ public class ListZoomSegmentation extends View {
                 }
             }
         }
-        if(modeTouch ==2){
+        if(modeTouch ==2 && touchEvent){
             float[] intervals = new float[]{0.0f, 0.0f};
             float phase = 0;
             DashPathEffect dashPathEffect = new DashPathEffect(intervals, phase);
@@ -176,8 +234,7 @@ public class ListZoomSegmentation extends View {
             canvas.drawCircle(touchX,touchY,acceptDistance/2,pencil);
             canvas.drawCircle(touchX,touchY,acceptDistance*2,pencil);
         }
-        if(flagPreview && !segmentation.isEmpty()){ //DEMO TRAZADO SEGMENTATION
-            //segmentationMin = distanceMin(segmentation);
+        if(flagPreview && !segmentation.isEmpty()){
             segmentationMin = segmentation;
             for(int i=0;i< segmentationMin.size();i++){
                 if ( segmentationMin.get(i) instanceof Circle) {
@@ -193,18 +250,6 @@ public class ListZoomSegmentation extends View {
                 }
             }
         }
-    }
-    @SuppressLint("ClickableViewAccessibility")
-    public boolean onTouchEvent(MotionEvent event) {
-
-        final int acct = event.getActionMasked();
-        switch (acct) {
-
-            case MotionEvent.ACTION_MOVE:{
-                //System.out.println(event.getX()+" : "+event.getY());
-                break;
-            }
-        }
-        return true;
+        canvas.restore();
     }
 }

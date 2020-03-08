@@ -31,8 +31,10 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.example.dashboard.Services.FiltersService;
 import com.google.android.material.textfield.TextInputEditText;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opencv.android.OpenCVLoader;
@@ -198,6 +200,10 @@ public class MainActivity extends AppCompatActivity {
     private ImageView openCv26;
     private ImageView openCv27;
     private ImageView openCv28;
+    private ImageView getOpenCvHttp1;
+    private ImageView getOpenCvHttp2;
+    private ImageView getOpenCvHttp3;
+    private ImageView getOpenCvHttp4;
     private ImageView openCvHttp;
     private ImageView groupVariantOpenCv;
     private ImageView groupBordersOpenCv;
@@ -230,6 +236,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean longClick = false;
     private int mActivePointerId = INVALID_POINTER_ID;
     private LinearLayout rootLayout;
+    private Files dataFiles;
     //--End Attributes of class
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @SuppressLint("ClickableViewAccessibility")
@@ -244,7 +251,6 @@ public class MainActivity extends AppCompatActivity {
         //Load OpenCV
         OpenCVLoader.initDebug();
         //Initializing Properties
-        //
         initialProperties();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
@@ -289,12 +295,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(!flagAristas){
+                    Toast toast;
+                    toast = Toast.makeText(getApplicationContext(),"Select two point, Please",Toast.LENGTH_SHORT);
+                    toast.show();
                     Animation.animationScale(aristas,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
                     aristas.setColorFilter(Color.rgb(255, 127, 80));
+                    eraserSegments.setColorFilter(Color.rgb(255, 255, 255));
+                    addPointSegment.setColorFilter(Color.rgb(255, 255, 255));
+                    extendsImage.setColorFilter(Color.rgb(255, 255, 255));
+                    pencilSegment.setColorFilter(Color.rgb(255, 255, 255));
                     myListSegmentation.changeModeTouch(5);
                     flagAristas = true;
                 }else{
                     aristas.setColorFilter(Color.rgb(255, 255, 255));
+                    myListSegmentation.changeModeTouch(0);
                     flagAristas = false;
                 }
                 myListSegmentation.newEdge();
@@ -320,7 +334,7 @@ public class MainActivity extends AppCompatActivity {
         allSortUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!myListSegmentation.allSortUp()){
+                if(!myListSegmentation.sortMoveControl(5)){
                     Toast toast;
                     toast = Toast.makeText(getApplicationContext(),"Please selected figure ",Toast.LENGTH_SHORT);
                     toast.show();
@@ -330,114 +344,70 @@ public class MainActivity extends AppCompatActivity {
         allSortLeft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(myListSegmentation.getFigureSelected()>-1) {
-                    Circle a = (Circle) myListSegmentation.getSegmentation().get(myListSegmentation.getFigureSelected());
-                    Circle a1 = (Circle) myListSegmentation.getZoomList().getSegmentation().get(myListSegmentation.getZoomList().getFigureSelected());
-                    myListSegmentation.getViewZoom().setPivotX(myListSegmentation.getViewZoom().getWidth() / myListSegmentation.getGeneralWidth());
-                    a.setCenterX(0);
-                    a1.setCenterX(a.getCenterX() * myListSegmentation.getViewZoom().getWidth() / myListSegmentation.getGeneralWidth());
-                    myListSegmentation.invalidate();
-                    myListSegmentation.getZoomList().invalidate();
+                if(!myListSegmentation.sortMoveControl(6)){
+                    Toast toast;
+                    toast = Toast.makeText(getApplicationContext(),"Please selected figure ",Toast.LENGTH_SHORT);
+                    toast.show();
                 }
             }
         });
         allSortRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(myListSegmentation.getFigureSelected()>-1) {
-                    Circle a = (Circle) myListSegmentation.getSegmentation().get(myListSegmentation.getFigureSelected());
-                    Circle a1 = (Circle) myListSegmentation.getZoomList().getSegmentation().get(myListSegmentation.getZoomList().getFigureSelected());
-                    myListSegmentation.getViewZoom().setPivotX((myListSegmentation.getGeneralWidth()) * myListSegmentation.getViewZoom().getWidth() / myListSegmentation.getGeneralWidth());
-                    a.setCenterX(myListSegmentation.getGeneralWidth());
-                    a1.setCenterX(a.getCenterX() * myListSegmentation.getViewZoom().getWidth() / myListSegmentation.getGeneralWidth());
-                    myListSegmentation.invalidate();
-                    myListSegmentation.getZoomList().invalidate();
+                if(!myListSegmentation.sortMoveControl(7)){
+                    Toast toast;
+                    toast = Toast.makeText(getApplicationContext(),"Please selected figure ",Toast.LENGTH_SHORT);
+                    toast.show();
                 }
             }
         });
         allSortDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(myListSegmentation.getFigureSelected()>-1) {
-                    Circle a = (Circle) myListSegmentation.getSegmentation().get(myListSegmentation.getFigureSelected());
-                    Circle a1 = (Circle) myListSegmentation.getZoomList().getSegmentation().get(myListSegmentation.getZoomList().getFigureSelected());
-                    myListSegmentation.getViewZoom().setPivotY(( myListSegmentation.getGeneralHeight())  * myListSegmentation.getViewZoom().getHeight() /  myListSegmentation.getGeneralHeight());
-                    a.setCenterY( myListSegmentation.getGeneralHeight());
-                    a1.setCenterY(a.getCenterY() * myListSegmentation.getViewZoom().getHeight() /  myListSegmentation.getGeneralHeight());
-                    myListSegmentation.invalidate();
-                    myListSegmentation.getZoomList().invalidate();
+                if(!myListSegmentation.sortMoveControl(8)){
+                    Toast toast;
+                    toast = Toast.makeText(getApplicationContext(),"Please selected figure ",Toast.LENGTH_SHORT);
+                    toast.show();
                 }
             }
         });
         sortUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            if(myListSegmentation.getFigureSelected()>-1){
-                Circle a = (Circle) myListSegmentation.getSegmentation().get(myListSegmentation.getFigureSelected());
-                Circle a1 = (Circle) myListSegmentation.getZoomList().getSegmentation().get(myListSegmentation.getZoomList().getFigureSelected());
-                myListSegmentation.getViewZoom().setPivotY((a.getCenterY())*myListSegmentation.getViewZoom().getHeight()/ myListSegmentation.getGeneralHeight());
-                if(a.getCenterY() - scaleSort>=0) {
-                    a.setCenterY(a.getCenterY() - scaleSort);
-                }else{
-                    a.setCenterY(0);
+                if(!myListSegmentation.sortMoveControl(1)){
+                    Toast toast;
+                    toast = Toast.makeText(getApplicationContext(),"Please selected figure ",Toast.LENGTH_SHORT);
+                    toast.show();
                 }
-                a1.setCenterY(a.getCenterY() * myListSegmentation.getViewZoom().getHeight() /  myListSegmentation.getGeneralHeight());
-                myListSegmentation.invalidate();
-                myListSegmentation.getZoomList().invalidate();
-            }
             }
         });
         sortDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(myListSegmentation.getFigureSelected()>-1){
-                    Circle a = (Circle) myListSegmentation.getSegmentation().get(myListSegmentation.getFigureSelected());
-                    Circle a1 = (Circle) myListSegmentation.getZoomList().getSegmentation().get(myListSegmentation.getZoomList().getFigureSelected());
-                    myListSegmentation.getViewZoom().setPivotY((a.getCenterY())*myListSegmentation.getViewZoom().getHeight()/ myListSegmentation.getGeneralHeight());
-                    if(a.getCenterY() + scaleSort<= myListSegmentation.getGeneralHeight() ) {
-                        a.setCenterY(a.getCenterY() + scaleSort);
-                    }else{
-                        a.setCenterY(myListSegmentation.getHeight());
-                    }
-                    a1.setCenterY(a.getCenterY() * myListSegmentation.getViewZoom().getHeight() /  myListSegmentation.getGeneralHeight());
-                    myListSegmentation.invalidate();
-                    myListSegmentation.getZoomList().invalidate();
+                if(!myListSegmentation.sortMoveControl(4)){
+                    Toast toast;
+                    toast = Toast.makeText(getApplicationContext(),"Please selected figure ",Toast.LENGTH_SHORT);
+                    toast.show();
                 }
             }
         });
         sortRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(myListSegmentation.getFigureSelected()>-1){
-                    Circle a = (Circle) myListSegmentation.getSegmentation().get(myListSegmentation.getFigureSelected());
-                    Circle a1 = (Circle) myListSegmentation.getZoomList().getSegmentation().get(myListSegmentation.getZoomList().getFigureSelected());
-                    myListSegmentation.getViewZoom().setPivotX((a.getCenterX())*myListSegmentation.getViewZoom().getWidth()/myListSegmentation.getGeneralWidth());
-                    if(a.getCenterX() + scaleSort<=myListSegmentation.getGeneralWidth()) {
-                        a.setCenterX(a.getCenterX() + scaleSort);
-                    }else{
-                        a.setCenterX(myListSegmentation.getGeneralWidth());
-                    }
-                    a1.setCenterX(a.getCenterX() * myListSegmentation.getViewZoom().getWidth() / myListSegmentation.getGeneralWidth());
-                    myListSegmentation.invalidate();
-                    myListSegmentation.getZoomList().invalidate();
+                if(!myListSegmentation.sortMoveControl(3)){
+                    Toast toast;
+                    toast = Toast.makeText(getApplicationContext(),"Please selected figure ",Toast.LENGTH_SHORT);
+                    toast.show();
                 }
             }
         });
         sortLeft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(myListSegmentation.getFigureSelected()>-1){
-                    Circle a = (Circle) myListSegmentation.getSegmentation().get(myListSegmentation.getFigureSelected());
-                    Circle a1 = (Circle) myListSegmentation.getZoomList().getSegmentation().get(myListSegmentation.getZoomList().getFigureSelected());
-                    myListSegmentation.getViewZoom().setPivotX((a.getCenterX())*myListSegmentation.getViewZoom().getWidth()/myListSegmentation.getGeneralWidth());
-                    if(a.getCenterX() - scaleSort-a.getRadius()>=0) {
-                        a.setCenterX(a.getCenterX() - scaleSort);
-                    }else{
-                        a.setCenterX(0);
-                    }
-                    a1.setCenterX(a.getCenterX() * myListSegmentation.getViewZoom().getWidth() /myListSegmentation.getGeneralWidth());
-                    myListSegmentation.invalidate();
-                    myListSegmentation.getZoomList().invalidate();
+                if(!myListSegmentation.sortMoveControl(2)){
+                    Toast toast;
+                    toast = Toast.makeText(getApplicationContext(),"Please selected figure ",Toast.LENGTH_SHORT);
+                    toast.show();
                 }
             }
         });
@@ -502,9 +472,9 @@ public class MainActivity extends AppCompatActivity {
         saveFigures.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Animation.animationScale(deleteFigures,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
+                Animation.animationScale(saveFigures,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
                 Toast toast;
-                if(myListFigures.deleteFigure())
+                if(1==1)
                     toast = Toast.makeText(getApplicationContext(),"Data Save Successfully",Toast.LENGTH_SHORT);
                 else
                     toast = Toast.makeText(getApplicationContext(),"Data not Save",Toast.LENGTH_SHORT);
@@ -523,8 +493,9 @@ public class MainActivity extends AppCompatActivity {
                 else
                     toast = Toast.makeText(getApplicationContext(),"Data not Save",Toast.LENGTH_SHORT);
                 toast.show();*/
-                System.out.println(myListSegmentation.toString());
-
+                //System.out.println(myListSegmentation.toString());
+                enviarLandMark();
+                System.out.println("DATA ENVIADA");
                 //myListSegmentation.toString();
             }
         });
@@ -534,13 +505,11 @@ public class MainActivity extends AppCompatActivity {
                 if(!flagPreviewSegmentation) {
                     Animation.animationScale(preview, TIME_ANIMATION, SCALE_ANIMATION, SCALE_ANIMATION);
                     preview.setColorFilter(Color.rgb(255, 127, 80));
-                    //myListSegmentation.changeModeTouch(4);
                     myListSegmentation.getFlagPreview();
                     myListSegmentation.invalidate();
                     flagPreviewSegmentation = true;
                 }else{
                     preview.setColorFilter(Color.rgb(255, 255, 255));
-                    //myListSegmentation.changeModeTouch(0);
                     myListSegmentation.getFlagPreview();
                     myListSegmentation.invalidate();
                     flagPreviewSegmentation = false;
@@ -566,7 +535,6 @@ public class MainActivity extends AppCompatActivity {
                     layoutImageRx.setVisibility(View.GONE);
                     layoutImageRx1.setVisibility(View.VISIBLE);
                     scrollLeft1.setVisibility(View.GONE);
-
                     if(flagAnimationColors) //menu de figuritas esta activo
                         scrollLeft2.setVisibility(View.VISIBLE);
                     else
@@ -608,6 +576,7 @@ public class MainActivity extends AppCompatActivity {
                     addPointSegment.setColorFilter(Color.rgb(255, 255, 255));
                     extendsImage.setColorFilter(Color.rgb(255, 255, 255));
                     pencilSegment.setColorFilter(Color.rgb(255, 255, 255));
+                    aristas.setColorFilter(Color.rgb(255, 255, 255));
                     myListSegmentation.changeModeTouch(2);
                     flagEraserSegmentation = true;
                 }else{
@@ -627,6 +596,7 @@ public class MainActivity extends AppCompatActivity {
                     pencilSegment.setColorFilter(Color.rgb(255, 255, 255));
                     extendsImage.setColorFilter(Color.rgb(255, 255, 255));
                     addPointSegment.setColorFilter(Color.rgb(255, 127, 80));
+                    aristas.setColorFilter(Color.rgb(255, 255, 255));
                     myListSegmentation.changeModeTouch(3);
                     flagPointSegmentation = true;
                 }else{
@@ -647,11 +617,12 @@ public class MainActivity extends AppCompatActivity {
                     addPointSegment.setColorFilter(Color.rgb(255, 255, 255));
                     extendsImage.setColorFilter(Color.rgb(255, 255, 255));
                     pencilSegment.setColorFilter(Color.rgb(255, 127, 80));
+                    aristas.setColorFilter(Color.rgb(255, 255, 255));
                     myListSegmentation.changeModeTouch(4);
                     flagPencilSegmentation = true;
                 }else{
                     pencilSegment.setColorFilter(Color.rgb(255, 255, 255));
-                        myListSegmentation.changeModeTouch(0);
+                    myListSegmentation.changeModeTouch(0);
                     flagPencilSegmentation = false;
                 }
             }
@@ -685,7 +656,6 @@ public class MainActivity extends AppCompatActivity {
                 backFilters.setVisibility(View.VISIBLE);
                 notViewFilters();
                 flagVariant = false;
-
                 flagBorders = false;
                 flagCalor = false;
                 flagColors = false;
@@ -706,10 +676,12 @@ public class MainActivity extends AppCompatActivity {
                 }else {
 
                     if(myListSegmentation.getModeTouch()==0 || myListSegmentation.getModeTouch()==2
-                            || myListSegmentation.getModeTouch()==3 || myListSegmentation.getModeTouch()==4) {
+                            || myListSegmentation.getModeTouch()==3 || myListSegmentation.getModeTouch()==4
+                            ||myListSegmentation.getModeTouch() ==5) {
                         eraserSegments.setColorFilter(Color.rgb(255, 255, 255)); //white
                         pencilSegment.setColorFilter(Color.rgb(255, 255, 255)); //white
                         addPointSegment.setColorFilter(Color.rgb(255, 255, 255)); //white
+                        aristas.setColorFilter(Color.rgb(255, 255, 255)); //white
                         extendsImage.setColorFilter(Color.rgb(255, 127, 80)); //orange
                         myListSegmentation.changeModeTouch(1);
                     }else{
@@ -1038,8 +1010,6 @@ public class MainActivity extends AppCompatActivity {
                 }else {
                     toast = Toast.makeText(getApplicationContext(), "Isn't Selected Figure", Toast.LENGTH_SHORT);
                 }
-
-
                 toast.show();
             }
         });
@@ -1063,28 +1033,24 @@ public class MainActivity extends AppCompatActivity {
         openCv3.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             public void onClick(View v) {
-
                 addFilter(myFilters.filterRGB());
             }
         });
         normalOpencv.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             public void onClick(View v) {
-
                 addFilter(myFilters.filterRGB());
             }
         });
         normalOpencv1.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             public void onClick(View v) {
-
                 addFilter(myFilters.filterRGB());
             }
         });
         normalOpencv2.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             public void onClick(View v) {
-
                 addFilter(myFilters.filterRGB());
             }
         });
@@ -1093,7 +1059,6 @@ public class MainActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-
                 addFilter(myFilters.filterMorph());
             }
         });
@@ -1419,13 +1384,12 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void addFilter(Bitmap d){
-
         Drawable drawable = new BitmapDrawable(getResources(),d);
         if(!flagSegmentation)
             myListFigures.loadImage(d);
         else {
             myListSegmentation.loadImage(d);
-            zoomImageLayout.setBackground(drawable);
+            //zoomImageLayout.setBackground(drawable);
         }
     }
     @SuppressLint("ShowToast")
@@ -1525,7 +1489,6 @@ public class MainActivity extends AppCompatActivity {
         return  textBitmap;
     }
     private void showInfoDialog() {
-
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle("INFO FIGURE: ");
         dialog.setMessage("Please description figure");
@@ -1552,7 +1515,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         dialog.show();
-
     }
 
     public static Bitmap scaleDown(Bitmap realImage,float maxImageSize , boolean filter){
@@ -1562,27 +1524,39 @@ public class MainActivity extends AppCompatActivity {
         Bitmap newImage = Bitmap.createScaledBitmap(realImage,width,height,filter);
         return newImage;
     }
-
-    public void enviar(){
-
+    public void enviarLandMark(){
         MediaType MEDIA_TYPE =
                 MediaType.parse("application/json");
         String image="";
         final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,
                 TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(
 
-                        60,TimeUnit.SECONDS).build();
+                60,TimeUnit.SECONDS).build();
         JSONObject postdata = new JSONObject();
         try {
-            postdata.put("image", myListSegmentation.getBase64String());
-            postdata.put("type", "clahe");
+            //postdata.put("image", myListSegmentation.getBase64String());
+            postdata.put("image", "");
+            JSONObject posdate123 = new JSONObject();
+            posdate123.put("imageX",myListSegmentation.getGeneralWidth());
+            posdate123.put("imagey",myListSegmentation.getGeneralHeight());
+            posdate123.put("profileItems",null);
+            posdate123.put("landmarksNumber",0);
+            posdate123.put("landmarks",myListSegmentation.dataSegments());
+            posdate123.put("landmarksCreated",myListSegmentation.getSegmentation().size());
+            posdate123.put("profileName","Edwin");
+            posdate123.put("imageName","image_rx_jpg");
+            postdata.put("information",posdate123);
+            System.out.println(postdata.toString());
+            //System.out.println(myListSegmentation.getBase64String());
+           // dataFiles.writeJSONFile(postdata.toString());
+
         } catch(JSONException e){
             e.printStackTrace();
         }
         RequestBody body = RequestBody.create(MEDIA_TYPE,
                 postdata.toString());
         final Request request = new Request.Builder()
-                .url("http://192.168.12.97:5000/filters") /*URL ... INDEX PX DE WILMER*/
+                .url("http://192.168.12.97:5000/landmark") /*URL ... INDEX PX DE WILMER*/
                 .post(body)
                 .addHeader("Content-Type", "application/json")
                 .build();
@@ -1591,7 +1565,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 System.out.println("Wilmer ERROR :" + e);
-                auxOriginal = myFilters.filterRGB();
+                //auxOriginal = myFilters.filterRGB();
             }
 
             @Override
@@ -1602,7 +1576,7 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println("**************RESPUESTA ****************");
                     System.out.println(responseData);
                     System.out.println("**************RESPUESTA ****************");
-                    auxOriginal = myListSegmentation.decodeBase64AndSetImage(responseData);
+                   // auxOriginal = myListSegmentation.decodeBase64AndSetImage(responseData);
                     /*runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -1614,6 +1588,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void getFilterService(String nameFilter){
+        try {
+            auxOriginal = myListSegmentation.decodeBase64AndSetImage(
+                    FiltersService.getFilters(myListSegmentation.getBase64String(),nameFilter));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     /**
      * Method initial Properties Initializing Properties of Activity
@@ -1629,16 +1612,10 @@ public class MainActivity extends AppCompatActivity {
         saveData = findViewById(R.id.saveData);
         saveFigures = findViewById(R.id.saveFigures);
         creatorCircles = findViewById(R.id.addCircle);
-        String  sectionColor = "#C3ACAC";
-        creatorCircles.setColorFilter(Color.parseColor(sectionColor));
         creatorRectangles = findViewById(R.id.addRectangle);
-        creatorRectangles.setColorFilter(Color.parseColor(sectionColor));
         creatorLines = findViewById(R.id.addLine);
-        creatorLines.setColorFilter(Color.parseColor(sectionColor));
         creatorEllipses = findViewById(R.id.addEllipse);
-        creatorEllipses.setColorFilter(Color.parseColor(sectionColor));
         creatorPoints = findViewById(R.id.addPoint);
-        creatorPoints.setColorFilter(Color.parseColor(sectionColor));
         infoFigures = findViewById(R.id.infoFigures);
         deleteFigures = findViewById(R.id.deleteFigures);
         changeColor = findViewById(R.id.changeColor);
@@ -1647,12 +1624,9 @@ public class MainActivity extends AppCompatActivity {
         clearSegments = findViewById(R.id.clearSegments);
         menu_left = findViewById(R.id.contenedor_menu_left);
         menu_right = findViewById(R.id.contenedor_menu_right);
-        //contenedor_description.setBackgroundColor(Color.parseColor("#80000000"));
         menu_left.setBackgroundColor(Color.parseColor("#80000000"));
         menu_right.setBackgroundColor(Color.parseColor("#80000000"));
         getFigures = findViewById(R.id.getFigures);
-        //ImageView load = findViewById(R.id.load);
-        //ConstraintLayout frame = findViewById(R.id.frame);
         layoutImageRx = findViewById(R.id.layoutImageRx);
         myListFigures = new ListFigure(this,layoutImageRx);
         layoutImageRx.addView(myListFigures);
@@ -1685,8 +1659,8 @@ public class MainActivity extends AppCompatActivity {
         ControlMenu controlMenu = new ControlMenu(control,touchControl,sortLeft,sortRight,sortUp,sortDown);
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        control.setTranslationX(metrics.widthPixels/2-((int)(getResources().getDimension(R.dimen.initial_position_control)))*2); //convertir a DP
-        control.setTranslationY(metrics.heightPixels/2-((int)(getResources().getDimension(R.dimen.initial_position_control)))*2); //convertir a DP
+        control.setTranslationX(metrics.widthPixels/2-((int)(getResources().getDimension(R.dimen.initial_position_control)))); //convertir a DP
+        control.setTranslationY(metrics.heightPixels/2-((int)(getResources().getDimension(R.dimen.initial_position_control)))); //convertir a DP
         //Segmentation
         addPointSegment = findViewById(R.id.addPointSegment);
         pencilSegment =  findViewById(R.id.pencilSegment);
@@ -1738,6 +1712,10 @@ public class MainActivity extends AppCompatActivity {
         normalOpencv1 = findViewById(R.id.openCVNormal01);
         normalOpencv2 = findViewById(R.id.openCVNormal02);
         openCvHttp = findViewById(R.id.openCVhttp);
+        getOpenCvHttp1 = findViewById(R.id.openCVhttp1);
+        getOpenCvHttp2 = findViewById(R.id.openCVhttp2);
+        getOpenCvHttp3 = findViewById(R.id.openCVhttp3);
+        getOpenCvHttp4 = findViewById(R.id.openCVhttp4);
         //IMAGE
         test1 = findViewById(R.id.test);
         img = null;
@@ -1767,7 +1745,7 @@ public class MainActivity extends AppCompatActivity {
         myListFigures.loadImage(this.original);
         myListSegmentation.loadImage(this.original);
         myFilters = new MyFilters(this.img,this.original);
-        zoomImageLayout.setBackground(new BitmapDrawable(getResources(),myFilters.filterRGB()));
+        //zoomImageLayout.setBackground(new BitmapDrawable(getResources(),myFilters.filterRGB()));
         //Resize Image Icon Filter
         int d1 = (int) getResources().getDimension(R.dimen.icon_filter);
         Bitmap scaleIconsBitmap = scaleDown(this.original,d1,true);
@@ -1775,10 +1753,11 @@ public class MainActivity extends AppCompatActivity {
         Imgproc.resize(img,img_result_aux,new Size(d1,d1));
         MyFilters myFilters = new MyFilters(img_result_aux,scaleIconsBitmap);
         //Icons with filter
-        groupVariantOpenCv.setImageBitmap(makeTransparent(myFilters.filterRGB(),80,"Variant"));
+        groupVariantOpenCv.setImageBitmap(makeTransparent(myFilters.filterColor(5),80,"Variant"));
         groupBordersOpenCv.setImageBitmap(makeTransparent(myFilters.filterCanny(),80,"Borders"));
         groupCalorOpenCv.setImageBitmap(makeTransparent(myFilters.filterColor(2),80,"Calor"));
         groupColorsOpenCv.setImageBitmap(makeTransparent(myFilters.filterSummer(),80,"Colors"));
+        openCvHttp.setImageBitmap(makeTransparent(myFilters.filterRGB(),80,"Rx-Server"));
         openCv.setImageBitmap(makeText(myFilters.filterCanny(),"Canny"));
         openCv1.setImageBitmap(makeText(myFilters.filerSepia(),"Sepia"));
         openCv2.setImageBitmap(makeText(myFilters.filterMorph(),"Morph"));
@@ -1846,7 +1825,11 @@ public class MainActivity extends AppCompatActivity {
                 listColors.get(i).setColorFilter(Color.rgb(Util.getCollections()[i][0],Util.getCollections()[i][1],Util.getCollections()[i][2]));
         }
         scaleSort = 3;
-
+        try {
+            dataFiles = new Files("miarchivo","/carpeta/");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         //--End Initializing
     }//End Method
 }//End Class

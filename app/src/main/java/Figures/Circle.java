@@ -1,6 +1,10 @@
 package Figures;
 //Imports
 import android.graphics.Paint;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * This class define the geometric circle figure
  * @author Edwin Saavedra
@@ -48,7 +52,29 @@ public class Circle extends Figure{
      * Method toString show class content
      * @return content of the class*/
     public String toString(int id){
-                return "{\"id\":"+id+",\"cx\"="+this.getCenterX()+",\"cy\"="+this.getCenterY()+",\"r\"="+this.getRadius()+"}" ;
+                return "{\"id\":"+id+"," +
+                        "\"x\"="+this.getCenterX()+"," +
+                        "\"y\"="+this.getCenterY()+"," +
+                        "\"comment\"="+this.getDescription()+","+
+                        /*"\"r\"="+this.getRadius()+*/
+                        "\"r\"="+this.getColour()[0]+","+
+                        "\"g\"="+this.getColour()[1]+","+
+                        "\"b\"="+this.getColour()[2]+","+
+                        "\"colorName\"="+null+","+
+                        "}" ;
 
     }//End Method toString
+
+    public JSONObject getJSON(int id) throws JSONException {
+        JSONObject object = new JSONObject();
+        object.put("id",id);
+        object.put("x",this.centerX);
+        object.put("y",this.centerY);
+        object.put("comment",this.getDescription());
+        object.put("r",this.getColour()[0]);
+        object.put("g",this.getColour()[1]);
+        object.put("b",this.getColour()[2]);
+        object.put("colorName",null);
+        return object;
+    }
 }//Close Class

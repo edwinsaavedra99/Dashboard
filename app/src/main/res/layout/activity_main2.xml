@@ -181,7 +181,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:text="Capture"
+                        android:text="Image"
                         android:textColor="#FFFFFF"
                         android:textSize="9sp" />
 
@@ -208,12 +208,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical">
-                    <ImageView
-                        android:id="@+id/openCVhttp"
-                        android:layout_width="@dimen/icon_filter"
-                        android:layout_height="@dimen/icon_filter"
-                        android:layout_marginBottom="15dp"
-                        android:src="@drawable/detective_64px" />
+
                     <ImageView
                         android:id="@+id/openCVGroupVariant"
                         android:layout_width="@dimen/icon_filter"
@@ -440,7 +435,37 @@
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/detective_64px" />
+                    <ImageView
+                        android:id="@+id/openCVhttp"
+                        android:layout_width="@dimen/icon_filter"
+                        android:layout_height="@dimen/icon_filter"
+                        android:layout_marginBottom="15dp"
+                        android:src="@drawable/detective_64px" />
 
+                    <ImageView
+                        android:id="@+id/openCVhttp1"
+                        android:layout_width="@dimen/icon_filter"
+                        android:layout_height="@dimen/icon_filter"
+                        android:layout_marginBottom="15dp"
+                        android:src="@drawable/ic_collections_black_24dp" />
+                    <ImageView
+                        android:id="@+id/openCVhttp2"
+                        android:layout_width="@dimen/icon_filter"
+                        android:layout_height="@dimen/icon_filter"
+                        android:layout_marginBottom="15dp"
+                        android:src="@drawable/ic_collections_black_24dp" />
+                    <ImageView
+                        android:id="@+id/openCVhttp3"
+                        android:layout_width="@dimen/icon_filter"
+                        android:layout_height="@dimen/icon_filter"
+                        android:layout_marginBottom="15dp"
+                        android:src="@drawable/ic_collections_black_24dp" />
+                    <ImageView
+                        android:id="@+id/openCVhttp4"
+                        android:layout_width="@dimen/icon_filter"
+                        android:layout_height="@dimen/icon_filter"
+                        android:layout_marginBottom="15dp"
+                        android:src="@drawable/ic_collections_black_24dp" />
 
                 </LinearLayout>
             </ScrollView>
@@ -650,7 +675,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:text="Load"
+                        android:text="Open"
                         android:textColor="#FFFFFF"
                         android:textSize="10sp" />
 
@@ -659,7 +684,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginBottom="10dp"
-                        android:src="@drawable/loading_50px" />
+                        android:src="@drawable/ic_open_in_new_black_24dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -675,8 +700,17 @@
                         android:layout_height="30dp"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/save_50px" />
+                        <LinearLayout
+                            android:layout_marginBottom="10dp"
+                            android:gravity="center"
+                            android:background="@drawable/fondo"
+                            android:orientation="vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
 
-                    <TextView
+
+                       <TextView
+                           android:layout_marginTop="10dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
@@ -686,11 +720,10 @@
 
                         <ImageView
                             android:id="@+id/addPoint"
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
                             android:layout_marginBottom="15dp"
                             android:src="@drawable/filled_circle_16px" />
-
                         <ImageView
                             android:id="@+id/addLine"
                             android:layout_width="25dp"
@@ -715,8 +748,9 @@
                         android:id="@+id/addEllipse"
                         android:layout_width="25dp"
                         android:layout_height="30dp"
-                        android:layout_marginBottom="15dp"
+                        android:layout_marginBottom="10dp"
                         android:src="@drawable/oval_32px" />
+                        </LinearLayout>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -798,15 +832,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:text="Load"
+                        android:text="Open"
                         android:textColor="#FFFFFF"
                         android:textSize="10sp" />
 
                     <ImageView
+                        android:id="@+id/openSegments"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginBottom="10dp"
-                        android:src="@drawable/loading_50px" />
+                        android:src="@drawable/ic_open_in_new_black_24dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -820,9 +855,18 @@
                         android:id="@+id/saveData"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:layout_marginBottom="10dp"
+                        android:layout_marginBottom="15dp"
                         android:src="@drawable/save_50px" />
+                    <LinearLayout
+                        android:layout_marginBottom="10dp"
+                        android:gravity="center"
+                        android:background="@drawable/fondo"
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
                     <TextView
+                        android:layout_marginTop="10dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
@@ -842,7 +886,7 @@
                         android:layout_height="25dp"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/ic_create_black_24dp" />
-
+                    </LinearLayout>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

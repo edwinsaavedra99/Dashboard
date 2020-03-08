@@ -8,11 +8,25 @@ public class ElementMemory {
     private ArrayList<Figure> memoryList;
     private int codMemoryList;
     private int indexInList;
-
+    private int indexTwoList;
     ElementMemory(ArrayList<Figure> memoryList, int codMemoryList, int indexInList) {
         this.memoryList = new ArrayList<>(memoryList);
         this.codMemoryList = codMemoryList;
         this.indexInList = indexInList;
+    }
+    ElementMemory(ArrayList<Figure> memoryList, int codMemoryList,  int indexInList, int indexTwoList) {
+        this.memoryList = new ArrayList<>(memoryList);
+        this.codMemoryList = codMemoryList;
+        this.indexInList = indexInList;
+        this.indexTwoList = indexTwoList;
+    }
+
+    public int getIndexTwoList() {
+        return indexTwoList;
+    }
+
+    public void setIndexTwoList(int indexTwoList) {
+        this.indexTwoList = indexTwoList;
     }
 
     public ArrayList<Figure> getMemoryList() {
