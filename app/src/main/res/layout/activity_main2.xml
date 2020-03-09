@@ -198,6 +198,7 @@
                         android:textSize="9sp" />
 
                     <ImageView
+                        android:id="@+id/galery"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginBottom="15dp"
@@ -530,6 +531,8 @@
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/ic_collections_black_24dp" />
 
                     <ImageView
@@ -537,24 +540,32 @@
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/ic_collections_black_24dp" />
                     <ImageView
                         android:id="@+id/openCVhttp2"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/ic_collections_black_24dp" />
                     <ImageView
                         android:id="@+id/openCVhttp3"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/ic_collections_black_24dp" />
                     <ImageView
                         android:id="@+id/openCVhttp4"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/ic_collections_black_24dp" />
 
                 </LinearLayout>

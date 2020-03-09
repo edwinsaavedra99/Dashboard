@@ -11,7 +11,10 @@ import org.opencv.imgproc.Imgproc;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.opencv.core.Core.BadImageSize;
 import static org.opencv.core.Core.LUT;
+import static org.opencv.core.CvType.CV_8U;
+import static org.opencv.core.CvType.CV_8UC;
 import static org.opencv.core.CvType.CV_8UC1;
 
 class MyFilters {
@@ -21,6 +24,23 @@ class MyFilters {
         this.img = img;
         this.image = image;
     }
+
+    public Mat getImg() {
+        return img;
+    }
+
+    public void setImg(Mat img) {
+        this.img = img;
+    }
+
+    public Bitmap getImage() {
+        return image;
+    }
+
+    public void setImage(Bitmap image) {
+        this.image = image;
+    }
+
     Bitmap cropBitmap(Bitmap aux){
         Rect rectCrop;
         if(aux.getWidth()<aux.getHeight())
@@ -52,9 +72,10 @@ class MyFilters {
     }
     Bitmap filterRGB(){
         Mat img_result = img.clone();
-        Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(),img_result.rows(),Bitmap.Config.ARGB_8888);
+        Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(),img_result.rows(),image.getConfig());
         Utils.matToBitmap(img_result,img_bitmap);
         return  img_bitmap;
+        //return image;
     }
     Bitmap filterMorph(){
         Mat img_result = img.clone();
@@ -93,9 +114,16 @@ class MyFilters {
     }
     Bitmap filterColor(int colorMap){
         Mat img_result = img.clone();
-        Imgproc.applyColorMap(img_result,img_result,colorMap);
-        Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(), img_result.rows(), Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(img_result, img_bitmap);
+        Bitmap img_bitmap;
+        try {
+            Imgproc.applyColorMap(img_result, img_result, colorMap);
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            img_bitmap= Bitmap.createBitmap(img_result.cols(), img_result.rows(), Bitmap.Config.ARGB_8888);
+            Utils.matToBitmap(img_result, img_bitmap);
+        }
+
         return img_bitmap;
     }
     Bitmap filterSummer(){
@@ -117,6 +145,7 @@ class MyFilters {
         Mat img_result = img.clone();
         Bitmap img_bitmap = null;
         try{
+            //img_result.convertTo(img_result,CV_8U);
             Imgproc.cvtColor(img_result,img_result,Imgproc.COLOR_BGR2GRAY);
         }catch(Exception e){
             System.out.println("EXCEPTION IN COLOR CHANNEL");

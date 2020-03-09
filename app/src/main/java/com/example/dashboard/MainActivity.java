@@ -4,15 +4,19 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.FileProvider;
+
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ImageDecoder;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -22,6 +26,8 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -34,6 +40,7 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Magnifier;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -49,10 +56,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -71,6 +82,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okio.BufferedSink;
 
+import static android.graphics.Bitmap.Config.ARGB_8888;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
 /**
@@ -82,6 +94,18 @@ public class MainActivity extends AppCompatActivity {
     public static int TIME_ANIMATION = 100;
     public static float SCALE_ANIMATION = 1.1f;
     //Class Attributes--
+    //variables para camara
+    protected static final int PICK_IMAGE =0;
+    protected static final int REQUEST_IMAGE_CAPTURE = 1;
+    private Uri imageurl;
+    private ImageView import_;
+    private AlertDialog dialog_image;
+    private ImageView camera;
+    private ImageView galery;
+    private TextView txt_camera;
+    private  TextView txt_galery;
+    private int flagimage =0;
+    private String currentPhotoPath;
     //Load and Save data
 
     //Insert Figures
@@ -150,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView clearSegments;
     private ImageView eraserSegments;
     private ImageView preview;
+    private ImageView openSegments;
     private ImageView controlMenu;
     private CardView cardView;
     //Colors
@@ -865,7 +890,13 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        //detectPruebas
+
+        openSegments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openLandMarks();
+            }
+        });
 
         color1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1017,6 +1048,38 @@ public class MainActivity extends AppCompatActivity {
                 changeColor(24);
             }
         });
+
+        galery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Intent gallery = new Intent();
+                    gallery.setType("image/*");
+                    gallery.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(gallery, "Select picture"), 4);
+                    Toast.makeText(getApplicationContext(), "image from galery", Toast.LENGTH_SHORT).show();
+                }catch (Exception e){
+                    e.printStackTrace();
+                    System.out.println(e.getMessage());
+                    Toast.makeText(getApplicationContext(),"Ups :)",Toast.LENGTH_SHORT).show();
+
+                }
+                /*String fileName = "photo";
+                File file = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                try{
+                    File imageFile = File.createTempFile(fileName,".jpg",file);
+                    currentPhotoPath = imageFile.getAbsolutePath();
+                    Uri uri = FileProvider.getUriForFile(MainActivity.this,"com.example.dashboard.fileprovider",imageFile);
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    if(intent.resolveActivity(getPackageManager() )!=null){
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT,uri);
+                        startActivityForResult(intent,3);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }*/
+            }
+        });
         //Delete the after segment
         deleteSegments.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1107,7 +1170,7 @@ public class MainActivity extends AppCompatActivity {
                     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                     @Override
                     public void onClick(View v) {
-                        addFilter(myFilters.filterSummer());
+                        addFilter(myFilters.filterColor(6));
            }
                      });
         //filter pink
@@ -1115,7 +1178,7 @@ public class MainActivity extends AppCompatActivity {
                 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                 @Override
                 public void onClick(View v) {
-                    addFilter(myFilters.filterPink());
+                    addFilter(myFilters.filterColor(10));
         }
                   });
         //filter reduce colors gray
@@ -1541,7 +1604,7 @@ public class MainActivity extends AppCompatActivity {
     public Bitmap makeTransparent(Bitmap src,int value,String description){
         int width = src.getWidth();
         int height =  src.getHeight();
-        Bitmap transBitmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
+        Bitmap transBitmap = Bitmap.createBitmap(width,height, ARGB_8888);
         Canvas canvas = new Canvas(transBitmap);
         canvas.drawARGB(0,0,0,0);
         final Paint paint = new Paint();
@@ -1560,7 +1623,7 @@ public class MainActivity extends AppCompatActivity {
     public Bitmap makeText(Bitmap src,String description){
         int width = src.getWidth();
         int height =  src.getHeight();
-        Bitmap textBitmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
+        Bitmap textBitmap = Bitmap.createBitmap(width,height, ARGB_8888);
         Canvas canvas = new Canvas(textBitmap);
         canvas.drawARGB(0,0,0,0);
 
@@ -1632,11 +1695,74 @@ public class MainActivity extends AppCompatActivity {
         return newImage;
     }
     public void saveLandMarks(){
-        try {
+       /* try {
             LandMarkService.sendLandMarks(myListSegmentation.getBase64String(),myListSegmentation);
         } catch (IOException e1) {
             e1.printStackTrace();
+        }*/
+        MediaType MEDIA_TYPE =
+                MediaType.parse("application/json");
+        String image="";
+        final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,
+                TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(
+
+                60,TimeUnit.SECONDS).build();
+        JSONObject postdata = new JSONObject();
+        try {
+            //postdata.put("image", myListSegmentation.getBase64String());
+            postdata.put("image", "");
+            JSONObject posdate123 = new JSONObject();
+            posdate123.put("imageX",myListSegmentation.getGeneralWidth());
+            posdate123.put("imagey",myListSegmentation.getGeneralHeight());
+            posdate123.put("profileItems",null);
+            posdate123.put("landmarksNumber",0);
+            posdate123.put("landmarks",myListSegmentation.dataSegments());
+            posdate123.put("landmarksCreated",myListSegmentation.getSegmentation().size());
+            posdate123.put("profileName","Edwin");
+            posdate123.put("imageName","image_rx_jpg");
+            postdata.put("information",posdate123);
+            System.out.println(postdata.toString());
+            //System.out.println(myListSegmentation.getBase64String());
+            // dataFiles.writeJSONFile(postdata.toString());
+
+        } catch(JSONException e){
+            e.printStackTrace();
         }
+        RequestBody body = RequestBody.create(MEDIA_TYPE,
+                postdata.toString());
+        final Request request = new Request.Builder()
+                .url("http://192.168.12.97:5000/landmark") /*URL ... INDEX PX DE WILMER*/
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                System.out.println("Wilmer ERROR :" + e);
+                //auxOriginal = myFilters.filterRGB();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response)
+                    throws IOException {
+                if (response.isSuccessful()){
+                    final String responseData = response.body().string();
+                    System.out.println("**************RESPUESTA ****************");
+                    System.out.println(responseData);
+                    System.out.println("**************RESPUESTA ****************");
+                    // auxOriginal = myListSegmentation.decodeBase64AndSetImage(responseData);
+                    /*runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String json="";
+                            auxOriginal = myListSegmentation.decodeBase64AndSetImage(responseData);
+                            System.out.println("RECIBIDO CON EXITO");
+                        }
+                    });*/
+                }
+            }
+        });
     }
     public void saveFigures(){
         try {
@@ -1647,19 +1773,20 @@ public class MainActivity extends AppCompatActivity {
     }
     public void openLandMarks(){
         try {
-            String rpta = LandMarkService.readLandMarks();
+            //String rpta = LandMarkService.readLandMarks();
+            String rpta = "{\"image\":\"\",\"information\":{\"imageX\":1922,\"imagey\":1920,\"landmarksNumber\":0,\"landmarks\":[{\"id\":0,\"x\":271,\"y\":139,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":1,\"x\":271,\"y\":209.25294494628906,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":2,\"x\":272,\"y\":273.5693664550781,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":3,\"x\":276,\"y\":337.5986022949219,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":4,\"x\":277,\"y\":398.8344421386719,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":5,\"x\":278,\"y\":462.5031433105469,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":6,\"x\":278,\"y\":529.1160278320312,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":7,\"x\":279,\"y\":593.4183959960938,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":8,\"x\":280.82684326171875,\"y\":655.1339721679688,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":9,\"x\":283,\"y\":717.9348754882812,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":10,\"x\":281.512939453125,\"y\":778.0775146484375,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":11,\"x\":286.5023193359375,\"y\":844.0139770507812,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":12,\"x\":290,\"y\":906.1956787109375,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":13,\"x\":290,\"y\":971.0223999023438,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":14,\"x\":288,\"y\":1035.6243896484375,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":15,\"x\":286,\"y\":1101.280029296875,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":16,\"x\":284,\"y\":1164.1904296875,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":17,\"x\":283,\"y\":1224.1861572265625,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":18,\"x\":283,\"y\":1286.2852783203125,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":19,\"x\":282,\"y\":1349.4246826171875,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":20,\"x\":279,\"y\":1410.4874267578125,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":21,\"x\":276,\"y\":1472.4207763671875,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":22,\"x\":282.1593017578125,\"y\":1532.4779052734375,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":23,\"x\":277,\"y\":1592.363525390625,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11}],\"landmarksCreated\":24,\"profileName\":\"Edwin\",\"imageName\":\"image_rx_jpg\"}}";
             JSONObject landMarks = new JSONObject(rpta);
             String image = landMarks.getString("image");
-            myListSegmentation.loadImage(myListSegmentation.decodeBase64AndSetImage(image));
+            //myListSegmentation.loadImage(myListSegmentation.decodeBase64AndSetImage(image));
             JSONObject information = landMarks.getJSONObject("information");
             JSONArray jsonArray = information.getJSONArray("landmarks");
             float imageX = Float.parseFloat(information.getString("imageX"));
             float imagey = Float.parseFloat(information.getString("imagey"));
             myListSegmentation.readDataSegments(jsonArray,imageX,imagey);
 
-        } catch (IOException e1) {
+        }/* catch (IOException e1) {
             e1.printStackTrace();
-        } catch (JSONException e) {
+        }*/ catch (JSONException e) {
             e.printStackTrace();
         }
     }
@@ -1732,6 +1859,105 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode,resultCode,data);
+        if(requestCode == 4 && resultCode == RESULT_OK){
+            int flag = 0;
+            imageurl = data.getData();
+            FileOutputStream outputStream = null;
+            String fileName = "photo";
+            File file = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            try{
+                Bitmap bitmap = null;
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
+                    bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(getContentResolver(),imageurl));
+                }else{
+                    bitmap =  MediaStore.Images.Media.getBitmap(getContentResolver(),imageurl);;
+                }
+                File imageFile = File.createTempFile(fileName,".JPEG",file);
+                currentPhotoPath = imageFile.getAbsolutePath();
+                outputStream = new FileOutputStream(imageFile);
+                bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
+                outputStream.flush();
+                outputStream.close();
+                flag = 1;
+            }catch (Exception e ){
+                e.printStackTrace();
+            }
+            if(flag == 1){
+                Mat aux = Imgcodecs.imread(currentPhotoPath);
+                Bitmap imageBitmap = BitmapFactory.decodeFile(currentPhotoPath);
+                myListFigures.loadImage(imageBitmap);
+                myListSegmentation.loadImage(imageBitmap);
+
+                if(aux != null){
+                    img = aux;
+                    this.myFilters.setImage(imageBitmap);
+                    this.myFilters.setImg(aux);
+                    updateFilters(imageBitmap,aux);
+                }else{
+                    System.out.println("error");
+                }
+            }
+        }
+    }
+
+
+    public void updateFilters(Bitmap original, Mat img){
+        Bitmap scaleIconsBitmap = scaleDown(original,400,true);
+        //Bitmap scaleIconsBitmap = Bitmap.createScaledBitmap(this.original,(int)(this.original.getWidth()/3),(int)(this.original.getHeight()/3),true);
+        Mat img_result_aux = new Mat();
+        Imgproc.resize(img,img_result_aux,new Size(scaleIconsBitmap.getWidth(),scaleIconsBitmap.getHeight()));
+        MyFilters myFilters = new MyFilters(img_result_aux,scaleIconsBitmap);
+        //Icons with filter
+        groupVariantOpenCv.setImageBitmap(makeTransparent(myFilters.filterColor(5),80,"Variant"));
+        groupBordersOpenCv.setImageBitmap(makeTransparent(myFilters.filterCanny(),80,"Borders"));
+        groupCalorOpenCv.setImageBitmap(makeTransparent(myFilters.filterColor(2),80,"Calor"));
+        groupColorsOpenCv.setImageBitmap(makeTransparent(myFilters.filterSummer(),80,"Colors"));
+        openCvHttp.setImageBitmap(makeTransparent(myFilters.filterRGB(),80,"Rx-Server"));
+        openCv.setImageBitmap(makeText(myFilters.filterCanny(),"Canny"));
+        openCv1.setImageBitmap(makeText(myFilters.filerSepia(),"Sepia"));
+        openCv2.setImageBitmap(makeText(myFilters.filterMorph(),"Morph"));
+        openCv3.setImageBitmap(makeText(myFilters.filterRGB(),"Normal"));
+        normalOpencv.setImageBitmap(makeText(myFilters.filterRGB(),"Normal"));
+        normalOpencv1.setImageBitmap(makeText(myFilters.filterRGB(),"Normal"));
+        normalOpencv2.setImageBitmap(makeText(myFilters.filterRGB(),"Normal"));
+        normalOpencv3.setImageBitmap(makeText(myFilters.filterRGB(),"Normal"));
+        openCv4.setImageBitmap(makeText(myFilters.filterColor(6),"Green"));
+        openCv5.setImageBitmap(makeText(myFilters.filterColor(10),"Pink"));
+        openCv6.setImageBitmap(makeText(myFilters.filterReduceColorsGray(5),"Gray"));
+        openCv7.setImageBitmap(makeText(myFilters.filterReduceColors(80,15,10),"Dark"));//arreglar
+        openCv8.setImageBitmap(makeText(myFilters.filterPencil(),"Pencil"));
+        openCv9.setImageBitmap(makeText(myFilters.filterCarton(80,15,10),"Cartoon"));//arreglar
+        openCv10.setImageBitmap(makeText(myFilters.filterColor(0),"Autumn"));
+        openCv11.setImageBitmap(makeText(myFilters.filterColor(1),"Bone"));
+        openCv12.setImageBitmap(makeText(myFilters.filterColor(2),"Jet"));
+        openCv13.setImageBitmap(makeText(myFilters.filterColor(3),"Winter"));
+        openCv14.setImageBitmap(makeText(myFilters.filterColor(4),"Rainbown"));
+        openCv15.setImageBitmap(makeText(myFilters.filterColor(5),"Ocean"));
+        openCv16.setImageBitmap(makeText(myFilters.filterColor(7),"Spring"));
+        openCv17.setImageBitmap(makeText(myFilters.filterColor(8),"Cool"));
+        openCv18.setImageBitmap(makeText(myFilters.filterColor(9),"Hsv"));
+        openCv19.setImageBitmap(makeText(myFilters.filterColor(11),"Hot"));
+        openCv20.setImageBitmap(makeText(myFilters.filterColor(12),"Parula"));
+        openCv21.setImageBitmap(makeText(myFilters.filterColor(13),"Magma"));
+        openCv22.setImageBitmap(makeText(myFilters.filterColor(14),"Inferno"));
+        openCv23.setImageBitmap(makeText(myFilters.filterColor(15),"Plasma"));
+        openCv24.setImageBitmap(makeText(myFilters.filterColor(16),"Viridis"));
+        openCv25.setImageBitmap(makeText(myFilters.filterColor(17),"Cividis"));
+        openCv26.setImageBitmap(makeText(myFilters.filterColor(18),"Twilight"));
+        openCv27.setImageBitmap(makeText(myFilters.filterColor(19),"Shifted"));
+        openCv28.setImageBitmap(makeText(myFilters.filterColor(20),"Turbo"));
+        //enviar();
+        getOpenCvHttp1.setImageBitmap(makeText(makeTransparent(myFilters.filterRGB(),90,""),"Clahe"));
+        getOpenCvHttp2.setImageBitmap(makeText(makeTransparent(myFilters.filterRGB(),90,""),"ClaheGh"));
+        getOpenCvHttp3.setImageBitmap(makeText(makeTransparent(myFilters.filterRGB(),90,""),"GuidedFilter"));
+        getOpenCvHttp4.setImageBitmap(makeText(makeTransparent(myFilters.filterRGB(),90,""),"Wiener"));
+
+    }
+
     /**
      * Method initial Properties Initializing Properties of Activity
      * */
@@ -1739,6 +1965,8 @@ public class MainActivity extends AppCompatActivity {
     private void initialProperties(){
         //Initializing properties--
         preview = findViewById(R.id.preview);
+        galery = findViewById(R.id.galery);
+        openSegments = findViewById(R.id.openSegments);
         extendsImage = findViewById(R.id.extendsImage);
         backFilters = findViewById(R.id.backFilters);
         iconColors = findViewById(R.id.figuresSet);
@@ -1870,6 +2098,7 @@ public class MainActivity extends AppCompatActivity {
         flagAristas = false;
         try{
             nameImage = R.drawable.rx_image_10;
+            //nameImage = R.drawable.image_test;
             Uri uriImage = Uri.parse("android.resource://"+getPackageName()+"/"+nameImage);
             System.out.println("RECURSOS ******************");
             System.out.println(uriImage.toString());
@@ -1888,57 +2117,7 @@ public class MainActivity extends AppCompatActivity {
         int d1 = (int) getResources().getDimension(R.dimen.icon_filter);
         //int d1 = 70;
         //Bitmap.createScaledBitmap(realImage,width,height,filter)
-        Bitmap scaleIconsBitmap = scaleDown(this.original,400,true);
-        //Bitmap scaleIconsBitmap = Bitmap.createScaledBitmap(this.original,(int)(this.original.getWidth()/3),(int)(this.original.getHeight()/3),true);
-        Mat img_result_aux = new Mat();
-        Imgproc.resize(img,img_result_aux,new Size(scaleIconsBitmap.getWidth(),scaleIconsBitmap.getHeight()));
-        MyFilters myFilters = new MyFilters(img_result_aux,scaleIconsBitmap);
-        //Icons with filter
-        groupVariantOpenCv.setImageBitmap(makeTransparent(myFilters.filterColor(5),80,"Variant"));
-        groupBordersOpenCv.setImageBitmap(makeTransparent(myFilters.filterCanny(),80,"Borders"));
-        groupCalorOpenCv.setImageBitmap(makeTransparent(myFilters.filterColor(2),80,"Calor"));
-        groupColorsOpenCv.setImageBitmap(makeTransparent(myFilters.filterSummer(),80,"Colors"));
-        openCvHttp.setImageBitmap(makeTransparent(myFilters.filterRGB(),80,"Rx-Server"));
-        openCv.setImageBitmap(makeText(myFilters.filterCanny(),"Canny"));
-        openCv1.setImageBitmap(makeText(myFilters.filerSepia(),"Sepia"));
-        openCv2.setImageBitmap(makeText(myFilters.filterMorph(),"Morph"));
-        openCv3.setImageBitmap(makeText(myFilters.filterRGB(),"Normal"));
-        normalOpencv.setImageBitmap(makeText(myFilters.filterRGB(),"Normal"));
-        normalOpencv1.setImageBitmap(makeText(myFilters.filterRGB(),"Normal"));
-        normalOpencv2.setImageBitmap(makeText(myFilters.filterRGB(),"Normal"));
-        normalOpencv3.setImageBitmap(makeText(myFilters.filterRGB(),"Normal"));
-        openCv4.setImageBitmap(makeText(myFilters.filterSummer(),"Green"));
-        openCv5.setImageBitmap(makeText(myFilters.filterPink(),"Pink"));
-        openCv6.setImageBitmap(makeText(myFilters.filterReduceColorsGray(5),"Gray"));
-        openCv7.setImageBitmap(makeText(myFilters.filterReduceColors(80,15,10),"Dark"));//arreglar
-        openCv8.setImageBitmap(makeText(myFilters.filterPencil(),"Pencil"));
-        openCv9.setImageBitmap(makeText(myFilters.filterCarton(80,15,10),"Cartoon"));//arreglar
-        openCv10.setImageBitmap(makeText(myFilters.filterColor(0),"Autumn"));
-        openCv11.setImageBitmap(makeText(myFilters.filterColor(1),"Bone"));
-        openCv12.setImageBitmap(makeText(myFilters.filterColor(2),"Jet"));
-        openCv13.setImageBitmap(makeText(myFilters.filterColor(3),"Winter"));
-        openCv14.setImageBitmap(makeText(myFilters.filterColor(4),"Rainbown"));
-        openCv15.setImageBitmap(makeText(myFilters.filterColor(5),"Ocean"));
-        openCv16.setImageBitmap(makeText(myFilters.filterColor(7),"Spring"));
-        openCv17.setImageBitmap(makeText(myFilters.filterColor(8),"Cool"));
-        openCv18.setImageBitmap(makeText(myFilters.filterColor(9),"Hsv"));
-        openCv19.setImageBitmap(makeText(myFilters.filterColor(11),"Hot"));
-        openCv20.setImageBitmap(makeText(myFilters.filterColor(12),"Parula"));
-        openCv21.setImageBitmap(makeText(myFilters.filterColor(13),"Magma"));
-        openCv22.setImageBitmap(makeText(myFilters.filterColor(14),"Inferno"));
-        openCv23.setImageBitmap(makeText(myFilters.filterColor(15),"Plasma"));
-        openCv24.setImageBitmap(makeText(myFilters.filterColor(16),"Viridis"));
-        openCv25.setImageBitmap(makeText(myFilters.filterColor(17),"Cividis"));
-        openCv26.setImageBitmap(makeText(myFilters.filterColor(18),"Twilight"));
-        openCv27.setImageBitmap(makeText(myFilters.filterColor(19),"Shifted"));
-        openCv28.setImageBitmap(makeText(myFilters.filterColor(20),"Turbo"));
-        //enviar();
-        getOpenCvHttp1.setImageBitmap(makeText(makeTransparent(myFilters.filterRGB(),90,""),"Clahe"));
-        getOpenCvHttp2.setImageBitmap(makeText(makeTransparent(myFilters.filterRGB(),90,""),"ClaheGh"));
-        getOpenCvHttp3.setImageBitmap(makeText(makeTransparent(myFilters.filterRGB(),90,""),"GuidedFilter"));
-        getOpenCvHttp4.setImageBitmap(makeText(makeTransparent(myFilters.filterRGB(),90,""),"Wiener"));
-
-
+        updateFilters(this.original,img);
         //Icons Color
         listColors = new ArrayList<>();
         color1 = findViewById(R.id.color1); listColors.add(color1);
@@ -1979,6 +2158,7 @@ public class MainActivity extends AppCompatActivity {
         }
         //--End Initializing
     }//End Method
+
 }//End Class
 
 
