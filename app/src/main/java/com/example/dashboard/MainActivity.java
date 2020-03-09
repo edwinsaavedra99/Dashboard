@@ -5,6 +5,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import android.annotation.SuppressLint;
+import android.app.Application;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
@@ -21,14 +23,20 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dashboard.Services.FiguresService;
@@ -47,11 +55,21 @@ import org.opencv.imgproc.Imgproc;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import Figures.Circle;
 import ListFigures.ListFigure;
 import ListFigures.ListSegmentation;
 import ListFigures.Util;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okio.BufferedSink;
 
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
@@ -232,6 +250,7 @@ public class MainActivity extends AppCompatActivity {
     private int mActivePointerId = INVALID_POINTER_ID;
     private LinearLayout rootLayout;
     private Files dataFiles;
+    private AlertDialog dialog;
     //--End Attributes of class
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @SuppressLint("ClickableViewAccessibility")
@@ -1268,7 +1287,31 @@ public class MainActivity extends AppCompatActivity {
         getOpenCvHttp1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addFilter(myFilters.filterRGB());
+               /* try {
+                    filtersWithProgressBar();
+                    String image = FiltersService.getFilters(myListSegmentation.getBase64String(),"clahe");
+
+                    System.out.println(image);
+                } catch (IOException e) {
+                    dialog.dismiss();
+                    e.printStackTrace();
+                }
+                addFilter(myFilters.filterRGB());*/
+
+               if(auxOriginal == null){
+                   getFilterService(myListSegmentation.getBase64String(),"clahe");
+                   if(auxOriginal == null){
+                       Toast toast;
+                       toast = Toast.makeText(getApplicationContext(),"Failure",Toast.LENGTH_SHORT);
+                       toast.show();
+                   }else{
+                       Toast toast;
+                       toast = Toast.makeText(getApplicationContext(),"Success",Toast.LENGTH_SHORT);
+                       toast.show();
+                   }
+               }else{
+                   addFilter(auxOriginal);
+               }
             }
         });
         getOpenCvHttp2.setOnClickListener(new View.OnClickListener() {
@@ -1621,18 +1664,74 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+
     public void openFigures(){
 
     }
 
-    public void getFilterService(String nameFilter){
-        try {
+    public void getFilterService(String image, String nameFilter){
+       /* try {
             auxOriginal = myListSegmentation.decodeBase64AndSetImage(
                     FiltersService.getFilters(myListSegmentation.getBase64String(),nameFilter));
         } catch (IOException e) {
             e.printStackTrace();
+        }*/
+        filtersWithProgressBar();
+        MediaType MEDIA_TYPE =
+                MediaType.parse("application/json");
+        final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,
+                TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(
+                60,TimeUnit.SECONDS).build();
+        JSONObject postdata = new JSONObject();
+        try {
+            postdata.put("image", image);
+            postdata.put("type", nameFilter);
+        } catch(JSONException e){
+            e.printStackTrace();
         }
+        RequestBody body = RequestBody.create(MEDIA_TYPE,
+                postdata.toString());
+        final Request request = new Request.Builder()
+                .url("http://192.168.12.97:5000/filters")
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                System.out.println("Wilmer ERROR :" + e);
+                auxOriginal = null;
+                dialog.dismiss();
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onResponse(Call call, Response response)
+                    throws IOException {
+                if (response.isSuccessful()){
+                    final String responseData = response.body().string();
+                    auxOriginal = myListSegmentation.decodeBase64AndSetImage(responseData);
+                    addFilter(auxOriginal);
+                    dialog.dismiss();
+
+                }
+            }
+
+        });
+
     }
+
+    public void filtersWithProgressBar(){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setView(R.layout.layout_loading);
+        dialog = builder.create();
+        dialog.show();
+    }
+
     /**
      * Method initial Properties Initializing Properties of Activity
      * */
@@ -1774,7 +1873,6 @@ public class MainActivity extends AppCompatActivity {
             Uri uriImage = Uri.parse("android.resource://"+getPackageName()+"/"+nameImage);
             System.out.println("RECURSOS ******************");
             System.out.println(uriImage.toString());
-
             img = Utils.loadResource(getApplicationContext(),nameImage);
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inScaled = false;
