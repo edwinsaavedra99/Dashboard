@@ -1,4 +1,4 @@
-package ListFigures;
+package com.example.dashboard.ListFigures;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 

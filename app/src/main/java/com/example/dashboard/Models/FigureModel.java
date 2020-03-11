@@ -3,13 +3,13 @@ package com.example.dashboard.Models;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ListFigures.ListFigure;
-import ListFigures.ListSegmentation;
+import com.example.dashboard.ListFigures.ListFigure;
+import com.example.dashboard.ListFigures.ListSegmentation;
 
 public class FigureModel {
     private float imageX;
     private float imagey;
-    private ProfileItem profileItem;
+    private Patient patient;
     private int landmarksNumber;
 
 

@@ -1,7 +1,7 @@
-package ListFigures;
+package com.example.dashboard.ListFigures;
 import java.util.ArrayList;
 
-import Figures.Figure;
+import com.example.dashboard.Figures.Figure;
 
 class MemoryFigure {
     static ArrayList<ElementMemory> memoryList = new ArrayList<>();

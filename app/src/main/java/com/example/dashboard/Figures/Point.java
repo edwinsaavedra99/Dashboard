@@ -1,4 +1,4 @@
-package Figures;
+package com.example.dashboard.Figures;
 //Imports
 import android.graphics.Paint;
 
@@ -6,37 +6,26 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * This class define the geometric circle figure
+ * This class define the geometric point figure
  * @author Edwin Saavedra
  * @version 3
  */
-public class Circle extends Figure{
+public class Point extends Figure{
     //Class Attributes
-    private float radius;
     private float centerX;
     private float centerY;
     /**
      * Class Constructor
-     * @param _centerX Define the position of the circle
-     * @param _centerY Define the position of the circle
-     * @param _radius Define the radius od the circle
+     * @param _centerX Define the position of the point
+     * @param _centerY Define the position of the point
      * @param _colour Define colour of the figure
      * @param _paint Define the style and plotted to draw the figure*/
-    public Circle(float _centerX, float _centerY, float _radius , Paint _paint, int[] _colour){
+    public Point(float _centerX,float _centerY,Paint _paint, int[] _colour){
         super(_paint,_colour);
         centerX = _centerX;
         centerY = _centerY;
-        radius = _radius;
-    }//Closing the class constructor
-
-
+    }
     //Methods Getters and Setters
-    public void setRadius(float _radius){
-        radius = _radius;
-    }
-    public float getRadius(){
-        return radius;
-    }
     public void setCenterX(float _centerX){
         centerX = _centerX;
     }
@@ -51,24 +40,23 @@ public class Circle extends Figure{
     }//Closing the methods getters and setters
     /**
      * Method toString show class content
+     * @param format Define the writing format
      * @return content of the class*/
-    public String toString(int id){
-                return "{\"id\":"+id+"," +
-                        "\"x\"="+this.getCenterX()+"," +
-                        "\"y\"="+this.getCenterY()+"," +
-                        "\"comment\"="+this.getDescription()+","+
-                        /*"\"r\"="+this.getRadius()+*/
-                        "\"r\"="+this.getColour()[0]+","+
-                        "\"g\"="+this.getColour()[1]+","+
-                        "\"b\"="+this.getColour()[2]+","+
-                        "\"colorName\"="+null+","+
-                        "}" ;
-
+    public String toString(String format){
+        switch (format){
+            case "json":
+                return "{\"id\":5,\"cx\"="+this.getCenterX()+",\"cy\"="+this.getCenterY()+"}" ;
+            case "xml":
+                return "Implement Format XML";
+            default:
+                return "Format no exits";
+        }
     }//End Method toString
 
-    public JSONObject getJSON(int id) throws JSONException {
+    public JSONObject getJSONFigure(int id) throws JSONException {
         JSONObject object = new JSONObject();
         object.put("id",id);
+        object.put("type",5);
         object.put("x",this.centerX);
         object.put("y",this.centerY);
         object.put("comment",this.getDescription());
@@ -78,4 +66,5 @@ public class Circle extends Figure{
         object.put("colorName",null);
         return object;
     }
+
 }//Close Class

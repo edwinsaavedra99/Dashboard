@@ -1,6 +1,10 @@
-package Figures;
+package com.example.dashboard.Figures;
 //Import
 import android.graphics.Paint;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * This class define the rectangular geometrical figure
  * @author Edwin Saavedra
@@ -66,4 +70,20 @@ public class Rectangle extends Figure{
                 return "Format no exits";
         }
     }//End Method toString
+
+    public JSONObject getJSONFigure(int id) throws JSONException {
+        JSONObject object = new JSONObject();
+        object.put("id",id);
+        object.put("type",3);
+        object.put("left",this.left);
+        object.put("top",this.top);
+        object.put("right",this.right);
+        object.put("bottom",this.bottom);
+        object.put("comment",this.getDescription());
+        object.put("r",this.getColour()[0]);
+        object.put("g",this.getColour()[1]);
+        object.put("b",this.getColour()[2]);
+        object.put("colorName",null);
+        return object;
+    }
 }

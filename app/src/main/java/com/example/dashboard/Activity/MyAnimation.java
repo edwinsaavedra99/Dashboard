@@ -1,4 +1,4 @@
-package com.example.dashboard;
+package com.example.dashboard.Activity;
 
 import android.widget.ImageView;
 

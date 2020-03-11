@@ -1,4 +1,4 @@
-package ListFigures;
+package com.example.dashboard.ListFigures;
 //Imports
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -15,14 +15,11 @@ import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
-
-import com.example.dashboard.ControlMenu;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,9 +29,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.ResourceBundle;
 
-import Figures.*;
+import com.example.dashboard.Figures.*;
 
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
@@ -181,7 +177,6 @@ public class ListSegmentation extends View {
         this.mImage = mImage;
         mBoard = new BitmapDrawable(getResources(),mImage);
         invalidate();
-        requestLayout();
 //        getBase64String();
     }
     public void getFlagPreview(){

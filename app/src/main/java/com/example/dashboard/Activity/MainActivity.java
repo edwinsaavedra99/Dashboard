@@ -1,14 +1,10 @@
-package com.example.dashboard;
+package com.example.dashboard.Activity;
 //Imports
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.core.content.FileProvider;
-
 import android.annotation.SuppressLint;
-import android.app.Application;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -29,59 +25,47 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Magnifier;
-import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.example.dashboard.Utils.ControlMenu;
+import com.example.dashboard.Utils.Files;
+import com.example.dashboard.R;
 import com.example.dashboard.Services.FiguresService;
-import com.example.dashboard.Services.FiltersService;
-import com.example.dashboard.Services.LandMarkService;
 import com.google.android.material.textfield.TextInputEditText;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-
-import Figures.Circle;
-import ListFigures.ListFigure;
-import ListFigures.ListSegmentation;
-import ListFigures.Util;
+import com.example.dashboard.Figures.Circle;
+import com.example.dashboard.ListFigures.ListFigure;
+import com.example.dashboard.ListFigures.ListSegmentation;
+import com.example.dashboard.ListFigures.Util;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okio.BufferedSink;
-
 import static android.graphics.Bitmap.Config.ARGB_8888;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
@@ -108,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
     private String currentPhotoPath;
     //Load and Save data
 
-    //Insert Figures
+    //Insert com.example.dashboard.Figures
     private ImageView saveData;
     private ImageView saveFigures;
     private ImageView creatorCircles;
@@ -116,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView creatorLines;
     private ImageView creatorEllipses;
     private ImageView creatorPoints;
-    //Edit and delete Figures
+    //Edit and delete com.example.dashboard.Figures
     private ImageView deleteFigures;
     private ImageView changeColor;
     private ImageView infoFigures;
@@ -265,10 +249,15 @@ public class MainActivity extends AppCompatActivity {
     private ImageView controlY;
     private ImageView closeControl;
     private ImageView aristas;
+    private ImageView share;
     private int scaleSort;
     //img original format Bitmap
+    private int codHttpFilter = 0;
     private Bitmap original;
     private Bitmap auxOriginal = null;
+    private Bitmap auxOriginal1 = null;
+    private Bitmap auxOriginal2 = null;
+    private Bitmap auxOriginal3 = null;
     private Mat img;
     private int nameImage;
     private boolean longClick = false;
@@ -522,12 +511,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Animation.animationScale(saveFigures,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
+                saveIndicator();
                 Toast toast;
                 if(1==1)
                     toast = Toast.makeText(getApplicationContext(),"Data Save Successfully",Toast.LENGTH_SHORT);
                 else
                     toast = Toast.makeText(getApplicationContext(),"Data not Save",Toast.LENGTH_SHORT);
                 toast.show();
+
             }
         });
 
@@ -537,11 +528,11 @@ public class MainActivity extends AppCompatActivity {
                 Animation.animationScale(deleteFigures,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
                 Toast toast;
                 //myListSegmentation ... ESTAS AQUI !!
-                /*if(myListFigures.toString())
+                if(1==1)
                     toast = Toast.makeText(getApplicationContext(),"Data Save Successfully",Toast.LENGTH_SHORT);
                 else
                     toast = Toast.makeText(getApplicationContext(),"Data not Save",Toast.LENGTH_SHORT);
-                toast.show();*/
+                toast.show();
                 //System.out.println(myListSegmentation.toString());
                 saveLandMarks();
                 System.out.println("DATA ENVIADA");
@@ -1064,20 +1055,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"Ups :)",Toast.LENGTH_SHORT).show();
 
                 }
-                /*String fileName = "photo";
-                File file = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-                try{
-                    File imageFile = File.createTempFile(fileName,".jpg",file);
-                    currentPhotoPath = imageFile.getAbsolutePath();
-                    Uri uri = FileProvider.getUriForFile(MainActivity.this,"com.example.dashboard.fileprovider",imageFile);
-                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    if(intent.resolveActivity(getPackageManager() )!=null){
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT,uri);
-                        startActivityForResult(intent,3);
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                }*/
+
             }
         });
         //Delete the after segment
@@ -1362,16 +1340,8 @@ public class MainActivity extends AppCompatActivity {
                 addFilter(myFilters.filterRGB());*/
 
                if(auxOriginal == null){
-                   getFilterService(myListSegmentation.getBase64String(),"clahe");
-                   if(auxOriginal == null){
-                       Toast toast;
-                       toast = Toast.makeText(getApplicationContext(),"Failure",Toast.LENGTH_SHORT);
-                       toast.show();
-                   }else{
-                       Toast toast;
-                       toast = Toast.makeText(getApplicationContext(),"Success",Toast.LENGTH_SHORT);
-                       toast.show();
-                   }
+                   getFilterService(myListSegmentation.getBase64String(),"clahe",1);
+
                }else{
                    addFilter(auxOriginal);
                }
@@ -1380,19 +1350,31 @@ public class MainActivity extends AppCompatActivity {
         getOpenCvHttp2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addFilter(myFilters.filterRGB());
+                if(auxOriginal1 == null) {
+                    getFilterService(myListSegmentation.getBase64String(), "clahegh",2);
+                }else{
+                    addFilter(auxOriginal1);
+                }
             }
         });
         getOpenCvHttp3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addFilter(myFilters.filterRGB());
+                if(auxOriginal2 == null) {
+                    getFilterService(myListSegmentation.getBase64String(), "guidedfilter",3);
+                }else{
+                    addFilter(auxOriginal2);
+                }
             }
         });
         getOpenCvHttp4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addFilter(myFilters.filterRGB());
+                if(auxOriginal3 == null) {
+                    getFilterService(myListSegmentation.getBase64String(), "wiener",4);
+                }else{
+                    addFilter(auxOriginal3);
+                }
             }
         });
         openCvHttp.setOnClickListener(new View.OnClickListener() {
@@ -1535,6 +1517,14 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,HomeActivity.class);
+                startActivity(intent);
+
+            }
+        });
     }
 
 
@@ -1648,6 +1638,10 @@ public class MainActivity extends AppCompatActivity {
         canvas.drawText(description,bounds.left,bounds.top-pencil2.ascent(),pencil2);
         return  textBitmap;
     }
+    private void showSaveDialog(final boolean flagSegmentation){
+
+    }
+
     private void showInfoDialog(final boolean flagSegmentation) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle("INFO FIGURE: ");
@@ -1694,6 +1688,63 @@ public class MainActivity extends AppCompatActivity {
         Bitmap newImage = Bitmap.createScaledBitmap(realImage,width,height,filter);
         return newImage;
     }
+    public void saveIndicator(){
+        MediaType MEDIA_TYPE =
+                MediaType.parse("application/json");
+        final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,
+                TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(
+
+                60,TimeUnit.SECONDS).build();
+        JSONObject postdata = new JSONObject();
+        try {
+            postdata.put("image", myListFigures.getBase64String());
+            JSONObject posdate123 = new JSONObject();
+            posdate123.put("imageX",myListFigures.getGeneralWidth());
+            posdate123.put("imagey",myListFigures.getGeneralHeight());
+            posdate123.put("profileItems",null);
+            posdate123.put("indicatorsNumber",0);
+            posdate123.put("indicators",myListFigures.dataFigures());
+            posdate123.put("indicatorsCreated",myListFigures.getMyFigures().size());
+            posdate123.put("profileName","Edwin");
+            posdate123.put("imageName","image_rx.jpg");
+            postdata.put("information",posdate123);
+            System.out.println(postdata.toString());
+            //System.out.println(myListSegmentation.getBase64String());
+            // dataFiles.writeJSONFile(postdata.toString());
+
+        } catch(JSONException e){
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(MEDIA_TYPE,
+                postdata.toString());
+        final Request request = new Request.Builder()
+                .url("http://192.168.12.121:5000/indicator") /*URL ... INDEX PX DE WILMER*/
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                System.out.println("Wilmer ERROR :" + e);
+                //auxOriginal = myFilters.filterRGB();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response)
+                    throws IOException {
+                if (response.isSuccessful()){
+                    final String responseData = response.body().string();
+                    System.out.println("**************RESPUESTA ****************");
+                    System.out.println(responseData);
+                    System.out.println("**************RESPUESTA ****************");
+
+                }
+            }
+        });
+    }
+
+
     public void saveLandMarks(){
        /* try {
             LandMarkService.sendLandMarks(myListSegmentation.getBase64String(),myListSegmentation);
@@ -1709,8 +1760,7 @@ public class MainActivity extends AppCompatActivity {
                 60,TimeUnit.SECONDS).build();
         JSONObject postdata = new JSONObject();
         try {
-            //postdata.put("image", myListSegmentation.getBase64String());
-            postdata.put("image", "");
+            postdata.put("image", myListSegmentation.getBase64String());
             JSONObject posdate123 = new JSONObject();
             posdate123.put("imageX",myListSegmentation.getGeneralWidth());
             posdate123.put("imagey",myListSegmentation.getGeneralHeight());
@@ -1719,7 +1769,7 @@ public class MainActivity extends AppCompatActivity {
             posdate123.put("landmarks",myListSegmentation.dataSegments());
             posdate123.put("landmarksCreated",myListSegmentation.getSegmentation().size());
             posdate123.put("profileName","Edwin");
-            posdate123.put("imageName","image_rx_jpg");
+            posdate123.put("imageName","image_rx.jpg");
             postdata.put("information",posdate123);
             System.out.println(postdata.toString());
             //System.out.println(myListSegmentation.getBase64String());
@@ -1731,7 +1781,7 @@ public class MainActivity extends AppCompatActivity {
         RequestBody body = RequestBody.create(MEDIA_TYPE,
                 postdata.toString());
         final Request request = new Request.Builder()
-                .url("http://192.168.12.97:5000/landmark") /*URL ... INDEX PX DE WILMER*/
+                .url("http://192.168.12.121:5000/landmark") /*URL ... INDEX PX DE WILMER*/
                 .post(body)
                 .addHeader("Content-Type", "application/json")
                 .build();
@@ -1774,10 +1824,10 @@ public class MainActivity extends AppCompatActivity {
     public void openLandMarks(){
         try {
             //String rpta = LandMarkService.readLandMarks();
-            String rpta = "{\"image\":\"\",\"information\":{\"imageX\":1922,\"imagey\":1920,\"landmarksNumber\":0,\"landmarks\":[{\"id\":0,\"x\":271,\"y\":139,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":1,\"x\":271,\"y\":209.25294494628906,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":2,\"x\":272,\"y\":273.5693664550781,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":3,\"x\":276,\"y\":337.5986022949219,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":4,\"x\":277,\"y\":398.8344421386719,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":5,\"x\":278,\"y\":462.5031433105469,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":6,\"x\":278,\"y\":529.1160278320312,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":7,\"x\":279,\"y\":593.4183959960938,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":8,\"x\":280.82684326171875,\"y\":655.1339721679688,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":9,\"x\":283,\"y\":717.9348754882812,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":10,\"x\":281.512939453125,\"y\":778.0775146484375,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":11,\"x\":286.5023193359375,\"y\":844.0139770507812,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":12,\"x\":290,\"y\":906.1956787109375,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":13,\"x\":290,\"y\":971.0223999023438,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":14,\"x\":288,\"y\":1035.6243896484375,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":15,\"x\":286,\"y\":1101.280029296875,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":16,\"x\":284,\"y\":1164.1904296875,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":17,\"x\":283,\"y\":1224.1861572265625,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":18,\"x\":283,\"y\":1286.2852783203125,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":19,\"x\":282,\"y\":1349.4246826171875,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":20,\"x\":279,\"y\":1410.4874267578125,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":21,\"x\":276,\"y\":1472.4207763671875,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":22,\"x\":282.1593017578125,\"y\":1532.4779052734375,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11},{\"id\":23,\"x\":277,\"y\":1592.363525390625,\"comment\":\"\",\"r\":183,\"g\":149,\"b\":11}],\"landmarksCreated\":24,\"profileName\":\"Edwin\",\"imageName\":\"image_rx_jpg\"}}";
-            JSONObject landMarks = new JSONObject(rpta);
+             String rpta = loadJSONFromAsset("raw/landmark.json");
+             JSONObject landMarks = new JSONObject(rpta);
             String image = landMarks.getString("image");
-            //myListSegmentation.loadImage(myListSegmentation.decodeBase64AndSetImage(image));
+            myListSegmentation.loadImage(myListSegmentation.decodeBase64AndSetImage(image));
             JSONObject information = landMarks.getJSONObject("information");
             JSONArray jsonArray = information.getJSONArray("landmarks");
             float imageX = Float.parseFloat(information.getString("imageX"));
@@ -1790,20 +1840,36 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+    public String loadJSONFromAsset(String flName){
+        String json = null;
+        try{
+            InputStream is = this.getAssets().open(flName);
+            int size =  is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json =new String(buffer,"UTF-8");
 
+        }catch (IOException e){
+            e.printStackTrace();
+            return null;
+        }
+        return json;
+    }
 
 
     public void openFigures(){
 
     }
 
-    public void getFilterService(String image, String nameFilter){
+    public void getFilterService(String image, String nameFilter,int cod){
        /* try {
             auxOriginal = myListSegmentation.decodeBase64AndSetImage(
                     FiltersService.getFilters(myListSegmentation.getBase64String(),nameFilter));
         } catch (IOException e) {
             e.printStackTrace();
         }*/
+        codHttpFilter = cod;
         filtersWithProgressBar();
         MediaType MEDIA_TYPE =
                 MediaType.parse("application/json");
@@ -1820,16 +1886,31 @@ public class MainActivity extends AppCompatActivity {
         RequestBody body = RequestBody.create(MEDIA_TYPE,
                 postdata.toString());
         final Request request = new Request.Builder()
-                .url("http://192.168.12.97:5000/filters")
+                .url("http://192.168.12.121:5000/filters")
                 .post(body)
                 .addHeader("Content-Type", "application/json")
                 .build();
-
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 System.out.println("Wilmer ERROR :" + e);
-                auxOriginal = null;
+                switch (codHttpFilter){
+                    case 1:{
+                        auxOriginal = null;
+                        break;
+                    }
+                    case 2:{
+                        auxOriginal1 = null;
+                        break;
+                    }
+                    case 3:{
+                        auxOriginal2 = null;
+                    }
+                    case 4:{
+                        auxOriginal3 = null;
+                    }
+                }
+                //auxOriginal = null;
                 dialog.dismiss();
             }
 
@@ -1839,8 +1920,32 @@ public class MainActivity extends AppCompatActivity {
                     throws IOException {
                 if (response.isSuccessful()){
                     final String responseData = response.body().string();
-                    auxOriginal = myListSegmentation.decodeBase64AndSetImage(responseData);
-                    addFilter(auxOriginal);
+
+                    switch (codHttpFilter){
+                        case 1:{
+                            auxOriginal = myListSegmentation.decodeBase64AndSetImage(responseData);
+                            addFilter(auxOriginal);
+                            break;
+                        }
+                        case 2:{
+                            auxOriginal1 = myListSegmentation.decodeBase64AndSetImage(responseData);
+                            addFilter(auxOriginal1);
+                            break;
+                        }
+                        case 3:{
+                            auxOriginal2 = myListSegmentation.decodeBase64AndSetImage(responseData);
+                            addFilter(auxOriginal2);
+                            break;
+                        }
+                        case 4:{
+                            auxOriginal3 = myListSegmentation.decodeBase64AndSetImage(responseData);
+                            addFilter(auxOriginal3);
+                            break;
+                        }
+                    }
+
+
+
                     dialog.dismiss();
 
                 }
@@ -1906,6 +2011,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void updateFilters(Bitmap original, Mat img){
+        auxOriginal = null;
+        auxOriginal1 = null;
+        auxOriginal2 = null;
+        auxOriginal3 = null;
         Bitmap scaleIconsBitmap = scaleDown(original,400,true);
         //Bitmap scaleIconsBitmap = Bitmap.createScaledBitmap(this.original,(int)(this.original.getWidth()/3),(int)(this.original.getHeight()/3),true);
         Mat img_result_aux = new Mat();
@@ -2079,6 +2188,7 @@ public class MainActivity extends AppCompatActivity {
         getOpenCvHttp2 = findViewById(R.id.openCVhttp2);
         getOpenCvHttp3 = findViewById(R.id.openCVhttp3);
         getOpenCvHttp4 = findViewById(R.id.openCVhttp4);
+        share = findViewById(R.id.share);
         //IMAGE
         test1 = findViewById(R.id.test);
         img = null;

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xmls="http://schemas.android.com/apk/res-auto"
+    xmls:cardBackgroundColor="@android:color/transparent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:background="@android:color/transparent"
+        android:padding="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:src="@drawable/info_24px"
+            android:id="@+id/imagePatient"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="15dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:scaleType="centerCrop">
+        </ImageView>
+        <TextView
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Edwin Enrique Saavedra Parisaca"
+            android:id="@+id/namePatient"
+            android:textColor="@android:color/white"
+            android:layout_toRightOf="@+id/imagePatient"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentTop="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </TextView>
+
+        <TextView
+            android:textColor="@android:color/white"
+            android:paddingTop="15dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Edad : 21 años , Sexo : Masculino"
+            android:id="@+id/agePatient"
+            android:layout_below="@+id/namePatient"
+            android:layout_alignLeft="@id/namePatient"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </TextView>
+
+
+        <TextView
+            android:textColor="@android:color/white"
+            android:paddingTop="10dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Arequipa"
+            android:id="@+id/descriptionPatient"
+            android:layout_below="@+id/agePatient"
+            android:layout_alignLeft="@id/namePatient"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </TextView>
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:layout_marginLeft="10dp"
+            android:background="#ffd5d5d5"
+            android:id="@+id/line"
+            android:layout_above="@+id/agePatient"
+            android:layout_toRightOf="@id/imagePatient"/>
+
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

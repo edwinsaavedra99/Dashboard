@@ -1,4 +1,4 @@
-package Figures;
+package com.example.dashboard.Figures;
 //Imports
 import android.graphics.Paint;
 /**

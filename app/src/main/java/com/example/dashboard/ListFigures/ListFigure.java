@@ -1,4 +1,4 @@
-package ListFigures;
+package com.example.dashboard.ListFigures;
 //Imports
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -23,7 +23,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import Figures.*;
+import com.example.dashboard.Figures.*;
 
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
@@ -77,7 +77,7 @@ public class ListFigure  extends View {
     public void loadImage(Bitmap mImage){
         mBoard = new BitmapDrawable(getResources(),mImage);
         invalidate();
-        requestLayout();
+        //requestLayout();
     }
     /**
      * Method changeModeTouch : change modeTouch if is 0 change to 1 else change to 0
@@ -92,8 +92,23 @@ public class ListFigure  extends View {
     public JSONArray dataFigures() throws JSONException {
         JSONArray jsonArray =new JSONArray();
         for(int i = 0 ;i<this.myFigures.size();i++){
-            Circle aux = (Circle) myFigures.get(i);
-            jsonArray.put(aux.getJSON(i));
+            if(myFigures.get(i) instanceof Circle){
+                Circle aux = (Circle) myFigures.get(i);
+                jsonArray.put(aux.getJSONFigure(i));
+            }else if(myFigures.get(i) instanceof Rectangle){
+                Rectangle rectangle = (Rectangle) myFigures.get(i);
+                jsonArray.put(rectangle.getJSONFigure(i));
+            }else if(myFigures.get(i) instanceof Ellipse){
+                Ellipse ellipse = (Ellipse) myFigures.get(i);
+                jsonArray.put(ellipse.getJSONFigure(i));
+            }else if(myFigures.get(i) instanceof  Line){
+                Line line = (Line) myFigures.get(i);
+                jsonArray.put(line.getJSONFigure(i));
+            }else if(myFigures.get(i) instanceof Point){
+                Point point = (Point) myFigures.get(i);
+                jsonArray.put(point.getJSONFigure(i));
+            }
+
         }
         return jsonArray;
     }//End Method
@@ -698,7 +713,7 @@ public class ListFigure  extends View {
         if(modeTouch == 1) {
             scaleGestureDetector.onTouchEvent(event);
         }
-        //Mode Figures
+        //Mode com.example.dashboard.Figures
         switch (acct) {
             case MotionEvent.ACTION_DOWN: {
                 final int pointerIndex = event.getActionIndex();
