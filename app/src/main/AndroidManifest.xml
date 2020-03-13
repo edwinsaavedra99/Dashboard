@@ -15,18 +15,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.HomeActivity">
-
-        </activity>
-        <activity
-            android:name=".Activity.MainActivity"
-            android:theme="@style/SplashScreen">
+        <activity android:name=".Activity.Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Activity.ProjectActivity" />
+        <activity android:name=".Activity.PatientsActivity">
+
+        </activity>
+        <activity
+            android:name=".Activity.MainActivity"
+            android:theme="@style/SplashScreen"></activity>
 
         <provider
             android:name="androidx.core.content.FileProvider"

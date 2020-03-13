@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">AFD</string>
+    <string name="text_title_login">AFD Project</string>
+
 </resources>

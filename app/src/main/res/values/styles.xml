@@ -9,10 +9,18 @@
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
+
     </style>
 
     <style name="SplashScreen" parent="AppTheme">
         <item name="android:windowBackground">@drawable/splash</item>
+    </style>
+
+    <style name="AppSearchView" parent="Widget.AppCompat.SearchView">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColorPrimary">#80ffffff</item>
+        <item name="android:textColorHint">#ffffff</item>
+        <item name="android:tint">#80000000</item>
     </style>
 
 </resources>

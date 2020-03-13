@@ -22,7 +22,7 @@
             app:endIconTint="@color/coloApp"
             app:startIconDrawable="@drawable/ic_info_black_24dp">
             <com.google.android.material.textfield.TextInputEditText
-                android:inputType="textWebEmailAddress"
+                android:inputType="text"
                 android:id="@+id/txt_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -3,9 +3,11 @@
     <item android:id="@android:id/background">
         <shape android:shape="rectangle">
             <gradient
-                android:angle="270"
-                android:endColor="#585858"
-                android:startColor="#ff000000" />
+                android:type="linear"
+                android:angle="45"
+                android:endColor="#FFB283"
+                android:centerColor="#A68087"
+                android:startColor="#262533" />
         </shape>
 
     </item>

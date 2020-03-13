@@ -35,6 +35,8 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.dashboard.Resources.ResourceImage;
 import com.example.dashboard.Utils.ControlMenu;
 import com.example.dashboard.Utils.Files;
 import com.example.dashboard.R;
@@ -1520,7 +1522,7 @@ public class MainActivity extends AppCompatActivity {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,HomeActivity.class);
+                Intent intent = new Intent(MainActivity.this, PatientsActivity.class);
                 startActivity(intent);
 
             }
@@ -1824,8 +1826,8 @@ public class MainActivity extends AppCompatActivity {
     public void openLandMarks(){
         try {
             //String rpta = LandMarkService.readLandMarks();
-             String rpta = loadJSONFromAsset("raw/landmark.json");
-             JSONObject landMarks = new JSONObject(rpta);
+            String rpta = loadJSONFromAsset("raw/landmark.json");
+            JSONObject landMarks = new JSONObject(rpta);
             String image = landMarks.getString("image");
             myListSegmentation.loadImage(myListSegmentation.decodeBase64AndSetImage(image));
             JSONObject information = landMarks.getJSONObject("information");
@@ -2206,7 +2208,8 @@ public class MainActivity extends AppCompatActivity {
         flagColors = false;
         flagControl = false;
         flagAristas = false;
-        try{
+        initialImage(ResourceImage.uriImageResource);
+        /*try{
             nameImage = R.drawable.rx_image_10;
             //nameImage = R.drawable.image_test;
             Uri uriImage = Uri.parse("android.resource://"+getPackageName()+"/"+nameImage);
@@ -2224,10 +2227,9 @@ public class MainActivity extends AppCompatActivity {
         myListSegmentation.loadImage(this.original);
         myFilters = new MyFilters(this.img,this.original);
         //Resize Image Icon Filter
-        int d1 = (int) getResources().getDimension(R.dimen.icon_filter);
         //int d1 = 70;
         //Bitmap.createScaledBitmap(realImage,width,height,filter)
-        updateFilters(this.original,img);
+        updateFilters(this.original,img);*/
         //Icons Color
         listColors = new ArrayList<>();
         color1 = findViewById(R.id.color1); listColors.add(color1);
@@ -2268,6 +2270,32 @@ public class MainActivity extends AppCompatActivity {
         }
         //--End Initializing
     }//End Method
+
+
+    public void initialImage(String uri){
+        if(uri!=null){
+            Mat aux = Imgcodecs.imread(uri);
+            Bitmap imageBitmap = BitmapFactory.decodeFile(uri);
+            myListFigures.loadImage(imageBitmap);
+            myListSegmentation.loadImage(imageBitmap);
+            if(aux != null){
+                img = aux;
+                this.original = imageBitmap;
+                updateFilters(imageBitmap,aux);
+            }else{
+                System.out.println("error");
+            }
+            myListFigures.loadImage(this.original);
+            myListSegmentation.loadImage(this.original);
+            myFilters = new MyFilters(this.img,this.original);
+            //Resize Image Icon Filter
+            //int d1 = 70;
+            //Bitmap.createScaledBitmap(realImage,width,height,filter)
+            updateFilters(this.original,img);
+        }else{
+
+        }
+    }
 
 }//End Class
 
