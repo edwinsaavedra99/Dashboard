@@ -6,9 +6,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Html;
-import android.webkit.WebView;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SearchView;
@@ -34,7 +31,7 @@ public class PatientsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_patients);
         getSupportActionBar().hide();
         /*DATA VIEW*/
         titlePatient = findViewById(R.id.titlePatient);

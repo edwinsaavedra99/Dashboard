@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/gestionar_seekbar"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.dashboard.Activity.PatientsActivity">
+    <LinearLayout
+        android:gravity="left"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="20dp"
+        android:orientation="horizontal"
+        android:id="@+id/menuPatient"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageButton
+            android:background="@android:color/transparent"
+            android:id="@+id/testButton"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/back_24px"/>
+
+        <TextView
+            android:layout_marginLeft="15dp"
+            android:id="@+id/titlePatient"
+            android:textColor="@android:color/white"
+            style="@style/MaterialAlertDialog.MaterialComponents.Title.Text"
+            android:text="PATIENTS"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </TextView>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_margin="15dp"
+        android:id="@+id/searchPatientLinear"
+        android:layout_below="@id/menuPatient"
+        android:layout_gravity="center"
+        android:gravity="right"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <SearchView
+            android:tooltipText="SEARCH"
+            android:background="#40ffffff"
+            android:id="@+id/searchPatient"
+            android:theme="@style/AppSearchView"
+            android:layout_width="match_parent"
+            android:layout_height="40dp" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginBottom="65dp"
+        android:id="@+id/recicler_patient"
+        android:layout_width="match_parent"
+        android:layout_below="@id/searchPatientLinear"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:background="@drawable/fondo_white"
+        android:gravity="center"
+        android:padding="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/addPatient"
+            android:layout_marginRight="40dp"
+            android:layout_marginLeft="40dp"
+            android:theme="@style/Theme.AppCompat"
+            android:text="ADD NEW PATIENT"
+            android:layout_width="match_parent"
+            android:layout_height="45dp">
+        </Button>
+    </LinearLayout>
+
+</RelativeLayout>
