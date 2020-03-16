@@ -1,4 +1,4 @@
-package com.example.dashboard.Activity;
+package com.example.dashboard.Filters;
 
 import android.graphics.Bitmap;
 import org.opencv.android.Utils;
@@ -17,10 +17,10 @@ import static org.opencv.core.CvType.CV_8U;
 import static org.opencv.core.CvType.CV_8UC;
 import static org.opencv.core.CvType.CV_8UC1;
 
-class MyFilters {
+public class MyFilters {
     private Mat img;
     private Bitmap image;
-    MyFilters(Mat img, Bitmap image){
+    public MyFilters(Mat img, Bitmap image){
         this.img = img;
         this.image = image;
     }
@@ -41,7 +41,7 @@ class MyFilters {
         this.image = image;
     }
 
-    Bitmap cropBitmap(Bitmap aux){
+    public Bitmap cropBitmap(Bitmap aux){
         Rect rectCrop;
         if(aux.getWidth()<aux.getHeight())
             rectCrop = new Rect(0,0,aux.getWidth(),aux.getHeight()/2);
@@ -56,7 +56,7 @@ class MyFilters {
         return img_bitmap;
     }
 
-    Bitmap filterCanny(){
+    public Bitmap filterCanny(){
         Mat img_result = img.clone();
         Bitmap img_bitmap = null;
         try{
@@ -70,14 +70,14 @@ class MyFilters {
         }
         return img_bitmap;
     }
-    Bitmap filterRGB(){
+    public Bitmap filterRGB(){
         Mat img_result = img.clone();
         Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(),img_result.rows(),image.getConfig());
         Utils.matToBitmap(img_result,img_bitmap);
         return  img_bitmap;
         //return image;
     }
-    Bitmap filterMorph(){
+    public Bitmap filterMorph(){
         Mat img_result = img.clone();
         Bitmap img_bitmap = null;
         try{
@@ -92,7 +92,7 @@ class MyFilters {
         }
         return img_bitmap;
     }
-    Bitmap filerSepia(){
+    public Bitmap filerSepia(){
         Mat  mSepiaKernel;
         Bitmap img_bitmap = null;
         mSepiaKernel = new Mat(4, 4, CvType.CV_32F);
@@ -112,7 +112,7 @@ class MyFilters {
         }
         return img_bitmap;
     }
-    Bitmap filterColor(int colorMap){
+    public Bitmap filterColor(int colorMap){
         Mat img_result = img.clone();
         Bitmap img_bitmap;
         try {
@@ -126,7 +126,7 @@ class MyFilters {
 
         return img_bitmap;
     }
-    Bitmap filterSummer(){
+    public Bitmap filterSummer(){
         Mat img_result = img.clone();
         Imgproc.applyColorMap(img_result,img_result,Imgproc.COLORMAP_SUMMER);
         Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(), img_result.rows(), Bitmap.Config.ARGB_8888);
@@ -134,14 +134,14 @@ class MyFilters {
         return img_bitmap;
     }
 
-    Bitmap filterPink(){
+    public Bitmap filterPink(){
         Mat img_result = img.clone();
         Imgproc.applyColorMap(img_result,img_result,Imgproc.COLORMAP_PINK);
         Bitmap img_bitmap = Bitmap.createBitmap(img_result.cols(), img_result.rows(), Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(img_result, img_bitmap);
         return img_bitmap;
     }
-    Bitmap filterReduceColorsGray(int numColors){
+    public Bitmap filterReduceColorsGray(int numColors){
         Mat img_result = img.clone();
         Bitmap img_bitmap = null;
         try{
@@ -156,7 +156,7 @@ class MyFilters {
         }
         return img_bitmap;
     }
-    Bitmap filterReduceColors(int numColorRed, int numColorGreen , int numColorBlue){
+    public Bitmap filterReduceColors(int numColorRed, int numColorGreen , int numColorBlue){
         Mat img_result_aux = new Mat();
         Bitmap aux = image;
         Utils.bitmapToMat(aux, img_result_aux);
@@ -165,7 +165,7 @@ class MyFilters {
         Utils.matToBitmap(img_result, img_bitmap);
         return img_bitmap;
     }
-    Bitmap filterPencil(){
+    public Bitmap filterPencil(){
         Mat img_result = img.clone();
         Bitmap img_bitmap = null;
         try{
@@ -179,7 +179,7 @@ class MyFilters {
         }
         return img_bitmap;
     }
-    Bitmap filterCarton(int numColorRed, int numColorGreen , int numColorBlue){
+    public Bitmap filterCarton(int numColorRed, int numColorGreen , int numColorBlue){
         Mat img1 = new Mat();
         Bitmap aux = image;
         Bitmap img_bitmap = null;

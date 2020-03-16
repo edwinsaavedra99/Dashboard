@@ -1,16 +1,16 @@
-package com.example.dashboard.Activity;
+package com.example.dashboard.Animations;
 
 import android.widget.ImageView;
 
-class MyAnimation {
+public class MyAnimation {
 
     private ImageView img;
 
-    MyAnimation() {
+    public MyAnimation() {
         this.img=null;
     }
 
-    void animationScale(ImageView img_, int time, float x, float y){
+    public void animationScale(ImageView img_, int time, float x, float y){
         deleteAnimation();
         this.img = img_;
         if(this.img == null){

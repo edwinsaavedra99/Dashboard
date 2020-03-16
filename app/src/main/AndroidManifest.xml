@@ -15,16 +15,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.HomeActivity"></activity>
-        <activity android:name=".Activity.Login">
+        <activity android:name=".Activity.Doctor.PagerDoctorActivity"></activity>
+        <activity android:name=".Activity.Doctor.FiguresModelActivity" />
+        <activity android:name=".Activity.FileProjectActivity" />
+        <activity android:name=".Activity.Doctor.DoctorActivity" />
+        <activity android:name=".Activity.StudentActivity" />
+        <activity android:name=".Activity.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Activity.Login" />
         <activity android:name=".Activity.ProjectActivity" />
-        <activity android:name=".Activity.PatientsActivity"></activity>
+        <activity android:name=".Activity.PatientsActivity" />
         <activity
             android:name=".Activity.MainActivity"
             android:theme="@style/SplashScreen" />

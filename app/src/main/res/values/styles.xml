@@ -23,5 +23,12 @@
         <item name="android:tint">#80000000</item>
     </style>
 
+    <style name="MyTheme" parent="AppTheme">
+        <item name="colorPrimary">@color/coloNaranja</item>
+        <item name="colorPrimaryDark">@android:color/white</item>
+        <item name="colorAccent">#80CEEB</item>
+        <item name="buttonStyle">@color/colorPrimary</item>
+    </style>
+
 </resources>
 

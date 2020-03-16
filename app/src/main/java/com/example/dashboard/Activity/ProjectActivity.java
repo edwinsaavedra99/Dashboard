@@ -4,7 +4,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
@@ -26,19 +25,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.dashboard.Adapter.PatientAdapter;
 import com.example.dashboard.Adapter.ProjectAdapter;
-import com.example.dashboard.Models.Patient;
 import com.example.dashboard.Models.Project;
 import com.example.dashboard.R;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.opencv.core.Mat;
-import org.opencv.imgcodecs.Imgcodecs;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -47,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import com.example.dashboard.Resources.ResourceImage;
+import com.example.dashboard.Resources.Resource;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -184,7 +178,7 @@ public class ProjectActivity extends AppCompatActivity {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 Bitmap imageBitmap = BitmapFactory.decodeFile(currentPhotoPath);
                 imageButton.setImageBitmap(imageBitmap);
-                ResourceImage.uriImageResource = currentPhotoPath;
+                Resource.uriImageResource = currentPhotoPath;
 
             }
         }
@@ -199,7 +193,7 @@ public class ProjectActivity extends AppCompatActivity {
                 60,TimeUnit.SECONDS).build();
         JSONObject postdata = new JSONObject();
         try {
-            postdata.put("usuario", ResourceImage.usuario);
+            postdata.put("usuario", Resource.usuario);
             System.out.println(postdata.toString());
 
         } catch(JSONException e){

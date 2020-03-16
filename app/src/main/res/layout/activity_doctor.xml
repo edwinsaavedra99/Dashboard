@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/gestionar_seekbar"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.dashboard.Activity.Doctor.DoctorActivity">
+
+    <androidx.viewpager.widget.ViewPager
+        android:layout_above="@id/navigationBottom"
+        android:id="@+id/doctorPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </androidx.viewpager.widget.ViewPager>
+
+    <LinearLayout
+        android:background="#30000000"
+        android:gravity="center"
+        android:id="@+id/navigationBottom"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:padding="10dp"
+            android:gravity="center"
+            android:layout_marginRight="20dp"
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/fragment1"
+            android:onClick="changeFragment"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/imageGroupFragmentDoctor"
+                android:src="@drawable/ic_group_black_24dp"
+                android:text="CAMBIANDO ACTIVITY"
+                android:layout_width="30dp"
+                android:layout_height="30dp">
+
+            </ImageView>
+            <TextView
+                android:id="@+id/textGroupFragmentDoctor"
+                android:textSize="9sp"
+                android:textColor="@android:color/white"
+                android:text="Patients"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </TextView>
+        </LinearLayout>
+    <LinearLayout
+        android:layout_marginLeft="20dp"
+        android:padding="10dp"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/fragment2"
+        android:onClick="changeFragment"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/imageSharedFragmentDoctor"
+            android:src="@drawable/ic_folder_shared_black_24dp"
+            android:text="CAMBIANDO ACTIVITY"
+            android:layout_width="30dp"
+            android:layout_height="30dp">
+
+        </ImageView>
+        <TextView
+            android:id="@+id/textSharedFragmentDoctor"
+            android:textSize="10sp"
+            android:textColor="@android:color/white"
+            android:text="Shared"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </TextView>
+    </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

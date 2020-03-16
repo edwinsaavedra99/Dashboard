@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,10 +25,14 @@ import com.example.dashboard.Models.Patient;
 import com.example.dashboard.R;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientViewHolder> {
+public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientViewHolder> implements Filterable {
+
     private List<Patient> items;
+    private List<Patient> itemsFull;
+
     private Context context;
     private static int currentPosition = 0;
     public static class PatientViewHolder extends RecyclerView.ViewHolder{
@@ -54,6 +60,7 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientV
     public PatientAdapter(List<Patient> items,Context context){
          this.context = context;
          this.items = items;
+         itemsFull = new ArrayList<>(items);
     }
 
     @Override
@@ -89,8 +96,38 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientV
                 context.startActivity(intent);
             }
         });
-//        patientViewHolder.description.setText(items.get(i).getDescription());
     }
+    @Override
+    public Filter getFilter(){
+        return itemsFilter;
+    }
+
+    private Filter itemsFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<Patient> filterPatient = new ArrayList<>();
+            if(constraint == null || constraint.length() == 0){
+                filterPatient.addAll(itemsFull);
+            }else{
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                for ( Patient patient : itemsFull){
+                    if(patient.getName().toLowerCase().contains(filterPattern)){
+                        filterPatient.add(patient);
+                    }
+                }
+            }
+            FilterResults results = new FilterResults();
+            results.values = filterPatient;
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            items.clear();
+            items.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
 
 
 

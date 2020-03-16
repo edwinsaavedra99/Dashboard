@@ -1,22 +1,17 @@
-package com.example.dashboard.Activity;
+package com.example.dashboard.Activity.Doctor;
 //Imports
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
+
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ImageDecoder;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -24,27 +19,22 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.dashboard.Animations.MyAnimation;
+import com.example.dashboard.Filters.GroupFilters;
 import com.example.dashboard.Filters.MyFilters;
 import com.example.dashboard.Resources.Resource;
-import com.example.dashboard.Utils.ControlMenu;
-import com.example.dashboard.Utils.Files;
 import com.example.dashboard.R;
 import com.example.dashboard.Services.FiguresService;
 import com.google.android.material.textfield.TextInputEditText;
-import org.json.JSONArray;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opencv.android.OpenCVLoader;
@@ -58,7 +48,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-import com.example.dashboard.Figures.Circle;
+
 import com.example.dashboard.ListFigures.ListFigure;
 import com.example.dashboard.ListFigures.ListSegmentation;
 import com.example.dashboard.ListFigures.Util;
@@ -69,42 +59,21 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import static android.graphics.Bitmap.Config.ARGB_8888;
-import static android.view.MotionEvent.INVALID_POINTER_ID;
 
-/**
- * This class define the Main Activity Image Ray-X editing space
- * @author Edwin Saavedra
- * @version 3
- */
-public class MainActivity extends AppCompatActivity {
+public class FiguresModelActivity extends AppCompatActivity {
     public static int TIME_ANIMATION = 100;
     public static float SCALE_ANIMATION = 1.1f;
-    //Class Attributes--
-    //variables para camara
-    protected static final int PICK_IMAGE =0;
-    protected static final int REQUEST_IMAGE_CAPTURE = 1;
-    private Uri imageurl;
-    private ImageView import_;
-    private AlertDialog dialog_image;
-    private ImageView camera;
-    private ImageView galery;
-    private TextView txt_camera;
-    private  TextView txt_galery;
-    private int flagimage =0;
+    private ImageView gallery;
     private String currentPhotoPath;
     //Load and Save data
-
-    //Insert com.example.dashboard.Figures
-    private ImageView saveData;
     private ImageView saveFigures;
     private ImageView creatorCircles;
     private ImageView creatorRectangles;
     private ImageView creatorLines;
     private ImageView creatorEllipses;
     private ImageView creatorPoints;
-    //Edit and delete com.example.dashboard.Figures
     private ImageView deleteFigures;
+    private boolean flagAnimationColors;
     private ImageView changeColor;
     private ImageView infoFigures;
     private int[] colour = {183, 149, 11};
@@ -112,38 +81,23 @@ public class MainActivity extends AppCompatActivity {
     private ImageView extendsImage;
     //Filters
     private ImageView filterImage;
-    private Drawable d;
-    //Change Layout
-    private ImageView segmentation;
-    private ImageView addPointSegment;
-    private ImageView pencilSegment;
     //Layout for Image RX
     private LinearLayout layoutImageRx;
-    private LinearLayout layoutImageRx1;
     //View
     private ListFigure myListFigures;
-    private ListSegmentation myListSegmentation;
     //Animation
     private MyAnimation Animation;
     //Flags
     private boolean flagAnimation;
-    private boolean flagAnimationColors;
     private boolean flagSegmentation;
-    private boolean flagEraserSegmentation;
-    private boolean flagPointSegmentation;
-    private boolean flagPencilSegmentation;
-    private boolean flagPreviewSegmentation;
     private boolean flagHttp;
     private boolean flagVariant;
     private boolean flagBorders;
     private boolean flagCalor;
     private boolean flagColors;
-    private boolean flagControl;
-    private boolean flagAristas;
     //Scroll
     private LinearLayout menu_left;
     private LinearLayout menu_right;
-    private LinearLayout contenedor_description;
     private LinearLayout getFigures;
     private LinearLayout backFilters;
     private ScrollView scrollLeft1;
@@ -154,18 +108,7 @@ public class MainActivity extends AppCompatActivity {
     //Back and Checks
     private ImageView backMenuRight; //back menu right
     //Segments
-    private ImageView deleteSegments;
-    private ImageView changeColorSegments;
-    private LinearLayout zoomImageLayout;
     private ImageView test1;
-    private ImageView clearSegments;
-    private ImageView eraserSegments;
-    private ImageView preview;
-    private ImageView openSegments;
-    private ImageView controlMenu;
-    private CardView cardView;
-    //Colors
-    private ArrayList<ImageView> listColors;
     private int colorIndex;
     private ImageView color1;
     private ImageView color2;
@@ -239,21 +182,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView normalOpencv3;
     //Control
     private LinearLayout control;
-    private ImageView sortUp;
-    private ImageView sortDown;
-    private ImageView sortLeft;
-    private ImageView sortRight;
-    private ImageView touchControl;
-    private ImageView allSortUp;
-    private ImageView allSortDown;
-    private ImageView allSortLeft;
-    private ImageView allSortRight;
-    private ImageView controlZ;
-    private ImageView controlY;
-    private ImageView closeControl;
-    private ImageView aristas;
     private ImageView share;
-    private int scaleSort;
     //img original format Bitmap
     private int codHttpFilter = 0;
     private Bitmap original;
@@ -262,11 +191,6 @@ public class MainActivity extends AppCompatActivity {
     private Bitmap auxOriginal2 = null;
     private Bitmap auxOriginal3 = null;
     private Mat img;
-    private int nameImage;
-    private boolean longClick = false;
-    private int mActivePointerId = INVALID_POINTER_ID;
-    private LinearLayout rootLayout;
-    private Files dataFiles;
     private AlertDialog dialog;
     //--End Attributes of class
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -274,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //ORIENTATION FALSE
-        setTheme(R.style.AppTheme);
+        //setTheme(R.style.AppTheme);
         //Add Layout Activity XML
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
@@ -285,389 +209,22 @@ public class MainActivity extends AppCompatActivity {
         initialProperties();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-       infoFigures.setOnClickListener(new View.OnClickListener() {
+        infoFigures.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(flagSegmentation==false) {
-                    if (myListFigures.isSelectedFigure())
-                        showInfoDialog(true);
-                    else {
-                        Toast toast;
-                        toast = Toast.makeText(getApplicationContext(), "Please selected figure ", Toast.LENGTH_SHORT);
-                        toast.show();
-                    }
-                }else{
-                    if (myListSegmentation.isSelectedFigure())
-                        showInfoDialog(false);
-                    else {
-                        Toast toast;
-                        toast = Toast.makeText(getApplicationContext(), "Please selected figure ", Toast.LENGTH_SHORT);
-                        toast.show();
-                    }
-                }
-
-            }
-        });
-        closeControl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                myListSegmentation.deleteMemory();
-            }
-        });
-        controlZ.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                myListSegmentation.controlZ();
-            }
-        });
-        controlY.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                myListSegmentation.controlY();
-            }
-        });
-        control.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-        aristas.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!flagAristas){
-                    Toast toast;
-                    toast = Toast.makeText(getApplicationContext(),"Select two point, Please",Toast.LENGTH_SHORT);
-                    toast.show();
-                    Animation.animationScale(aristas,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
-                    aristas.setColorFilter(Color.rgb(255, 127, 80));
-                    eraserSegments.setColorFilter(Color.rgb(255, 255, 255));
-                    addPointSegment.setColorFilter(Color.rgb(255, 255, 255));
-                    extendsImage.setColorFilter(Color.rgb(255, 255, 255));
-                    pencilSegment.setColorFilter(Color.rgb(255, 255, 255));
-                    myListSegmentation.changeModeTouch(5);
-                    flagAristas = true;
-                }else{
-                    aristas.setColorFilter(Color.rgb(255, 255, 255));
-                    myListSegmentation.changeModeTouch(0);
-                    flagAristas = false;
-                }
-                myListSegmentation.newEdge();
-            }
-        });
-        controlMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!flagControl){
-                    Animation.animationScale(controlMenu, TIME_ANIMATION, SCALE_ANIMATION, SCALE_ANIMATION);
-                    controlMenu.setColorFilter(Color.rgb(255, 127, 80));
-                    control.setVisibility(View.VISIBLE);
-                    flagControl = true;
-                }else{
-                    control.setVisibility(View.GONE);
-                    controlMenu.setColorFilter(Color.rgb(255, 255, 255));
-                    flagControl = false;
-                }
-                myListSegmentation.invalidate();
-                myListSegmentation.getZoomList().invalidate();
-            }
-        });
-        allSortUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!myListSegmentation.sortMoveControl(5)){
-                    Toast toast;
-                    toast = Toast.makeText(getApplicationContext(),"Please selected figure ",Toast.LENGTH_SHORT);
-                    toast.show();
+                if (myListFigures.isSelectedFigure())
+                    showInfoDialog();
+                else {
+                    showToast("Please, Select Figure");
                 }
             }
         });
-        allSortLeft.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!myListSegmentation.sortMoveControl(6)){
-                    Toast toast;
-                    toast = Toast.makeText(getApplicationContext(),"Please selected figure ",Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-            }
-        });
-        allSortRight.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!myListSegmentation.sortMoveControl(7)){
-                    Toast toast;
-                    toast = Toast.makeText(getApplicationContext(),"Please selected figure ",Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-            }
-        });
-        allSortDown.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!myListSegmentation.sortMoveControl(8)){
-                    Toast toast;
-                    toast = Toast.makeText(getApplicationContext(),"Please selected figure ",Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-            }
-        });
-        sortUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!myListSegmentation.sortMoveControl(1)){
-                    Toast toast;
-                    toast = Toast.makeText(getApplicationContext(),"Please selected figure ",Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-            }
-        });
-        sortDown.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!myListSegmentation.sortMoveControl(4)){
-                    Toast toast;
-                    toast = Toast.makeText(getApplicationContext(),"Please selected figure ",Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-            }
-        });
-        sortRight.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!myListSegmentation.sortMoveControl(3)){
-                    Toast toast;
-                    toast = Toast.makeText(getApplicationContext(),"Please selected figure ",Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-            }
-        });
-        sortLeft.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!myListSegmentation.sortMoveControl(2)){
-                    Toast toast;
-                    toast = Toast.makeText(getApplicationContext(),"Please selected figure ",Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-            }
-        });
-        touchControl.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                DisplayMetrics metrics = new DisplayMetrics();
-                getWindowManager().getDefaultDisplay().getMetrics(metrics);
-                float getX = event.getX();
-                float getY = event.getY();
-                float getPastX=0;
-                float getPastY=0;
-                final int acct = event.getActionMasked();
-                switch (acct) {
-                    case MotionEvent.ACTION_DOWN:{
-                        final int pointerIndex = event.getActionIndex();
-                        mActivePointerId = event.getPointerId(0);
-                        getPastX = getX;
-                        getPastY = getY;
-                        break;
-                    }
-                    case MotionEvent.ACTION_MOVE: {
-                        final int pointerIndex = event.findPointerIndex(mActivePointerId);
-                        getX = event.getX(pointerIndex);
-                        getY = event.getY(pointerIndex);
-                        if((control.getTranslationX()-(getPastX-getX))-40>=0 && (control.getTranslationX()-(getPastX-getX))+((int)(getResources().getDimension(R.dimen.translate_control)))<=metrics.widthPixels){
-                            control.setTranslationX((control.getTranslationX()-(getPastX-getX))-40);
-                        }
-                        if((control.getTranslationY()-(getPastY-getY))+((int)(getResources().getDimension(R.dimen.translate_control)))<= metrics.heightPixels && (control.getTranslationY()-(getPastY-getY))-40>=0){
-                            control.setTranslationY((control.getTranslationY()-(getPastY-getY))-40);
-                        }
-                        getPastX = getX;
-                        getPastY = getY;
-
-                        break;
-                    }
-                    case MotionEvent.ACTION_UP: {
-                        mActivePointerId = INVALID_POINTER_ID;
-                        break;
-                    }
-                    case MotionEvent.ACTION_CANCEL: {
-                        mActivePointerId = INVALID_POINTER_ID;
-                        break;
-                    }
-                    case MotionEvent.ACTION_POINTER_UP: {
-                        final int pointerIndex = event.getActionIndex();
-                        final int pointerId = event.getPointerId(pointerIndex);
-                        if (pointerId == mActivePointerId) {
-                            final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
-                            getPastX = event.getX(newPointerIndex);
-                            getPastY = event.getY( newPointerIndex);
-                            mActivePointerId = event.getPointerId(newPointerIndex);
-                        }
-                        break;
-                    }
-                }
-                return true;
-            }
-        });
-
-
         saveFigures.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Animation.animationScale(saveFigures,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
                 saveIndicator();
-                Toast toast;
-                if(1==1)
-                    toast = Toast.makeText(getApplicationContext(),"Data Save Successfully",Toast.LENGTH_SHORT);
-                else
-                    toast = Toast.makeText(getApplicationContext(),"Data not Save",Toast.LENGTH_SHORT);
-                toast.show();
-
-            }
-        });
-
-        saveData.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Animation.animationScale(deleteFigures,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
-                Toast toast;
-                //myListSegmentation ... ESTAS AQUI !!
-                if(1==1)
-                    toast = Toast.makeText(getApplicationContext(),"Data Save Successfully",Toast.LENGTH_SHORT);
-                else
-                    toast = Toast.makeText(getApplicationContext(),"Data not Save",Toast.LENGTH_SHORT);
-                toast.show();
-                //System.out.println(myListSegmentation.toString());
-                saveLandMarks();
-                System.out.println("DATA ENVIADA");
-                //myListSegmentation.toString();
-            }
-        });
-        preview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!flagPreviewSegmentation) {
-                    Animation.animationScale(preview, TIME_ANIMATION, SCALE_ANIMATION, SCALE_ANIMATION);
-                    preview.setColorFilter(Color.rgb(255, 127, 80));
-                    myListSegmentation.getFlagPreview();
-                    myListSegmentation.invalidate();
-                    flagPreviewSegmentation = true;
-                }else{
-                    preview.setColorFilter(Color.rgb(255, 255, 255));
-                    myListSegmentation.getFlagPreview();
-                    myListSegmentation.invalidate();
-                    flagPreviewSegmentation = false;
-                }
-
-            }
-        });
-        //Change of layout to "Segmentation"
-        segmentation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!flagSegmentation) {
-                    if(myListSegmentation.getModeTouch()==1)
-                        extendsImage.setColorFilter(Color.rgb(255, 127, 80)); //orange
-                    else
-                        extendsImage.setColorFilter(Color.rgb(255, 255, 255)); //white
-                    Animation.animationScale(segmentation, TIME_ANIMATION, SCALE_ANIMATION, SCALE_ANIMATION);
-                    segmentation.setColorFilter(Color.rgb(255, 127, 80));
-                    if(flagControl)
-                        control.setVisibility(View.VISIBLE);
-                    else
-                        control.setVisibility(View.GONE);
-                    layoutImageRx.setVisibility(View.GONE);
-                    layoutImageRx1.setVisibility(View.VISIBLE);
-                    scrollLeft1.setVisibility(View.GONE);
-                    if(flagAnimationColors) //menu de figuritas esta activo
-                        scrollLeft2.setVisibility(View.VISIBLE);
-                    else
-                        scrollLeft2.setVisibility(View.GONE);
-                    flagSegmentation = true;
-                }else{
-                    if(myListFigures.getModeTouch()==1)
-                        extendsImage.setColorFilter(Color.rgb(255, 127, 80)); //orange
-                    else
-                        extendsImage.setColorFilter(Color.rgb(255, 255, 255)); //white
-                    segmentation.setColorFilter(Color.rgb(255,255,255));
-                    scrollLeft2.setVisibility(View.GONE);
-                    if(flagAnimationColors)
-                        scrollLeft1.setVisibility(View.VISIBLE);
-                    else
-                        scrollLeft1.setVisibility(View.GONE);
-                    layoutImageRx1.setVisibility(View.GONE);
-                    control.setVisibility(View.GONE);
-                    myListSegmentation.getCardView().setVisibility(View.GONE);
-                    layoutImageRx.setVisibility(View.VISIBLE);
-                    flagSegmentation = false;
-                }
-            }
-        });
-        clearSegments.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Animation.animationScale(clearSegments,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
-                myListSegmentation.clearList();
-                myListSegmentation.getCardView().setVisibility(View.GONE);
-            }
-        });
-        eraserSegments.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!flagEraserSegmentation) {
-                    Animation.animationScale(eraserSegments, TIME_ANIMATION, SCALE_ANIMATION, SCALE_ANIMATION);
-                    eraserSegments.setColorFilter(Color.rgb(255, 127, 80));
-                    addPointSegment.setColorFilter(Color.rgb(255, 255, 255));
-                    extendsImage.setColorFilter(Color.rgb(255, 255, 255));
-                    pencilSegment.setColorFilter(Color.rgb(255, 255, 255));
-                    aristas.setColorFilter(Color.rgb(255, 255, 255));
-                    myListSegmentation.changeModeTouch(2);
-                    flagEraserSegmentation = true;
-                }else{
-                    eraserSegments.setColorFilter(Color.rgb(255, 255, 255));
-                    myListSegmentation.changeModeTouch(0);
-                    flagEraserSegmentation = false;
-                }
-            }
-        });
-        addPointSegment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int modeTouch = myListSegmentation.getModeTouch();
-                if(!flagPointSegmentation) {
-                    Animation.animationScale(addPointSegment, TIME_ANIMATION, SCALE_ANIMATION, SCALE_ANIMATION);
-                    eraserSegments.setColorFilter(Color.rgb(255, 255, 255));
-                    pencilSegment.setColorFilter(Color.rgb(255, 255, 255));
-                    extendsImage.setColorFilter(Color.rgb(255, 255, 255));
-                    addPointSegment.setColorFilter(Color.rgb(255, 127, 80));
-                    aristas.setColorFilter(Color.rgb(255, 255, 255));
-                    myListSegmentation.changeModeTouch(3);
-                    flagPointSegmentation = true;
-                }else{
-                    addPointSegment.setColorFilter(Color.rgb(255, 255, 255));
-                        myListSegmentation.changeModeTouch(0);
-                    flagPointSegmentation = false;
-                }
-            }
-        });
-
-        pencilSegment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int modeTouch = myListSegmentation.getModeTouch();
-                if(!flagPencilSegmentation) {
-                    Animation.animationScale(pencilSegment, TIME_ANIMATION, SCALE_ANIMATION, SCALE_ANIMATION);
-                    eraserSegments.setColorFilter(Color.rgb(255, 255, 255));
-                    addPointSegment.setColorFilter(Color.rgb(255, 255, 255));
-                    extendsImage.setColorFilter(Color.rgb(255, 255, 255));
-                    pencilSegment.setColorFilter(Color.rgb(255, 127, 80));
-                    aristas.setColorFilter(Color.rgb(255, 255, 255));
-                    myListSegmentation.changeModeTouch(4);
-                    flagPencilSegmentation = true;
-                }else{
-                    pencilSegment.setColorFilter(Color.rgb(255, 255, 255));
-                    myListSegmentation.changeModeTouch(0);
-                    flagPencilSegmentation = false;
-                }
+                showToast("Data Save Successfully");
             }
         });
         //back menu right
@@ -711,29 +268,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Animation.animationScale(extendsImage,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
-                if(!flagSegmentation) {
-                    if(myListFigures.getModeTouch()==0 ) {
-                        extendsImage.setColorFilter(Color.rgb(255, 127, 80)); //orange
-                    }else{
-                        extendsImage.setColorFilter(Color.rgb(255, 255, 255)); //white
-                    }
-                    myListFigures.changeModeTouch();
-                }else {
-
-                    if(myListSegmentation.getModeTouch()==0 || myListSegmentation.getModeTouch()==2
-                            || myListSegmentation.getModeTouch()==3 || myListSegmentation.getModeTouch()==4
-                            ||myListSegmentation.getModeTouch() ==5) {
-                        eraserSegments.setColorFilter(Color.rgb(255, 255, 255)); //white
-                        pencilSegment.setColorFilter(Color.rgb(255, 255, 255)); //white
-                        addPointSegment.setColorFilter(Color.rgb(255, 255, 255)); //white
-                        aristas.setColorFilter(Color.rgb(255, 255, 255)); //white
-                        extendsImage.setColorFilter(Color.rgb(255, 127, 80)); //orange
-                        myListSegmentation.changeModeTouch(1);
-                    }else{
-                        extendsImage.setColorFilter(Color.rgb(255, 255, 255)); //white
-                        myListSegmentation.changeModeTouch(0);
-                    }
+                if(myListFigures.getModeTouch()==0 ) {
+                    extendsImage.setColorFilter(Color.rgb(255, 127, 80)); //orange
+                }else{
+                    extendsImage.setColorFilter(Color.rgb(255, 255, 255)); //white
                 }
+                myListFigures.changeModeTouch();
             }
         });
         //Add Point
@@ -794,27 +334,27 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Animation.animationScale(changeColor,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
-                    Animation animation1 = new TranslateAnimation(2, 0.0f, 2, -1.0f, 2, 0.0f, 2, 0.0f);
-                    animation1.setDuration(550);
-                    animation1.setAnimationListener(new Animation.AnimationListener() {
-                        @Override
-                        public void onAnimationStart(android.view.animation.Animation animation) {
-                        }
-                        @Override
-                        public void onAnimationEnd(android.view.animation.Animation animation) {
-                            Animation animation2 = new TranslateAnimation(2, -1.0f, 2, 0.0f, 2, 0.0f, 2, 0.0f);
-                            animation2.setDuration(550);
-                            scrollLeft3.startAnimation(animation2);
-                            scrollLeft1.setVisibility(View.GONE);
-                            scrollLeft3.setVisibility(View.VISIBLE);
-                            getFigures.setVisibility(View.VISIBLE);
-                        }
-                        @Override
-                        public void onAnimationRepeat(android.view.animation.Animation animation) {
-                        }
-                    });
+                Animation animation1 = new TranslateAnimation(2, 0.0f, 2, -1.0f, 2, 0.0f, 2, 0.0f);
+                animation1.setDuration(550);
+                animation1.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(android.view.animation.Animation animation) {
+                    }
+                    @Override
+                    public void onAnimationEnd(android.view.animation.Animation animation) {
+                        Animation animation2 = new TranslateAnimation(2, -1.0f, 2, 0.0f, 2, 0.0f, 2, 0.0f);
+                        animation2.setDuration(550);
+                        scrollLeft3.startAnimation(animation2);
+                        scrollLeft1.setVisibility(View.GONE);
+                        scrollLeft3.setVisibility(View.VISIBLE);
+                        getFigures.setVisibility(View.VISIBLE);
+                    }
+                    @Override
+                    public void onAnimationRepeat(android.view.animation.Animation animation) {
+                    }
+                });
                 flagAnimationColors=false;
-                    scrollLeft1.startAnimation(animation1);
+                scrollLeft1.startAnimation(animation1);
 
             }
         });
@@ -852,43 +392,6 @@ public class MainActivity extends AppCompatActivity {
                 });
                 scrollLeft3.startAnimation(animation1);
                 flagAnimationColors=true;
-            }
-        });
-        //change color all segments
-        changeColorSegments.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Animation.animationScale(changeColorSegments,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
-                Animation animation1 = new TranslateAnimation(2, 0.0f, 2, -1.0f, 2, 0.0f, 2, 0.0f);
-                animation1.setDuration(550);
-                animation1.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(android.view.animation.Animation animation) {
-                    }
-                    @Override
-                    public void onAnimationEnd(android.view.animation.Animation animation) {
-                        Animation animation2 = new TranslateAnimation(2, -1.0f, 2, 0.0f, 2, 0.0f, 2, 0.0f);
-                        animation2.setDuration(550);
-                        scrollLeft3.startAnimation(animation2);
-                        scrollLeft2.setVisibility(View.GONE);
-                        scrollLeft3.setVisibility(View.VISIBLE);
-                        getFigures.setVisibility(View.VISIBLE);
-                    }
-                    @Override
-                    public void onAnimationRepeat(android.view.animation.Animation animation) {
-                    }
-                });
-                flagAnimationColors=false;
-                scrollLeft2.startAnimation(animation1);
-                Toast toast;
-
-            }
-        });
-
-        openSegments.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openLandMarks();
             }
         });
 
@@ -1043,7 +546,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        galery.setOnClickListener(new View.OnClickListener() {
+        gallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
@@ -1051,7 +554,7 @@ public class MainActivity extends AppCompatActivity {
                     gallery.setType("image/*");
                     gallery.setAction(Intent.ACTION_GET_CONTENT);
                     startActivityForResult(Intent.createChooser(gallery, "Select picture"), 4);
-                    Toast.makeText(getApplicationContext(), "image from galery", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "image from gallery", Toast.LENGTH_SHORT).show();
                 }catch (Exception e){
                     e.printStackTrace();
                     System.out.println(e.getMessage());
@@ -1059,36 +562,6 @@ public class MainActivity extends AppCompatActivity {
 
                 }
 
-            }
-        });
-        //Delete the after segment
-        deleteSegments.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Animation.animationScale(deleteSegments,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
-                Toast toast;
-                if(myListSegmentation.after()) {
-                    toast = Toast.makeText(getApplicationContext(), "Deleted Successfully", Toast.LENGTH_SHORT);
-                    if(myListSegmentation.getFigureSelected()>-1 && !myListSegmentation.getSegmentation().isEmpty()) {
-                        Circle a = (Circle) myListSegmentation.getSegmentation().get(myListSegmentation.getFigureSelected());
-                        Circle a1 = (Circle) myListSegmentation.getZoomList().getSegmentation().get(myListSegmentation.getZoomList().getFigureSelected());
-                        myListSegmentation.getViewZoom().setPivotY((a.getCenterY()-myListSegmentation.getmPositionY()) / myListSegmentation.getmScaleFactor() * myListSegmentation.getViewZoom().getHeight() / myListSegmentation.getHeight());
-                        myListSegmentation.getViewZoom().setPivotX((a.getCenterX()-myListSegmentation.getmPositionX()) / myListSegmentation.getmScaleFactor() * myListSegmentation.getViewZoom().getWidth() / myListSegmentation.getWidth());
-                    }else{
-                        myListSegmentation.getCardView().setVisibility(View.GONE);
-                    }
-                }else {
-                    toast = Toast.makeText(getApplicationContext(), "Isn't Selected Figure", Toast.LENGTH_SHORT);
-                }
-                toast.show();
-            }
-        });
-
-        //Layout forget touch
-        zoomImageLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
             }
         });
         //Filter canny borders
@@ -1148,20 +621,20 @@ public class MainActivity extends AppCompatActivity {
         });
         //filter summer
         openCv4.setOnClickListener(new View.OnClickListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-                    @Override
-                    public void onClick(View v) {
-                        addFilter(myFilters.filterColor(6));
-           }
-                     });
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onClick(View v) {
+                addFilter(myFilters.filterColor(6));
+            }
+        });
         //filter pink
         openCv5.setOnClickListener(new View.OnClickListener() {
-                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-                @Override
-                public void onClick(View v) {
-                    addFilter(myFilters.filterColor(10));
-        }
-                  });
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onClick(View v) {
+                addFilter(myFilters.filterColor(10));
+            }
+        });
         //filter reduce colors gray
         openCv6.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -1342,19 +815,19 @@ public class MainActivity extends AppCompatActivity {
                 }
                 addFilter(myFilters.filterRGB());*/
 
-               if(auxOriginal == null){
-                   getFilterService(myListSegmentation.getBase64String(),"clahe",1);
+                if(auxOriginal == null){
+                    getFilterService(myListFigures.getBase64String(),"clahe",1);
 
-               }else{
-                   addFilter(auxOriginal);
-               }
+                }else{
+                    addFilter(auxOriginal);
+                }
             }
         });
         getOpenCvHttp2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(auxOriginal1 == null) {
-                    getFilterService(myListSegmentation.getBase64String(), "clahegh",2);
+                    getFilterService(myListFigures.getBase64String(), "clahegh",2);
                 }else{
                     addFilter(auxOriginal1);
                 }
@@ -1364,7 +837,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(auxOriginal2 == null) {
-                    getFilterService(myListSegmentation.getBase64String(), "guidedfilter",3);
+                    getFilterService(myListFigures.getBase64String(), "guidedfilter",3);
                 }else{
                     addFilter(auxOriginal2);
                 }
@@ -1374,7 +847,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(auxOriginal3 == null) {
-                    getFilterService(myListSegmentation.getBase64String(), "wiener",4);
+                    getFilterService(myListFigures.getBase64String(), "wiener",4);
                 }else{
                     addFilter(auxOriginal3);
                 }
@@ -1484,7 +957,7 @@ public class MainActivity extends AppCompatActivity {
         });
         test1.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) { //pantalla completa
                 if(flagAnimation) {
                     test1.animate().setDuration(200).scaleX(1.2f).scaleY(1.2f);
                     test1.setColorFilter(Color.rgb(255, 127, 80)); //ORANGE
@@ -1523,8 +996,8 @@ public class MainActivity extends AppCompatActivity {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, PatientsActivity.class);
-                startActivity(intent);
+                /*Intent intent = new Intent(MainActivity.this, PatientsActivity.class);
+                startActivity(intent);*/
 
             }
         });
@@ -1533,25 +1006,15 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void addFilter(Bitmap d){
-        Drawable drawable = new BitmapDrawable(getResources(),d);
-        if(!flagSegmentation)
-            myListFigures.loadImage(d);
-        else {
-            myListSegmentation.loadImage(d);
-            //zoomImageLayout.setBackground(drawable);
-        }
+        myListFigures.loadImage(d);
     }
     @SuppressLint("ShowToast")
     private void changeColor(int _color){
-        Toast toast=Toast.makeText(getApplicationContext(),"Isn't Selected Figure",Toast.LENGTH_SHORT);
-        if(flagSegmentation){
-            if( myListSegmentation.changeColour(Util.getCollections()[_color]))
-                toast = Toast.makeText(getApplicationContext(),"Change Successfully in Segments",Toast.LENGTH_SHORT);
+        if( myListFigures.changeColour(Util.getCollections()[_color])){
+            showToast("Change Successfully in Figure");
         }else{
-            if( myListFigures.changeColour(Util.getCollections()[_color]))
-                toast = Toast.makeText(getApplicationContext(),"Change Successfully in Figure",Toast.LENGTH_SHORT);
+            showToast("Isn't Selected Figure");
         }
-        toast.show();
     }
 
     public void notViewFilters(){
@@ -1593,86 +1056,25 @@ public class MainActivity extends AppCompatActivity {
         getOpenCvHttp3.setVisibility(View.GONE);
         getOpenCvHttp4.setVisibility(View.GONE);
     }
+ 
+    private void showSaveDialog(final boolean flagSegmentation){  }
 
-    public Bitmap makeTransparent(Bitmap src,int value,String description){
-        int width = src.getWidth();
-        int height =  src.getHeight();
-        Bitmap transBitmap = Bitmap.createBitmap(width,height, ARGB_8888);
-        Canvas canvas = new Canvas(transBitmap);
-        canvas.drawARGB(0,0,0,0);
-        final Paint paint = new Paint();
-        paint.setAlpha(value);
-        final Paint pencil = new Paint();
-        Typeface tipoFuente = Typeface.create(Typeface.DEFAULT,Typeface.NORMAL);
-        pencil.setTypeface(tipoFuente);
-        pencil.setTextSize(40*width/height);
-        pencil.setTextAlign(Paint.Align.CENTER);
-        pencil.setColor(Color.WHITE);
-        canvas.drawBitmap(src,0,0,paint);
-        canvas.drawText(description,src.getWidth()/2,src.getHeight()/2,pencil);
-        return  transBitmap;
-    }
-
-    public Bitmap makeText(Bitmap src,String description){
-        int width = src.getWidth();
-        int height =  src.getHeight();
-        Bitmap textBitmap = Bitmap.createBitmap(width,height, ARGB_8888);
-        Canvas canvas = new Canvas(textBitmap);
-        canvas.drawARGB(0,0,0,0);
-
-        final Paint paint = new Paint();
-        final Paint pencil2 = new Paint();
-        Typeface tipoFuente = Typeface.create(Typeface.DEFAULT,Typeface.NORMAL);
-        pencil2.setTypeface(tipoFuente);
-        pencil2.setTextSize(40*width/height);
-        int sizeDimen =  (int) (height/2+200*width/height);
-        Rect areRect = new Rect(0,sizeDimen-65*width/height,width,sizeDimen);
-        pencil2.setColor(Color.BLACK);
-
-        canvas.drawBitmap(src,0,0,paint);
-        canvas.drawRect(areRect,pencil2);
-
-        RectF bounds = new RectF(areRect);
-        bounds.right = pencil2.measureText(description,0,description.length());
-        bounds.bottom = pencil2.descent()-pencil2.ascent();
-        bounds.left += (areRect.width()-bounds.right)/2.0f;
-        bounds.top += (areRect.height()-bounds.bottom)/2.0f;
-        pencil2.setColor(Color.WHITE);
-        canvas.drawText(description,bounds.left,bounds.top-pencil2.ascent(),pencil2);
-        return  textBitmap;
-    }
-    private void showSaveDialog(final boolean flagSegmentation){
-
-    }
-
-    private void showInfoDialog(final boolean flagSegmentation) {
+    private void showInfoDialog() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle("INFO FIGURE: ");
         dialog.setMessage("Please description figure");
         LayoutInflater inflater = LayoutInflater.from(this);
-        View login_layout = inflater.inflate(R.layout.layout_info_figure,null);
+        @SuppressLint("InflateParams") View login_layout = inflater.inflate(R.layout.layout_info_figure,null);
         final TextInputEditText editDescription = login_layout.findViewById(R.id.txt_description);
-        if(flagSegmentation)
-            editDescription.setText(myListFigures.getDescriptionFigure());
-        else
-            editDescription.setText(myListSegmentation.getDescriptionFigure());
+        editDescription.setText(myListFigures.getDescriptionFigure());
         dialog.setView(login_layout);
         dialog.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast toast;
-                if(flagSegmentation) {
-                    if (myListFigures.setDescriptionFigure(editDescription.getText().toString()))
-                        toast = Toast.makeText(getApplicationContext(), "Save Successfully", Toast.LENGTH_SHORT);
-                    else
-                        toast = Toast.makeText(getApplicationContext(), "No Save ", Toast.LENGTH_SHORT);
-                }else{
-                    if (myListSegmentation.setDescriptionFigure(editDescription.getText().toString()))
-                        toast = Toast.makeText(getApplicationContext(), "Save Successfully", Toast.LENGTH_SHORT);
-                    else
-                        toast = Toast.makeText(getApplicationContext(), "No Save ", Toast.LENGTH_SHORT);
-                }
-                toast.show();
+                if (myListFigures.setDescriptionFigure(editDescription.getText()+""))
+                    showToast("Save Successfully");
+                else
+                    showToast("No Save");
             }
         });
         dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
@@ -1683,20 +1085,11 @@ public class MainActivity extends AppCompatActivity {
         });
         dialog.show();
     }
-
-    public static Bitmap scaleDown(Bitmap realImage,float maxImageSize , boolean filter){
-        float ratio = Math.min((float) maxImageSize/realImage.getWidth(),(float) maxImageSize/realImage.getHeight());
-        int width = Math.round((float) ratio * realImage.getWidth());
-        int height = Math.round((float) ratio * realImage.getHeight());
-        Bitmap newImage = Bitmap.createScaledBitmap(realImage,width,height,filter);
-        return newImage;
-    }
     public void saveIndicator(){
         MediaType MEDIA_TYPE =
                 MediaType.parse("application/json");
         final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,
                 TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(
-
                 60,TimeUnit.SECONDS).build();
         JSONObject postdata = new JSONObject();
         try {
@@ -1747,100 +1140,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
-    public void saveLandMarks(){
-       /* try {
-            LandMarkService.sendLandMarks(myListSegmentation.getBase64String(),myListSegmentation);
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }*/
-        MediaType MEDIA_TYPE =
-                MediaType.parse("application/json");
-        String image="";
-        final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,
-                TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(
-
-                60,TimeUnit.SECONDS).build();
-        JSONObject postdata = new JSONObject();
-        try {
-            postdata.put("image", myListSegmentation.getBase64String());
-            JSONObject posdate123 = new JSONObject();
-            posdate123.put("imageX",myListSegmentation.getGeneralWidth());
-            posdate123.put("imagey",myListSegmentation.getGeneralHeight());
-            posdate123.put("profileItems",null);
-            posdate123.put("landmarksNumber",0);
-            posdate123.put("landmarks",myListSegmentation.dataSegments());
-            posdate123.put("landmarksCreated",myListSegmentation.getSegmentation().size());
-            posdate123.put("profileName","Edwin");
-            posdate123.put("imageName","image_rx.jpg");
-            postdata.put("information",posdate123);
-            System.out.println(postdata.toString());
-            //System.out.println(myListSegmentation.getBase64String());
-            // dataFiles.writeJSONFile(postdata.toString());
-
-        } catch(JSONException e){
-            e.printStackTrace();
-        }
-        RequestBody body = RequestBody.create(MEDIA_TYPE,
-                postdata.toString());
-        final Request request = new Request.Builder()
-                .url("http://192.168.12.121:5000/landmark") /*URL ... INDEX PX DE WILMER*/
-                .post(body)
-                .addHeader("Content-Type", "application/json")
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                System.out.println("Wilmer ERROR :" + e);
-                //auxOriginal = myFilters.filterRGB();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response)
-                    throws IOException {
-                if (response.isSuccessful()){
-                    final String responseData = response.body().string();
-                    System.out.println("**************RESPUESTA ****************");
-                    System.out.println(responseData);
-                    System.out.println("**************RESPUESTA ****************");
-                    // auxOriginal = myListSegmentation.decodeBase64AndSetImage(responseData);
-                    /*runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            String json="";
-                            auxOriginal = myListSegmentation.decodeBase64AndSetImage(responseData);
-                            System.out.println("RECIBIDO CON EXITO");
-                        }
-                    });*/
-                }
-            }
-        });
-    }
     public void saveFigures(){
         try {
             FiguresService.sendFigures(myListFigures.getBase64String(),myListFigures);
         } catch (IOException e1) {
             e1.printStackTrace();
-        }
-    }
-    public void openLandMarks(){
-        try {
-            //String rpta = LandMarkService.readLandMarks();
-            String rpta = loadJSONFromAsset("raw/landmark.json");
-            JSONObject landMarks = new JSONObject(rpta);
-            String image = landMarks.getString("image");
-            myListSegmentation.loadImage(myListSegmentation.decodeBase64AndSetImage(image));
-            JSONObject information = landMarks.getJSONObject("information");
-            JSONArray jsonArray = information.getJSONArray("landmarks");
-            float imageX = Float.parseFloat(information.getString("imageX"));
-            float imagey = Float.parseFloat(information.getString("imagey"));
-            myListSegmentation.readDataSegments(jsonArray,imageX,imagey);
-
-        }/* catch (IOException e1) {
-            e1.printStackTrace();
-        }*/ catch (JSONException e) {
-            e.printStackTrace();
         }
     }
     public String loadJSONFromAsset(String flName){
@@ -1896,7 +1200,7 @@ public class MainActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                System.out.println("Wilmer ERROR :" + e);
+                e.printStackTrace();
                 switch (codHttpFilter){
                     case 1:{
                         auxOriginal = null;
@@ -1908,15 +1212,16 @@ public class MainActivity extends AppCompatActivity {
                     }
                     case 3:{
                         auxOriginal2 = null;
+                        break;
                     }
                     case 4:{
                         auxOriginal3 = null;
+                        break;
                     }
                 }
                 //auxOriginal = null;
                 dialog.dismiss();
             }
-
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onResponse(Call call, Response response)
@@ -1926,40 +1231,33 @@ public class MainActivity extends AppCompatActivity {
 
                     switch (codHttpFilter){
                         case 1:{
-                            auxOriginal = myListSegmentation.decodeBase64AndSetImage(responseData);
+                            auxOriginal = myListFigures.decodeBase64AndSetImage(responseData);
                             addFilter(auxOriginal);
                             break;
                         }
                         case 2:{
-                            auxOriginal1 = myListSegmentation.decodeBase64AndSetImage(responseData);
+                            auxOriginal1 = myListFigures.decodeBase64AndSetImage(responseData);
                             addFilter(auxOriginal1);
                             break;
                         }
                         case 3:{
-                            auxOriginal2 = myListSegmentation.decodeBase64AndSetImage(responseData);
+                            auxOriginal2 = myListFigures.decodeBase64AndSetImage(responseData);
                             addFilter(auxOriginal2);
                             break;
                         }
                         case 4:{
-                            auxOriginal3 = myListSegmentation.decodeBase64AndSetImage(responseData);
+                            auxOriginal3 = myListFigures.decodeBase64AndSetImage(responseData);
                             addFilter(auxOriginal3);
                             break;
                         }
                     }
-
-
-
                     dialog.dismiss();
-
                 }
             }
-
         });
-
     }
 
     public void filtersWithProgressBar(){
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
         builder.setView(R.layout.layout_loading);
@@ -1973,16 +1271,19 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode,resultCode,data);
         if(requestCode == 4 && resultCode == RESULT_OK){
             int flag = 0;
-            imageurl = data.getData();
+            //Class Attributes--
+            //variables para camara
+            Uri imageurl = data.getData();
             FileOutputStream outputStream = null;
             String fileName = "photo";
             File file = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
             try{
                 Bitmap bitmap = null;
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
-                    bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(getContentResolver(),imageurl));
+                    assert imageurl != null;
+                    bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(getContentResolver(), imageurl));
                 }else{
-                    bitmap =  MediaStore.Images.Media.getBitmap(getContentResolver(),imageurl);;
+                    bitmap =  MediaStore.Images.Media.getBitmap(getContentResolver(), imageurl);;
                 }
                 File imageFile = File.createTempFile(fileName,".JPEG",file);
                 currentPhotoPath = imageFile.getAbsolutePath();
@@ -1998,8 +1299,6 @@ public class MainActivity extends AppCompatActivity {
                 Mat aux = Imgcodecs.imread(currentPhotoPath);
                 Bitmap imageBitmap = BitmapFactory.decodeFile(currentPhotoPath);
                 myListFigures.loadImage(imageBitmap);
-                myListSegmentation.loadImage(imageBitmap);
-
                 if(aux != null){
                     img = aux;
                     this.myFilters.setImage(imageBitmap);
@@ -2018,56 +1317,53 @@ public class MainActivity extends AppCompatActivity {
         auxOriginal1 = null;
         auxOriginal2 = null;
         auxOriginal3 = null;
-        Bitmap scaleIconsBitmap = scaleDown(original,400,true);
-        //Bitmap scaleIconsBitmap = Bitmap.createScaledBitmap(this.original,(int)(this.original.getWidth()/3),(int)(this.original.getHeight()/3),true);
+        Bitmap scaleIconsBitmap = GroupFilters.scaleDown(original,400,true);
         Mat img_result_aux = new Mat();
         Imgproc.resize(img,img_result_aux,new Size(scaleIconsBitmap.getWidth(),scaleIconsBitmap.getHeight()));
         MyFilters myFilters = new MyFilters(img_result_aux,scaleIconsBitmap);
-        //Icons with filter
-        groupVariantOpenCv.setImageBitmap(makeTransparent(myFilters.filterColor(5),80,"Variant"));
-        groupBordersOpenCv.setImageBitmap(makeTransparent(myFilters.filterCanny(),80,"Borders"));
-        groupCalorOpenCv.setImageBitmap(makeTransparent(myFilters.filterColor(2),80,"Calor"));
-        groupColorsOpenCv.setImageBitmap(makeTransparent(myFilters.filterSummer(),80,"Colors"));
-        openCvHttp.setImageBitmap(makeTransparent(myFilters.filterRGB(),80,"Rx-Server"));
-        openCv.setImageBitmap(makeText(myFilters.filterCanny(),"Canny"));
-        openCv1.setImageBitmap(makeText(myFilters.filerSepia(),"Sepia"));
-        openCv2.setImageBitmap(makeText(myFilters.filterMorph(),"Morph"));
-        openCv3.setImageBitmap(makeText(myFilters.filterRGB(),"Normal"));
-        normalOpencv.setImageBitmap(makeText(myFilters.filterRGB(),"Normal"));
-        normalOpencv1.setImageBitmap(makeText(myFilters.filterRGB(),"Normal"));
-        normalOpencv2.setImageBitmap(makeText(myFilters.filterRGB(),"Normal"));
-        normalOpencv3.setImageBitmap(makeText(myFilters.filterRGB(),"Normal"));
-        openCv4.setImageBitmap(makeText(myFilters.filterColor(6),"Green"));
-        openCv5.setImageBitmap(makeText(myFilters.filterColor(10),"Pink"));
-        openCv6.setImageBitmap(makeText(myFilters.filterReduceColorsGray(5),"Gray"));
-        openCv7.setImageBitmap(makeText(myFilters.filterReduceColors(80,15,10),"Dark"));//arreglar
-        openCv8.setImageBitmap(makeText(myFilters.filterPencil(),"Pencil"));
-        openCv9.setImageBitmap(makeText(myFilters.filterCarton(80,15,10),"Cartoon"));//arreglar
-        openCv10.setImageBitmap(makeText(myFilters.filterColor(0),"Autumn"));
-        openCv11.setImageBitmap(makeText(myFilters.filterColor(1),"Bone"));
-        openCv12.setImageBitmap(makeText(myFilters.filterColor(2),"Jet"));
-        openCv13.setImageBitmap(makeText(myFilters.filterColor(3),"Winter"));
-        openCv14.setImageBitmap(makeText(myFilters.filterColor(4),"Rainbown"));
-        openCv15.setImageBitmap(makeText(myFilters.filterColor(5),"Ocean"));
-        openCv16.setImageBitmap(makeText(myFilters.filterColor(7),"Spring"));
-        openCv17.setImageBitmap(makeText(myFilters.filterColor(8),"Cool"));
-        openCv18.setImageBitmap(makeText(myFilters.filterColor(9),"Hsv"));
-        openCv19.setImageBitmap(makeText(myFilters.filterColor(11),"Hot"));
-        openCv20.setImageBitmap(makeText(myFilters.filterColor(12),"Parula"));
-        openCv21.setImageBitmap(makeText(myFilters.filterColor(13),"Magma"));
-        openCv22.setImageBitmap(makeText(myFilters.filterColor(14),"Inferno"));
-        openCv23.setImageBitmap(makeText(myFilters.filterColor(15),"Plasma"));
-        openCv24.setImageBitmap(makeText(myFilters.filterColor(16),"Viridis"));
-        openCv25.setImageBitmap(makeText(myFilters.filterColor(17),"Cividis"));
-        openCv26.setImageBitmap(makeText(myFilters.filterColor(18),"Twilight"));
-        openCv27.setImageBitmap(makeText(myFilters.filterColor(19),"Shifted"));
-        openCv28.setImageBitmap(makeText(myFilters.filterColor(20),"Turbo"));
-        //enviar();
-        getOpenCvHttp1.setImageBitmap(makeText(makeTransparent(myFilters.filterRGB(),90,""),"Clahe"));
-        getOpenCvHttp2.setImageBitmap(makeText(makeTransparent(myFilters.filterRGB(),90,""),"ClaheGh"));
-        getOpenCvHttp3.setImageBitmap(makeText(makeTransparent(myFilters.filterRGB(),90,""),"GuidedFilter"));
-        getOpenCvHttp4.setImageBitmap(makeText(makeTransparent(myFilters.filterRGB(),90,""),"Wiener"));
-
+        //Icons with filters
+        groupVariantOpenCv.setImageBitmap(GroupFilters.makeTransparent(myFilters.filterColor(5),80,"Variant"));
+        groupBordersOpenCv.setImageBitmap(GroupFilters.makeTransparent(myFilters.filterCanny(),80,"Borders"));
+        groupCalorOpenCv.setImageBitmap(GroupFilters.makeTransparent(myFilters.filterColor(2),80,"Calor"));
+        groupColorsOpenCv.setImageBitmap(GroupFilters.makeTransparent(myFilters.filterSummer(),80,"Colors"));
+        openCvHttp.setImageBitmap(GroupFilters.makeTransparent(myFilters.filterRGB(),80,"Rx-Server"));
+        openCv.setImageBitmap(GroupFilters.makeText(myFilters.filterCanny(),"Canny"));
+        openCv1.setImageBitmap(GroupFilters.makeText(myFilters.filerSepia(),"Sepia"));
+        openCv2.setImageBitmap(GroupFilters.makeText(myFilters.filterMorph(),"Morph"));
+        openCv3.setImageBitmap(GroupFilters.makeText(myFilters.filterRGB(),"Normal"));
+        normalOpencv.setImageBitmap(GroupFilters.makeText(myFilters.filterRGB(),"Normal"));
+        normalOpencv1.setImageBitmap(GroupFilters.makeText(myFilters.filterRGB(),"Normal"));
+        normalOpencv2.setImageBitmap(GroupFilters.makeText(myFilters.filterRGB(),"Normal"));
+        normalOpencv3.setImageBitmap(GroupFilters.makeText(myFilters.filterRGB(),"Normal"));
+        openCv4.setImageBitmap(GroupFilters.makeText(myFilters.filterColor(6),"Green"));
+        openCv5.setImageBitmap(GroupFilters.makeText(myFilters.filterColor(10),"Pink"));
+        openCv6.setImageBitmap(GroupFilters.makeText(myFilters.filterReduceColorsGray(5),"Gray"));
+        openCv7.setImageBitmap(GroupFilters.makeText(myFilters.filterReduceColors(80,15,10),"Dark"));//arreglar
+        openCv8.setImageBitmap(GroupFilters.makeText(myFilters.filterPencil(),"Pencil"));
+        openCv9.setImageBitmap(GroupFilters.makeText(myFilters.filterCarton(80,15,10),"Cartoon"));//arreglar
+        openCv10.setImageBitmap(GroupFilters.makeText(myFilters.filterColor(0),"Autumn"));
+        openCv11.setImageBitmap(GroupFilters.makeText(myFilters.filterColor(1),"Bone"));
+        openCv12.setImageBitmap(GroupFilters.makeText(myFilters.filterColor(2),"Jet"));
+        openCv13.setImageBitmap(GroupFilters.makeText(myFilters.filterColor(3),"Winter"));
+        openCv14.setImageBitmap(GroupFilters.makeText(myFilters.filterColor(4),"Rainbown"));
+        openCv15.setImageBitmap(GroupFilters.makeText(myFilters.filterColor(5),"Ocean"));
+        openCv16.setImageBitmap(GroupFilters.makeText(myFilters.filterColor(7),"Spring"));
+        openCv17.setImageBitmap(GroupFilters.makeText(myFilters.filterColor(8),"Cool"));
+        openCv18.setImageBitmap(GroupFilters.makeText(myFilters.filterColor(9),"Hsv"));
+        openCv19.setImageBitmap(GroupFilters.makeText(myFilters.filterColor(11),"Hot"));
+        openCv20.setImageBitmap(GroupFilters.makeText(myFilters.filterColor(12),"Parula"));
+        openCv21.setImageBitmap(GroupFilters.makeText(myFilters.filterColor(13),"Magma"));
+        openCv22.setImageBitmap(GroupFilters.makeText(myFilters.filterColor(14),"Inferno"));
+        openCv23.setImageBitmap(GroupFilters.makeText(myFilters.filterColor(15),"Plasma"));
+        openCv24.setImageBitmap(GroupFilters.makeText(myFilters.filterColor(16),"Viridis"));
+        openCv25.setImageBitmap(GroupFilters.makeText(myFilters.filterColor(17),"Cividis"));
+        openCv26.setImageBitmap(GroupFilters.makeText(myFilters.filterColor(18),"Twilight"));
+        openCv27.setImageBitmap(GroupFilters.makeText(myFilters.filterColor(19),"Shifted"));
+        openCv28.setImageBitmap(GroupFilters.makeText(myFilters.filterColor(20),"Turbo"));
+        getOpenCvHttp1.setImageBitmap(GroupFilters.makeText(GroupFilters.makeTransparent(myFilters.filterRGB(),90,""),"Clahe"));
+        getOpenCvHttp2.setImageBitmap(GroupFilters.makeText(GroupFilters.makeTransparent(myFilters.filterRGB(),90,""),"ClaheGh"));
+        getOpenCvHttp3.setImageBitmap(GroupFilters.makeText(GroupFilters.makeTransparent(myFilters.filterRGB(),90,""),"GuidedFilter"));
+        getOpenCvHttp4.setImageBitmap(GroupFilters.makeText(GroupFilters.makeTransparent(myFilters.filterRGB(),90,""),"Wiener"));
     }
 
     /**
@@ -2076,14 +1372,11 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void initialProperties(){
         //Initializing properties--
-        preview = findViewById(R.id.preview);
-        galery = findViewById(R.id.galery);
-        openSegments = findViewById(R.id.openSegments);
+        gallery = findViewById(R.id.galery);
         extendsImage = findViewById(R.id.extendsImage);
         backFilters = findViewById(R.id.backFilters);
         iconColors = findViewById(R.id.figuresSet);
         filterImage = findViewById(R.id.filter);
-        saveData = findViewById(R.id.saveData);
         saveFigures = findViewById(R.id.saveFigures);
         creatorCircles = findViewById(R.id.addCircle);
         creatorRectangles = findViewById(R.id.addRectangle);
@@ -2093,9 +1386,6 @@ public class MainActivity extends AppCompatActivity {
         infoFigures = findViewById(R.id.infoFigures);
         deleteFigures = findViewById(R.id.deleteFigures);
         changeColor = findViewById(R.id.changeColor);
-        segmentation = findViewById(R.id.segmentation);
-        eraserSegments = findViewById(R.id.eraserSegments);
-        clearSegments = findViewById(R.id.clearSegments);
         menu_left = findViewById(R.id.contenedor_menu_left);
         menu_right = findViewById(R.id.contenedor_menu_right);
         menu_left.setBackgroundColor(Color.parseColor("#80000000"));
@@ -2114,40 +1404,6 @@ public class MainActivity extends AppCompatActivity {
         scrollRight2 = findViewById(R.id.scrollRight_2);
         //Back and Checks
         backMenuRight = findViewById(R.id.back_menu_right_1);
-        //Control
-        controlMenu = findViewById(R.id.controlOption);
-        control = findViewById(R.id.control);
-        touchControl = findViewById(R.id.move);
-        sortDown = findViewById(R.id.boot);
-        sortLeft = findViewById(R.id.izquierda);
-        sortRight = findViewById(R.id.derecha);
-        sortUp = findViewById(R.id.upp);
-        allSortDown = findViewById(R.id.downAll);
-        allSortLeft = findViewById(R.id.izquierdaAll);
-        allSortRight = findViewById(R.id.derechaAll);
-        allSortUp = findViewById(R.id.uppAll);
-        controlZ = findViewById(R.id.controlZ);
-        controlY = findViewById(R.id.controlY);
-        closeControl = findViewById(R.id.closeControl1);
-        aristas = findViewById(R.id.arista);
-        ControlMenu controlMenu = new ControlMenu(control,touchControl,sortLeft,sortRight,sortUp,sortDown);
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        control.setTranslationX(metrics.widthPixels/2-((int)(getResources().getDimension(R.dimen.initial_position_control)))); //convertir a DP
-        control.setTranslationY(metrics.heightPixels/2-((int)(getResources().getDimension(R.dimen.initial_position_control)))); //convertir a DP
-        //Segmentation
-        addPointSegment = findViewById(R.id.addPointSegment);
-        pencilSegment =  findViewById(R.id.pencilSegment);
-        cardView = findViewById(R.id.zoomImage_1); //CARD
-        cardView.setVisibility(View.GONE);
-        zoomImageLayout = findViewById(R.id.zoomLayoutImageRx_1); //Layout Zoom Image Ray-X
-        zoomImageLayout.setVisibility(View.INVISIBLE);
-        layoutImageRx1 = findViewById(R.id.layoutImageRx_1); //Layout Image Ray-X
-        int d = (int) getResources().getDimension(R.dimen.traslate_zoom);
-        myListSegmentation = new ListSegmentation(this, zoomImageLayout, cardView,layoutImageRx1,metrics,d);
-        layoutImageRx1.addView(myListSegmentation);
-        deleteSegments = findViewById(R.id.deleteSegments);
-        changeColorSegments = findViewById(R.id.changeColorSegments);
         //Filters
         openCv = findViewById(R.id.openCV);
         openCv1 = findViewById(R.id.openCV1);
@@ -2195,44 +1451,17 @@ public class MainActivity extends AppCompatActivity {
         //IMAGE
         test1 = findViewById(R.id.test);
         img = null;
-        nameImage = -1;
         flagAnimation=true;
         flagAnimationColors=true;
         flagSegmentation = false;
-        flagEraserSegmentation = false;
-        flagPencilSegmentation = false;
-        flagPreviewSegmentation = false;
         flagVariant = false;
         flagHttp = false;
         flagBorders = false;
         flagCalor = false;
         flagColors = false;
-        flagControl = false;
-        flagAristas = false;
         initialImage(Resource.uriImageResource);
-        /*try{
-            nameImage = R.drawable.rx_image_10;
-            //nameImage = R.drawable.image_test;
-            Uri uriImage = Uri.parse("android.resource://"+getPackageName()+"/"+nameImage);
-            System.out.println("RECURSOS ******************");
-            System.out.println(uriImage.toString());
-            img = Utils.loadResource(getApplicationContext(),nameImage);
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inScaled = false;
-            this.original = BitmapFactory.decodeResource(getResources(), nameImage, options);
-        }catch (IOException e) {
-            System.out.println("Insert image");
-            e.printStackTrace();
-        }
-        myListFigures.loadImage(this.original);
-        myListSegmentation.loadImage(this.original);
-        myFilters = new MyFilters(this.img,this.original);
-        //Resize Image Icon Filter
-        //int d1 = 70;
-        //Bitmap.createScaledBitmap(realImage,width,height,filter)
-        updateFilters(this.original,img);*/
-        //Icons Color
-        listColors = new ArrayList<>();
+        //Colors
+        ArrayList<ImageView> listColors = new ArrayList<>();
         color1 = findViewById(R.id.color1); listColors.add(color1);
         color2 = findViewById(R.id.color2); listColors.add(color2);
         color3 = findViewById(R.id.color3); listColors.add(color3);
@@ -2259,15 +1488,9 @@ public class MainActivity extends AppCompatActivity {
         color24 = findViewById(R.id.color24); listColors.add(color24);
         color25 = findViewById(R.id.color25); listColors.add(color25);
         //Add Filter Color
-        for(int i = 0;i < listColors.size();i++){
+        for(int i = 0; i < listColors.size(); i++){
             if(Util.getCollections()[i]!=null)
                 listColors.get(i).setColorFilter(Color.rgb(Util.getCollections()[i][0],Util.getCollections()[i][1],Util.getCollections()[i][2]));
-        }
-        scaleSort = 3;
-        try {
-            dataFiles = new Files("miarchivo","/carpeta/");
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         //--End Initializing
     }//End Method
@@ -2278,7 +1501,6 @@ public class MainActivity extends AppCompatActivity {
             Mat aux = Imgcodecs.imread(uri);
             Bitmap imageBitmap = BitmapFactory.decodeFile(uri);
             myListFigures.loadImage(imageBitmap);
-            myListSegmentation.loadImage(imageBitmap);
             if(aux != null){
                 img = aux;
                 this.original = imageBitmap;
@@ -2287,15 +1509,15 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("error");
             }
             myListFigures.loadImage(this.original);
-            myListSegmentation.loadImage(this.original);
             myFilters = new MyFilters(this.img,this.original);
-            //Resize Image Icon Filter
-            //int d1 = 70;
-            //Bitmap.createScaledBitmap(realImage,width,height,filter)
             updateFilters(this.original,img);
-        }else{
-
         }
+    }
+
+    public void showToast(String message){
+        Toast toast;
+        toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
+        toast.show();
     }
 
 }//End Class

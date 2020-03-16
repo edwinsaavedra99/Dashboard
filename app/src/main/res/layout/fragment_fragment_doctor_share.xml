@@ -1,0 +1,15 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    tools:context="com.example.dashboard.Activity.Doctor.Fragments.FragmentDoctorShare">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:textSize="50sp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="fragmentDoctorshare" />
+
+</FrameLayout>
