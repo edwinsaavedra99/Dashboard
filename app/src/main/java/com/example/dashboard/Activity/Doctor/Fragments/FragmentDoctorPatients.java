@@ -38,7 +38,7 @@ public class FragmentDoctorPatients extends Fragment {
     private SearchView searchView;
     private ImageView addPatient;
     private Button buttonTest;
-
+    private ImageView imageView;
 
     @Nullable
     @Override
@@ -49,7 +49,7 @@ public class FragmentDoctorPatients extends Fragment {
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_fragment_doctor, container, false);
 
         titlePatient = viewGroup.findViewById(R.id.titlePatient);
-        searchView = viewGroup.findViewById(R.id.searchPatient);
+        searchView = getActivity().findViewById(R.id.searchPatient);
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

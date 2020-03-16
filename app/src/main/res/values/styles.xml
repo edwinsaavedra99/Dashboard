@@ -2,13 +2,10 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/coloApp</item>
-        <item name="colorPrimaryDark">@color/coloApp</item>
-        <item name="colorAccent">@color/coloApp</item>
+        <item name="colorPrimary">#80000000</item>         <!-- Color de los botones, desplaze, en materail color de bordes de componentes y letras de botonrs -->
+        <item name="colorPrimaryDark">#E0000000</item>     <!-- Color de la barra de herramientas. -->
+        <item name="colorAccent">#80ffffff</item>                <!-- Color del Cursor. -->
         <item name="buttonStyle">@color/colorPrimary</item>
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowNoTitle">true</item>
 
     </style>
 
@@ -21,6 +18,7 @@
         <item name="android:textColorPrimary">#80ffffff</item>
         <item name="android:textColorHint">#ffffff</item>
         <item name="android:tint">#80000000</item>
+        <item name="android:textColorHighlight">#ffffff</item>
     </style>
 
     <style name="MyTheme" parent="AppTheme">

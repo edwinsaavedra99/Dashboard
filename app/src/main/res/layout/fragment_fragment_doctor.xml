@@ -2,32 +2,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.example.dashboard.Activity.Doctor.Fragments.FragmentDoctorPatients">
 
-    <RelativeLayout
-        android:layout_margin="15dp"
-        android:id="@+id/searchPatientLinear"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <ImageView
-            android:layout_alignParentRight="true"
-            android:id="@+id/addPatient"
-            android:layout_margin="5dp"
-            android:src="@drawable/ic_add_circle_outline_black_24dp"
-            android:layout_width="35dp"
-            android:layout_height="35dp"/>
-        <SearchView
-            android:tooltipText="SEARCH"
-            android:background="#40ffffff"
-            android:id="@+id/searchPatient"
-            android:theme="@style/AppSearchView"
-            android:layout_width="match_parent"
-            android:layout_marginRight="50dp"
-            android:layout_height="40dp"/>
+<RelativeLayout
+    android:gravity="center"
+    android:background="#40000000"
+    android:id="@id/searchPatientLinear"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    </RelativeLayout>
+
+</RelativeLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recicler_patient"
