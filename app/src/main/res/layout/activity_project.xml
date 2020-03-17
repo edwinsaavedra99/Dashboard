@@ -2,12 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/gestionar_seekbar"
+    android:background="#D0000000"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.dashboard.Activity.ProjectActivity">
     <LinearLayout
-        android:background="@drawable/fondo_white"
+        android:background="#40000000"
         android:gravity="left"
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
@@ -21,7 +21,7 @@
             android:id="@+id/testButton"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/back_24px"/>
+            android:src="@drawable/ic_arrow_back_black_24dp"/>
 
         <TextView
             android:layout_marginLeft="15dp"
@@ -46,22 +46,26 @@
         android:layout_below="@id/menuProject"
         android:layout_height="match_parent" />
 
-    <LinearLayout
-        android:background="@drawable/fondo_white"
-        android:gravity="center"
-        android:padding="10dp"
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_margin="20dp"
+        app:cardMaxElevation="5dp"
+        app:cardBackgroundColor="#D0000000"
+        app:cardPreventCornerOverlap="true"
+        app:cardCornerRadius="39dp"
         android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/addCardView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-        <Button
+        <ImageView
             android:id="@+id/addProject"
-            android:layout_marginRight="40dp"
-            android:layout_marginLeft="40dp"
-            android:theme="@style/Theme.AppCompat"
-            android:text="ADD NEW PROJECT"
-            android:layout_width="match_parent"
-            android:layout_height="45dp">
-        </Button>
-    </LinearLayout>
+            android:src="@drawable/ic_add_circle_outline_black_24dp"
+            android:layout_width="75dp"
+            android:layout_height="75dp">
+
+        </ImageView>
+    </androidx.cardview.widget.CardView>
 
 </RelativeLayout>

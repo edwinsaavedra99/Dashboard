@@ -116,6 +116,10 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientV
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         System.out.println("SELECT ITEM: "+ item.getTitle()+"position: "+i);
+                        if(item.getTitle().equals("Open")){
+                            Intent intent = new Intent(context, ProjectActivity.class);
+                            context.startActivity(intent);
+                        }
                         return true;
                     }
                 });

@@ -2,6 +2,8 @@ package com.example.dashboard.Models;
 
 public class Project {
     private String nameProject;
+    private String description;
+
 
     public Project(String nameProject) {
         this.nameProject = nameProject;
@@ -13,5 +15,13 @@ public class Project {
 
     public void setNameProject(String nameProject) {
         this.nameProject = nameProject;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

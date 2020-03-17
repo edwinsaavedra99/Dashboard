@@ -1,6 +1,7 @@
 package com.example.dashboard.Adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +24,15 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
     private Context context;
     public static class ProjectViewHolder extends RecyclerView.ViewHolder{
         public TextView name;
+        public ImageView folderImage;
         public LinearLayout boxProject;
         public ProjectViewHolder(View v){
             super(v);
             name = (TextView) v.findViewById(R.id.nameProyect);
             boxProject = (LinearLayout) v.findViewById(R.id.boxProject);
+            folderImage = (ImageView) v.findViewById(R.id.folderProject);
+            folderImage.setColorFilter(Color.LTGRAY);
+
         }
     }
     public ProjectAdapter(List<Project> items,Context context){

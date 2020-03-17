@@ -55,7 +55,7 @@ public class ProjectActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ProjectAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
-    private Button addProject;
+    private ImageView addProject;
 
     protected static final int PICK_IMAGE =0;
     protected static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -80,10 +80,16 @@ public class ProjectActivity extends AppCompatActivity {
         addProject = findViewById(R.id.addProject);
         /*DATA BASE*/
         list = new ArrayList();
-        initialComponentsActivity();
+        //initialComponentsActivity();
+        list.add(new Project("Project 01 sadasdasdasdasdasd"));
+        list.add(new Project("Project 02"));
+        list.add(new Project("Project 03"));
+        list.add(new Project("Project 04"));
+        list.add(new Project("Project 05"));
 
-        //backPatient.setColorFilter(Color.parseColor("#00BB2D"));
-        addProject.setBackgroundColor(Color.parseColor("#80000000"));
+
+
+        addProject.setColorFilter(Color.WHITE);
         recyclerView = (RecyclerView) findViewById(R.id.recicler_project);
         recyclerView.setHasFixedSize(true);
         layoutManager = new GridLayoutManager(getApplicationContext(),2);

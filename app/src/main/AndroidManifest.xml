@@ -15,6 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Activity.Medicine.LandMarkModelActivity"></activity>
+        <activity android:name=".Activity.Medicine.MedicineActivity" />
         <activity android:name=".Activity.Doctor.FiguresModelActivity" />
         <activity android:name=".Activity.FileProjectActivity" />
         <activity android:name=".Activity.Doctor.DoctorActivity" />
