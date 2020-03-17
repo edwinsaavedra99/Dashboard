@@ -3,14 +3,19 @@ package com.example.dashboard.Models;
 public class Patient {
 
     private String name;
+    private String residencia;
     private int age;
     private String description;
-    private Long cod;
+    private int cod;
+    private boolean sex;
 
-    public Patient(String name, int age, String description) {
+    public Patient(String name, String residencia, int age, String description, int cod, boolean sex) {
         this.name = name;
+        this.residencia = residencia;
         this.age = age;
         this.description = description;
+        this.cod = cod;
+        this.sex = sex;
     }
 
     public String getName() {
@@ -19,6 +24,14 @@ public class Patient {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getResidencia() {
+        return residencia;
+    }
+
+    public void setResidencia(String residencia) {
+        this.residencia = residencia;
     }
 
     public int getAge() {
@@ -37,11 +50,19 @@ public class Patient {
         this.description = description;
     }
 
-    public Long getCod() {
+    public int getCod() {
         return cod;
     }
 
-    public void setCod(Long cod) {
+    public void setCod(int cod) {
         this.cod = cod;
+    }
+
+    public boolean isSex() {
+        return sex;
+    }
+
+    public void setSex(boolean sex) {
+        this.sex = sex;
     }
 }

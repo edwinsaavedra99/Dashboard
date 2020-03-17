@@ -77,7 +77,7 @@ public class Login extends AppCompatActivity {
         if(account == null){
             Toast.makeText(this, "no se encontraron usuarios anteriores", Toast.LENGTH_SHORT).show();
         }else {
-            Intent intent = new Intent(Login.this, PatientsActivity.class);
+            Intent intent = new Intent(Login.this, HomeActivity.class);
             startActivity(intent);
             // onExploredClicked();
         }

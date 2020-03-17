@@ -67,14 +67,9 @@ public class FragmentDoctorPatients extends Fragment {
         addPatient = viewGroup.findViewById(R.id.addPatient);
         /*DATA BASE*/
         List list = new ArrayList();
-        list.add(new Patient("Edwin Enrique Saavedra Parisaca",21,"RADIOGRAFIA"));
-        list.add(new Patient("Luis Lorenzo Quilla",21,"RADIOGRAFIA"));
-        list.add(new Patient("Wilmer Pachecho Jimenez",26,"RADIOGRAFIA"));
-        list.add(new Patient("Edwin Enrique Saavedra Parisaca",21,"RADIOGRAFIA"));
-        list.add(new Patient("Luis Lorenzo Quilla",21,"RADIOGRAFIA"));
-        list.add(new Patient("Wilmer Pachecho Jimenez",26,"RADIOGRAFIA"));
-        list.add(new Patient("Edwin Enrique Saavedra Parisaca",21,"RADIOGRAFIA"));
-        list.add(new Patient("Luis Lorenzo Quilla",21,"RADIOGRAFIA"));
+        list.add(new Patient("Edwin Enrique Saavedra Parisaca","Arequipa",21,"FRACTURA DE PIERNA",12353,true));
+        list.add(new Patient("Edwin Enrique Saavedra Parisaca","Arequipa",21,"FRACTURA DE PIERNA",12353,true));
+        list.add(new Patient("Edwin Enrique Saavedra Parisaca","Arequipa",21,"FRACTURA DE PIERNA",12353,true));
         //backPatient.setColorFilter(Color.parseColor("#00BB2D"));
         //addPatient.setBackgroundColor(Color.parseColor("#80000000"));
         recyclerView = (RecyclerView) viewGroup.findViewById(R.id.recicler_patient);
