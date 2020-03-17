@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.example.dashboard.Activity.Doctor.DoctorActivity;
+import com.example.dashboard.Activity.Study.StudyActivity;
 import com.example.dashboard.R;
 import com.example.dashboard.Resources.Resource;
 /**
@@ -36,7 +37,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Resource.role = STUDENT_ID;
-                Intent intent = new Intent(getApplicationContext(), StudentActivity.class);
+                Intent intent = new Intent(getApplicationContext(), StudyActivity.class);
                 getApplicationContext().startActivity(intent);
             }
         });

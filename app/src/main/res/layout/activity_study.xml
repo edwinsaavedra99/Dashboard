@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#D0000000"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.dashboard.Activity.Study.StudyActivity">
+
+
+
+    <RelativeLayout
+        android:id="@+id/navigationTopStudy"
+        android:gravity="center"
+        android:background="#40000000"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <androidx.cardview.widget.CardView
+            android:layout_margin="10dp"
+            app:cardMaxElevation="5dp"
+            app:cardCornerRadius="8dp"
+            app:cardBackgroundColor="#D0000000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <SearchView
+                android:queryHint="Search Patient"
+                android:id="@+id/searchProjectStudy"
+                android:theme="@style/AppSearchView"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"/>
+        </androidx.cardview.widget.CardView>
+        <ImageView
+            android:visibility="gone"
+            android:layout_margin="10dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_arrow_back_black_24dp"
+            android:layout_width="40dp"
+            android:layout_height="30dp">
+
+        </ImageView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardUsuarioStudy"
+            android:layout_alignParentRight="true"
+            android:layout_margin="10dp"
+            app:cardMaxElevation="5dp"
+            android:layout_centerVertical="true"
+            app:cardCornerRadius="20dp"
+            app:cardBackgroundColor="#D0000000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/usuarioAppStudy"
+                android:src="@drawable/ic_account_circle_black_24dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp">
+            </ImageView>
+        </androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/textAppStudy"
+            android:textSize="15sp"
+            android:textColor="@android:color/white"
+            android:text="AFD PROJECT'S"
+            android:textStyle="normal"
+            android:typeface="monospace"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
+
+
+    <androidx.viewpager.widget.ViewPager
+        android:layout_below="@id/navigationTopStudy"
+        android:layout_above="@id/navigationBottomStudy"
+        android:id="@+id/studyPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </androidx.viewpager.widget.ViewPager>
+
+
+
+
+    <LinearLayout
+        android:background="#40000000"
+        android:gravity="center"
+        android:id="@+id/navigationBottomStudy"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:padding="10dp"
+            android:gravity="center"
+            android:layout_marginRight="20dp"
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/fragment1Study"
+            android:onClick="changeFragment"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/imageGroupFragmentStudy"
+                android:src="@drawable/ic_folder_1_black_24dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp">
+
+            </ImageView>
+            <TextView
+                android:id="@+id/textGroupFragmentStudy"
+                android:textSize="9sp"
+                android:textColor="@android:color/white"
+                android:text="Projects"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </TextView>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginLeft="20dp"
+            android:padding="10dp"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/fragment2Study"
+            android:onClick="changeFragment"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/imageSharedFragmentStudy"
+                android:src="@drawable/ic_folder_shared_black_24dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp">
+
+            </ImageView>
+            <TextView
+                android:id="@+id/textSharedFragmentStudy"
+                android:textSize="10sp"
+                android:textColor="@android:color/white"
+                android:text="Shared"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        app:cardBackgroundColor="@android:color/black"
+        android:layout_margin="40dp"
+        app:cardMaxElevation="10dp"
+        app:cardPreventCornerOverlap="true"
+        app:cardCornerRadius="30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:id="@+id/addCardViewStudy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/addProjectStudy"
+            android:padding="10dp"
+            android:src="@drawable/ic_add_black_24dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp">
+
+        </ImageView>
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,10 +19,13 @@ import com.example.dashboard.Figures.Line;
 import com.example.dashboard.Models.Patient;
 import com.example.dashboard.Models.Project;
 import com.example.dashboard.R;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectViewHolder> {
+public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectViewHolder> implements Filterable {
     private List<Project> items;
+    private List<Project> itemsFull;
     private Context context;
     public static class ProjectViewHolder extends RecyclerView.ViewHolder{
         public TextView name;
@@ -38,6 +43,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
     public ProjectAdapter(List<Project> items,Context context){
         this.context = context;
         this.items = items;
+        itemsFull = new ArrayList<>(items);
     }
 
     @Override
@@ -63,6 +69,35 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
 //        patientViewHolder.description.setText(items.get(i).getDescription());
     }
 
+    @Override
+    public Filter getFilter(){
+        return itemsFilter;
+    }
+    private Filter itemsFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<Project> filterProject = new ArrayList<>();
+            if(constraint == null || constraint.length() == 0){
+                filterProject.addAll(itemsFull);
+            }else{
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                for ( Project project : itemsFull){
+                    if(project.getNameProject().toLowerCase().contains(filterPattern)){
+                        filterProject.add(project);
+                    }
+                }
+            }
+            FilterResults results = new FilterResults();
+            results.values = filterProject;
+            return results;
+        }
 
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            items.clear();
+            items.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
 
 }
