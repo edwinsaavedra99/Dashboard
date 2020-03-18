@@ -32,6 +32,9 @@ public class DoctorActivity extends AppCompatActivity {
     private CardView cardViewUsuario;
     private TextView textViewApp;
     private SearchView searchView;
+    private SearchView searchViewShare;
+    private CardView cardOne;
+    private CardView cardTwo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +42,8 @@ public class DoctorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_doctor);
         getSupportActionBar().hide();
         cardView = (CardView) findViewById(R.id.addCardView);
+        cardOne = (CardView) findViewById(R.id.cardOneSearch);
+        cardTwo = (CardView) findViewById(R.id.cardTwoSearch);
         imagePatients = (ImageView) findViewById(R.id.imageGroupFragmentDoctor);
         tetPatients = (TextView) findViewById(R.id.textGroupFragmentDoctor);
         imageShared = (ImageView) findViewById(R.id.imageSharedFragmentDoctor);
@@ -46,6 +51,24 @@ public class DoctorActivity extends AppCompatActivity {
         cardViewUsuario = (CardView) findViewById(R.id.cardUsuario);
         textViewApp = (TextView) findViewById(R.id.textApp);
         searchView = (SearchView) findViewById(R.id.searchPatient);
+        searchViewShare = (SearchView) findViewById(R.id.searchProjectShare);
+
+        searchViewShare.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cardViewUsuario.setVisibility(View.GONE);
+                textViewApp.setVisibility(View.GONE);
+            }
+        });
+        searchViewShare .setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                cardViewUsuario.setVisibility(View.VISIBLE);
+                textViewApp.setVisibility(View.VISIBLE);
+                return true;
+            }
+        });
+
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,12 +109,16 @@ public class DoctorActivity extends AppCompatActivity {
                     textShared.setTextColor(Color.GRAY);
                     searchView.setVisibility(View.VISIBLE);
                     cardView.setVisibility(View.VISIBLE);
+                    cardOne.setVisibility(View.VISIBLE);
+                    cardTwo.setVisibility(View.GONE);
                 }else if( position == 1){
                     imagePatients.setColorFilter(Color.GRAY);
                     tetPatients.setTextColor(Color.GRAY);
                     imageShared.setColorFilter(Color.WHITE);
                     textShared.setTextColor(Color.WHITE);
                     cardView.setVisibility(View.GONE);
+                    cardOne.setVisibility(View.GONE);
+                    cardTwo.setVisibility(View.VISIBLE);
                     searchView.setVisibility(View.GONE);
                 }
             }

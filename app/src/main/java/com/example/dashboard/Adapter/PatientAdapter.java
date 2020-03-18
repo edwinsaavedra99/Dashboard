@@ -36,9 +36,8 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientV
 
     private List<Patient> items;
     private List<Patient> itemsFull;
-
     private Context context;
-    private static int currentPosition = 0;
+
     public static class PatientViewHolder extends RecyclerView.ViewHolder{
         public TextView name;
         public TextView age;
@@ -46,12 +45,8 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientV
         public TextView sex;
         public TextView home;
         public ImageView menuItem;
-        public RelativeLayout relativeLayout;
-        public ImageView downPatientShow;
         public RelativeLayout cardLayout;
         public LinearLayout boxPatient;
-        /*public Button buttonOpen;
-        public Button buttonEdit;*/
 
         public PatientViewHolder(View v){
             super(v);
@@ -61,11 +56,8 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientV
             sex = (TextView) v.findViewById(R.id.sexPatient);
             home = (TextView) v.findViewById(R.id.homePatient);
             menuItem = (ImageView)v.findViewById(R.id.menuItemPatient);
-            relativeLayout = (RelativeLayout) v.findViewById(R.id.relativeLayoutPatient);
             cardLayout = (RelativeLayout) v.findViewById(R.id.cardLayout);
             boxPatient = (LinearLayout) v.findViewById(R.id.boxPatient);
-            /*buttonOpen = (Button) v.findViewById(R.id.buttonOpen);
-            buttonEdit = (Button) v.findViewById(R.id.buttonEdit);*/
         }
     }
     public PatientAdapter(List<Patient> items,Context context){
@@ -95,18 +87,6 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientV
             patientViewHolder.sex.setText("Sexo: Masculino ,");
         else
             patientViewHolder.sex.setText("Sexo: Femenino ,");
-        if(currentPosition == i){
-            Animation slideDown = AnimationUtils.loadAnimation(context,R.anim.slide_down);
-            patientViewHolder.relativeLayout.setVisibility(View.VISIBLE);
-            patientViewHolder.relativeLayout.startAnimation(slideDown);
-        }
-        patientViewHolder.boxPatient.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentPosition = i;
-                notifyDataSetChanged();
-            }
-        });
         patientViewHolder.menuItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,13 +106,6 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientV
                 popupMenu.show();
             }
         });
-        /*patientViewHolder.buttonOpen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, ProjectActivity.class);
-                context.startActivity(intent);
-            }
-        });*/
     }
     @Override
     public Filter getFilter(){

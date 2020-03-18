@@ -6,6 +6,7 @@
     tools:context="com.example.dashboard.Activity.Doctor.Fragments.FragmentDoctorShare">
 
     <LinearLayout
+        android:id="@+id/noDataShareDoctor"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:gravity="center"
@@ -23,6 +24,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"></TextView>
     </LinearLayout>
-
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recicler_project_file"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </RelativeLayout>

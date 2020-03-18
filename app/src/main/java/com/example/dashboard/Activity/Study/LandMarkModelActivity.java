@@ -479,16 +479,9 @@ public class LandMarkModelActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Animation.animationScale(saveData,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
                 Toast toast;
-                //myListSegmentation ... ESTAS AQUI !!
-                if(1==1)
-                    toast = Toast.makeText(getApplicationContext(),"Data Save Successfully",Toast.LENGTH_SHORT);
-                else
-                    toast = Toast.makeText(getApplicationContext(),"Data not Save",Toast.LENGTH_SHORT);
+                toast = Toast.makeText(getApplicationContext(),"Data Save Successfully",Toast.LENGTH_SHORT);
                 toast.show();
-                //System.out.println(myListSegmentation.toString());
                 saveLandMarks();
-                System.out.println("DATA ENVIADA");
-                //myListSegmentation.toString();
             }
         });
         preview.setOnClickListener(new View.OnClickListener() {
@@ -1853,27 +1846,6 @@ public class LandMarkModelActivity extends AppCompatActivity {
         flagControl = false;
         flagAristas = false;
         initialImage(Resource.uriImageResource);
-        /*try{
-            nameImage = R.drawable.rx_image_10;
-            //nameImage = R.drawable.image_test;
-            Uri uriImage = Uri.parse("android.resource://"+getPackageName()+"/"+nameImage);
-            System.out.println("RECURSOS ******************");
-            System.out.println(uriImage.toString());
-            img = Utils.loadResource(getApplicationContext(),nameImage);
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inScaled = false;
-            this.original = BitmapFactory.decodeResource(getResources(), nameImage, options);
-        }catch (IOException e) {
-            System.out.println("Insert image");
-            e.printStackTrace();
-        }
-        myListFigures.loadImage(this.original);
-        myListSegmentation.loadImage(this.original);
-        myFilters = new MyFilters(this.img,this.original);
-        //Resize Image Icon Filter
-        //int d1 = 70;
-        //Bitmap.createScaledBitmap(realImage,width,height,filter)
-        updateFilters(this.original,img);*/
         //Icons Color
         listColors = new ArrayList<>();
         color1 = findViewById(R.id.color1); listColors.add(color1);
@@ -1925,9 +1897,6 @@ public class LandMarkModelActivity extends AppCompatActivity {
             }
             myListSegmentation.loadImage(this.original);
             myFilters = new MyFilters(this.img,this.original);
-            //Resize Image Icon Filter
-            //int d1 = 70;
-            //Bitmap.createScaledBitmap(realImage,width,height,filter)
             updateFilters(this.original,img);
         }else{
 

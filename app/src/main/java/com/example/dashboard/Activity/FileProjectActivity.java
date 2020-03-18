@@ -42,10 +42,10 @@ public class FileProjectActivity extends AppCompatActivity {
         addFileProject = findViewById(R.id.addFileProject);
         /*DATA BASE*/
         List list = new ArrayList();
-        list.add(new FileProject("CARGA IMAGEN IN STRIN64","NOMBRE DE FILE PROJECT","2020-03-10","ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
-        list.add(new FileProject("CARGA IMAGEN IN STRIN64","NOMBRE DE FILE PROJECT","2020-03-10","ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
-        list.add(new FileProject("CARGA IMAGEN IN STRIN64","NOMBRE DE FILE PROJECT","2020-03-10","ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
-        list.add(new FileProject("CARGA IMAGEN IN STRIN64","NOMBRE DE FILE PROJECT","2020-03-10","ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
+        list.add(new FileProject("CARGA IMAGEN IN STRIN64","NOMBRE DE FILE PROJECT","ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
+        list.add(new FileProject("CARGA IMAGEN IN STRIN64","NOMBRE DE FILE PROJECT","ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
+        list.add(new FileProject("CARGA IMAGEN IN STRIN64","NOMBRE DE FILE PROJECT","ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
+        list.add(new FileProject("CARGA IMAGEN IN STRIN64","NOMBRE DE FILE PROJECT","ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
         addFileProject.setBackgroundColor(Color.parseColor("#80000000"));
         recyclerViewFileProject = (RecyclerView) findViewById(R.id.recicler_File);
         recyclerViewFileProject.setHasFixedSize(true);

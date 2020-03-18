@@ -1,16 +1,37 @@
 package com.example.dashboard.Models;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class FileProject {
     private String imageFileProject;
     private String nameFileProject;
     private String DateFileProject;
+    private String timeFileProject;
     private String descriptionFileProject;
 
-    public FileProject(String imageFileProject, String nameFileProject, String dateFileProject, String descriptionFileProject) {
+    public FileProject(String imageFileProject, String nameFileProject, String descriptionFileProject) {
         this.imageFileProject = imageFileProject;
         this.nameFileProject = nameFileProject;
-        DateFileProject = dateFileProject;
         this.descriptionFileProject = descriptionFileProject;
+
+        Date date = new Date();
+        DateFormat hourFormat = new SimpleDateFormat("HH:mm:ss");
+        this.timeFileProject = hourFormat.format(date);
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        this.DateFileProject = dateFormat.format(date);
+        DateFormat hourdateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+        String test = hourdateFormat.format(date);
+        System.out.println(test);
+    }
+
+    public String getTimeFileProject() {
+        return timeFileProject;
+    }
+
+    public void setTimeFileProject(String timeFileProject) {
+        this.timeFileProject = timeFileProject;
     }
 
     public String getDateFileProject() {
@@ -44,4 +65,6 @@ public class FileProject {
     public void setDescriptionFileProject(String descriptionFileProject) {
         this.descriptionFileProject = descriptionFileProject;
     }
+
+
 }

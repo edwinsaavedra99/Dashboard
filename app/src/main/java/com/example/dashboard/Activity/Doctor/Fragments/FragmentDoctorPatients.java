@@ -32,13 +32,7 @@ public class FragmentDoctorPatients extends Fragment {
     private RecyclerView recyclerView;
     private PatientAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
-    private ImageView backPatient;
-    private TextView titlePatient;
-    private TextView searchPatient;
     private SearchView searchView;
-    private ImageView addPatient;
-    private Button buttonTest;
-    private ImageView imageView;
 
     @Nullable
     @Override
@@ -47,8 +41,6 @@ public class FragmentDoctorPatients extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_fragment_doctor, container, false);
-
-        titlePatient = viewGroup.findViewById(R.id.titlePatient);
         searchView = getActivity().findViewById(R.id.searchPatient);
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -64,7 +56,6 @@ public class FragmentDoctorPatients extends Fragment {
             }
         });
 
-        addPatient = viewGroup.findViewById(R.id.addPatient);
         /*DATA BASE*/
         List list = new ArrayList();
         list.add(new Patient("Edwin Enrique Saavedra Parisaca","Arequipa",21,"FRACTURA DE PIERNA",12353,true));

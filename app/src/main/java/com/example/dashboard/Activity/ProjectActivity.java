@@ -81,7 +81,7 @@ public class ProjectActivity extends AppCompatActivity {
         /*DATA BASE*/
         list = new ArrayList();
         //initialComponentsActivity();
-        list.add(new Project("Project 01 sadasdasdasdasdasd"));
+        list.add(new Project("Project 01"));
         list.add(new Project("Project 02"));
         list.add(new Project("Project 03"));
         list.add(new Project("Project 04"));
