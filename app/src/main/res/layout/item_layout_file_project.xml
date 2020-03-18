@@ -15,7 +15,7 @@
         android:layout_height="wrap_content">
         <ImageView
             android:layout_centerVertical="true"
-            android:src="@drawable/rx_image_femur"
+            android:src="@drawable/rx_image_1"
             android:id="@+id/imageFileProject"
             android:layout_marginTop="5dp"
             android:layout_marginLeft="20dp"

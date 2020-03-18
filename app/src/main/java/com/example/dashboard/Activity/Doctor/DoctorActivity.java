@@ -35,7 +35,8 @@ public class DoctorActivity extends AppCompatActivity {
     private SearchView searchViewShare;
     private CardView cardOne;
     private CardView cardTwo;
-
+    private boolean flagSearchOpen1;
+    private boolean flagSearchOpen2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,12 +53,14 @@ public class DoctorActivity extends AppCompatActivity {
         textViewApp = (TextView) findViewById(R.id.textApp);
         searchView = (SearchView) findViewById(R.id.searchPatient);
         searchViewShare = (SearchView) findViewById(R.id.searchProjectShare);
-
+        flagSearchOpen1 = false;
+        flagSearchOpen2 = false;
         searchViewShare.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cardViewUsuario.setVisibility(View.GONE);
                 textViewApp.setVisibility(View.GONE);
+                flagSearchOpen1 = true;
             }
         });
         searchViewShare .setOnCloseListener(new SearchView.OnCloseListener() {
@@ -65,7 +68,8 @@ public class DoctorActivity extends AppCompatActivity {
             public boolean onClose() {
                 cardViewUsuario.setVisibility(View.VISIBLE);
                 textViewApp.setVisibility(View.VISIBLE);
-                return true;
+                flagSearchOpen1 = false;
+                return false;
             }
         });
 
@@ -74,6 +78,7 @@ public class DoctorActivity extends AppCompatActivity {
             public void onClick(View v) {
                 cardViewUsuario.setVisibility(View.GONE);
                 textViewApp.setVisibility(View.GONE);
+                flagSearchOpen2 = true;
             }
         });
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
@@ -81,6 +86,7 @@ public class DoctorActivity extends AppCompatActivity {
             public boolean onClose() {
                 cardViewUsuario.setVisibility(View.VISIBLE);
                 textViewApp.setVisibility(View.VISIBLE);
+                flagSearchOpen2 = false;
                 return false;
             }
         });
@@ -111,6 +117,15 @@ public class DoctorActivity extends AppCompatActivity {
                     cardView.setVisibility(View.VISIBLE);
                     cardOne.setVisibility(View.VISIBLE);
                     cardTwo.setVisibility(View.GONE);
+                    if(flagSearchOpen1){
+                        cardViewUsuario.setVisibility(View.VISIBLE);
+                        textViewApp.setVisibility(View.VISIBLE);
+                    }
+                    if(flagSearchOpen2){
+                        cardViewUsuario.setVisibility(View.GONE);
+                        textViewApp.setVisibility(View.GONE);
+                    }
+
                 }else if( position == 1){
                     imagePatients.setColorFilter(Color.GRAY);
                     tetPatients.setTextColor(Color.GRAY);
@@ -120,6 +135,14 @@ public class DoctorActivity extends AppCompatActivity {
                     cardOne.setVisibility(View.GONE);
                     cardTwo.setVisibility(View.VISIBLE);
                     searchView.setVisibility(View.GONE);
+                    if(flagSearchOpen2){
+                        cardViewUsuario.setVisibility(View.VISIBLE);
+                        textViewApp.setVisibility(View.VISIBLE);
+                    }
+                    if(flagSearchOpen1){
+                        cardViewUsuario.setVisibility(View.GONE);
+                        textViewApp.setVisibility(View.GONE);
+                    }
                 }
             }
 

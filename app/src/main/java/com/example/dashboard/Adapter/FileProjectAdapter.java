@@ -54,6 +54,7 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
     public FileProjectAdapter(List<FileProject> items,Context context){
         this.context = context;
         this.items = items;
+        itemsFull = new ArrayList<>(items);
     }
 
     @Override

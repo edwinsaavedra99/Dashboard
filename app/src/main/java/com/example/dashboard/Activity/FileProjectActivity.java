@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.example.dashboard.Adapter.FileProjectAdapter;
 import com.example.dashboard.Adapter.PatientAdapter;
 import com.example.dashboard.Models.FileProject;
 import com.example.dashboard.Models.Patient;
@@ -22,7 +23,7 @@ import java.util.List;
 public class FileProjectActivity extends AppCompatActivity {
 
     private RecyclerView recyclerViewFileProject;
-    private PatientAdapter adapterFileProject;
+    private FileProjectAdapter adapterFileProject;
     private RecyclerView.LayoutManager layoutManagerFileProject;
     private ImageView backFileProject;
     private TextView titleFileProject;
@@ -51,7 +52,7 @@ public class FileProjectActivity extends AppCompatActivity {
         recyclerViewFileProject.setHasFixedSize(true);
         layoutManagerFileProject = new LinearLayoutManager(getApplicationContext());
         recyclerViewFileProject.setLayoutManager(layoutManagerFileProject);
-        adapterFileProject =  new PatientAdapter(list,getApplicationContext());
+        adapterFileProject =  new FileProjectAdapter(list,getApplicationContext());
         recyclerViewFileProject.setAdapter(adapterFileProject);
 
 
