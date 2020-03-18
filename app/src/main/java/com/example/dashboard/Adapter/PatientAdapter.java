@@ -2,6 +2,7 @@ package com.example.dashboard.Adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -20,14 +21,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dashboard.Activity.MainActivity;
 import com.example.dashboard.Activity.ProjectActivity;
+import com.example.dashboard.Activity.Study.LandMarkModelActivity;
 import com.example.dashboard.Figures.Line;
 import com.example.dashboard.Models.Patient;
 import com.example.dashboard.R;
 import com.google.android.material.button.MaterialButtonToggleGroup;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,6 +103,8 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientV
                         if(item.getTitle().equals("Open")){
                             Intent intent = new Intent(context, ProjectActivity.class);
                             context.startActivity(intent);
+                        }else if(item.getTitle().equals("Edit")){
+
                         }
                         return true;
                     }
@@ -138,6 +144,7 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientV
             notifyDataSetChanged();
         }
     };
+
 
 
 

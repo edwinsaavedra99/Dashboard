@@ -1,8 +1,10 @@
 package com.example.dashboard.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -12,9 +14,13 @@ import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.dashboard.Activity.FileProjectActivity;
+import com.example.dashboard.Activity.ProjectActivity;
 import com.example.dashboard.Figures.Line;
 import com.example.dashboard.Models.Patient;
 import com.example.dashboard.Models.Project;
@@ -29,6 +35,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
     private Context context;
     public static class ProjectViewHolder extends RecyclerView.ViewHolder{
         public TextView name;
+        public ImageView menuOptions;
         public ImageView folderImage;
         public LinearLayout boxProject;
         public ProjectViewHolder(View v){
@@ -36,6 +43,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
             name = (TextView) v.findViewById(R.id.nameProyect);
             boxProject = (LinearLayout) v.findViewById(R.id.boxProject);
             folderImage = (ImageView) v.findViewById(R.id.folderProject);
+            menuOptions = (ImageView) v.findViewById(R.id.menuOptions);
             folderImage.setColorFilter(Color.LTGRAY);
 
         }
@@ -44,6 +52,11 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
         this.context = context;
         this.items = items;
         itemsFull = new ArrayList<>(items);
+    }
+
+    public void addElement(Project project){
+        items.add(project);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -65,8 +78,27 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
                 //paso a nuevo activity
             }
         });
+        projectViewHolder.menuOptions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popupMenu = new PopupMenu(v.getContext(),v);
+                popupMenu.getMenuInflater().inflate(R.menu.navigation,popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        System.out.println("SELECT ITEM: "+ item.getTitle()+"position: "+i);
+                        if(item.getTitle().equals("Open")){
+                            Intent intent = new Intent(context, FileProjectActivity.class);
+                            context.startActivity(intent);
+                        }else if(item.getTitle().equals("Edit")){
 
-//        patientViewHolder.description.setText(items.get(i).getDescription());
+                        }
+                        return true;
+                    }
+                });
+                popupMenu.show();
+            }
+        });
     }
 
     @Override

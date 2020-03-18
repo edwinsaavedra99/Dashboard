@@ -4,6 +4,10 @@ public class Project {
     private String nameProject;
     private String description;
 
+    public Project(String nameProject, String description) {
+        this.nameProject = nameProject;
+        this.description = description;
+    }
 
     public Project(String nameProject) {
         this.nameProject = nameProject;

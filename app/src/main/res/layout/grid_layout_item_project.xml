@@ -30,6 +30,7 @@
             android:layout_height="100dp">
         </ImageView>
         <ImageView
+            android:id="@+id/menuOptions"
             android:layout_marginTop="10dp"
             android:layout_marginRight="5dp"
             android:layout_alignParentRight="true"

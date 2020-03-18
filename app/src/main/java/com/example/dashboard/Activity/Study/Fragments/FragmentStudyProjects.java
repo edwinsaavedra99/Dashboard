@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageDecoder;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -93,7 +94,8 @@ public class FragmentStudyProjects extends Fragment {
         addProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShowAddDialog();
+                showAddProjectDialog();
+                //ShowAddDialog();
             }
         });
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
@@ -113,13 +115,15 @@ public class FragmentStudyProjects extends Fragment {
         /*DATA BASE*/
         list = new ArrayList();
         //initialComponentsActivity();
-        list.add(new Project("Project 01 sadasdasdasdasdasd"));
+        list.add(new Project("Pruebas"));
+        list.add(new Project("Clase 2019"));
+        list.add(new Project("Clase 2020"));
+        list.add(new Project("Project 01"));
         list.add(new Project("Project 02"));
-        list.add(new Project("Project 03"));
-        list.add(new Project("Project 04"));
-        list.add(new Project("Project 05"));
-        //backPatient.setColorFilter(Color.parseColor("#00BB2D"));
-        //addPatient.setBackgroundColor(Color.parseColor("#80000000"));
+
+        Project project = new Project("PROYECTO TEST ADD");
+
+
         recyclerView = (RecyclerView) viewGroup.findViewById(R.id.recicler_project);
         recyclerView.setHasFixedSize(true);
         layoutManager = new GridLayoutManager(getActivity(),2);
@@ -195,6 +199,35 @@ public class FragmentStudyProjects extends Fragment {
             float imagey = Float.parseFloat(information.getString("imagey"));
             myListSegmentation.readDataSegments(jsonArray,imageX,imagey);*/
         }
+    }
+
+    private void showAddProjectDialog(){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+        dialog.setTitle("NEW PROJECT: ");
+        dialog.setMessage("Insert Project's Data: " );
+        dialog.setCancelable(false);
+        final LayoutInflater inflater = LayoutInflater.from(getActivity());
+        final View add_layout = inflater.inflate(R.layout.project_structure_data,null);
+
+        final TextInputEditText editDescription = add_layout.findViewById(R.id.txt_descriptionProject_1);
+        final TextInputEditText editName = add_layout.findViewById(R.id.txt_nameProject_1);
+
+        dialog.setView(add_layout);
+        dialog.setPositiveButton("ADD PROJECT", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Project project = new Project(editName.getText().toString(),editDescription.getText().toString());
+                adapter.addElement(project);
+            }
+        });
+        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
     private void ShowAddDialog(){
