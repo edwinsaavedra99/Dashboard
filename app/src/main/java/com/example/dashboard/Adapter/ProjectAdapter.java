@@ -1,6 +1,7 @@
 package com.example.dashboard.Adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -17,14 +18,18 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dashboard.Activity.FileProjectActivity;
 import com.example.dashboard.Activity.ProjectActivity;
+import com.example.dashboard.Activity.Study.LandMarkModelActivity;
 import com.example.dashboard.Figures.Line;
 import com.example.dashboard.Models.Patient;
 import com.example.dashboard.Models.Project;
 import com.example.dashboard.R;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +61,18 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
 
     public void addElement(Project project){
         items.add(project);
+        notifyDataSetChanged();
+    }
+
+    public void editElement(Project project, int position){
+        Project projectAux = items.get(position);
+        projectAux.setNameProject(project.getNameProject());
+        projectAux.setDescription(project.getDescription());
+        items.set(position,projectAux);
+        notifyDataSetChanged();
+    }
+    public void deleteElement(int position){
+        items.remove(position);
         notifyDataSetChanged();
     }
 
@@ -91,7 +108,9 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
                             Intent intent = new Intent(context, FileProjectActivity.class);
                             context.startActivity(intent);
                         }else if(item.getTitle().equals("Edit")){
-
+                            showAlertDialogEdit(items.get(i),i);
+                        }else if(item.getTitle().equals("Delete")){
+                            showAlertDialogDelete(i);
                         }
                         return true;
                     }
@@ -132,4 +151,54 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
         }
     };
 
+
+    private void showAlertDialogDelete(final int position){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        dialog.setTitle("DELETE PROJECT");
+        dialog.setMessage("Are you sure to delete  this project ? , All data will be deleted" );
+        dialog.setCancelable(false);
+        final LayoutInflater inflater = LayoutInflater.from(context);
+        dialog.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteElement(position);
+            }
+        });
+        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void showAlertDialogEdit(final Project project, final int position){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        dialog.setTitle("EDIT PROJECT");
+        dialog.setCancelable(false);
+        final LayoutInflater inflater = LayoutInflater.from(context);
+        final View add_layout = inflater.inflate(R.layout.project_structure_data,null);
+        final TextInputEditText editDescription = add_layout.findViewById(R.id.txt_descriptionProject_1);
+        final TextInputEditText editName = add_layout.findViewById(R.id.txt_nameProject_1);
+        editDescription.setText(project.getDescription());
+        editName.setText(project.getNameProject());
+        dialog.setView(add_layout);
+        dialog.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Project project1 = new Project(editName.getText().toString(),editDescription.getText().toString());
+                editElement(project1,position);
+            }
+        });
+        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
 }

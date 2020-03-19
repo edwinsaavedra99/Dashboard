@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <SearchView
-                android:queryHint="Search Patient"
+                android:queryHint="Search"
                 android:id="@+id/searchFileProject"
                 android:theme="@style/AppSearchView"
                 android:layout_width="wrap_content"

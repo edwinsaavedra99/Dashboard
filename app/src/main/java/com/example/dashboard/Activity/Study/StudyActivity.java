@@ -83,6 +83,14 @@ public class StudyActivity extends AppCompatActivity {
     private TextView textViewApp;
     private SearchView searchView;
     private ImageView addProject;
+    private SearchView searchViewShare;
+    private CardView cardOne;
+    private CardView cardTwo;
+    private boolean flagSearchOpen1;
+    private boolean flagSearchOpen2;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,12 +104,35 @@ public class StudyActivity extends AppCompatActivity {
         cardViewUsuario = (CardView) findViewById(R.id.cardUsuarioStudy);
         textViewApp = (TextView) findViewById(R.id.textAppStudy);
         searchView = (SearchView) findViewById(R.id.searchProjectStudy);
+        cardOne = (CardView) findViewById(R.id.cardOneSearchStudy);
+        cardTwo = (CardView) findViewById(R.id.cardTwoSearchStudy);
+        searchViewShare = (SearchView) findViewById(R.id.searchProjectStudyShare);
+        flagSearchOpen1 = false;
+        flagSearchOpen2 = false;
+        searchViewShare.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cardViewUsuario.setVisibility(View.GONE);
+                textViewApp.setVisibility(View.GONE);
+                flagSearchOpen1 = true;
+            }
+        });
+        searchViewShare .setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                cardViewUsuario.setVisibility(View.VISIBLE);
+                textViewApp.setVisibility(View.VISIBLE);
+                flagSearchOpen1 = false;
+                return false;
+            }
+        });
 
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cardViewUsuario.setVisibility(View.GONE);
                 textViewApp.setVisibility(View.GONE);
+                flagSearchOpen2 = true;
             }
         });
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
@@ -109,6 +140,7 @@ public class StudyActivity extends AppCompatActivity {
             public boolean onClose() {
                 cardViewUsuario.setVisibility(View.VISIBLE);
                 textViewApp.setVisibility(View.VISIBLE);
+                flagSearchOpen2 = false;
                 return false;
             }
         });
@@ -136,6 +168,16 @@ public class StudyActivity extends AppCompatActivity {
                     textShared.setTextColor(Color.GRAY);
                     searchView.setVisibility(View.VISIBLE);
                     cardView.setVisibility(View.VISIBLE);
+                    cardOne.setVisibility(View.VISIBLE);
+                    cardTwo.setVisibility(View.GONE);
+                    if(flagSearchOpen1){
+                        cardViewUsuario.setVisibility(View.VISIBLE);
+                        textViewApp.setVisibility(View.VISIBLE);
+                    }
+                    if(flagSearchOpen2){
+                        cardViewUsuario.setVisibility(View.GONE);
+                        textViewApp.setVisibility(View.GONE);
+                    }
                 }else if( position == 1){
                     imagePatients.setColorFilter(Color.GRAY);
                     tetPatients.setTextColor(Color.GRAY);
@@ -143,6 +185,16 @@ public class StudyActivity extends AppCompatActivity {
                     textShared.setTextColor(Color.WHITE);
                     cardView.setVisibility(View.GONE);
                     searchView.setVisibility(View.GONE);
+                    cardOne.setVisibility(View.GONE);
+                    cardTwo.setVisibility(View.VISIBLE);
+                    if(flagSearchOpen2){
+                        cardViewUsuario.setVisibility(View.VISIBLE);
+                        textViewApp.setVisibility(View.VISIBLE);
+                    }
+                    if(flagSearchOpen1){
+                        cardViewUsuario.setVisibility(View.GONE);
+                        textViewApp.setVisibility(View.GONE);
+                    }
                 }
             }
 
