@@ -1,6 +1,9 @@
 package com.example.dashboard.Filters;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -8,6 +11,9 @@ import org.opencv.core.Mat;
 import org.opencv.core.Rect;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +46,8 @@ public class MyFilters {
     public void setImage(Bitmap image) {
         this.image = image;
     }
+
+
 
     public Bitmap cropBitmap(Bitmap aux){
         Rect rectCrop;

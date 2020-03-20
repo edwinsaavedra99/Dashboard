@@ -27,6 +27,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.dashboard.Activity.Doctor.DoctorPagerAdapter;
 import com.example.dashboard.Activity.Doctor.Fragments.FragmentDoctorPatients;
 import com.example.dashboard.Activity.Doctor.Fragments.FragmentDoctorShare;
@@ -88,7 +89,7 @@ public class StudyActivity extends AppCompatActivity {
     private CardView cardTwo;
     private boolean flagSearchOpen1;
     private boolean flagSearchOpen2;
-
+    private ImageView usuarioApp;
 
 
     @Override
@@ -107,6 +108,8 @@ public class StudyActivity extends AppCompatActivity {
         cardOne = (CardView) findViewById(R.id.cardOneSearchStudy);
         cardTwo = (CardView) findViewById(R.id.cardTwoSearchStudy);
         searchViewShare = (SearchView) findViewById(R.id.searchProjectStudyShare);
+        usuarioApp = (ImageView) findViewById(R.id.usuarioAppStudy);
+        Glide.with(this).load(Resource.urlImageUserLogin).into(usuarioApp);
         flagSearchOpen1 = false;
         flagSearchOpen2 = false;
         searchViewShare.setOnSearchClickListener(new View.OnClickListener() {

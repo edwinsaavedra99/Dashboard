@@ -1,14 +1,11 @@
 package com.example.dashboard.Adapter;
 
 import android.content.Context;
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
@@ -16,12 +13,17 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dashboard.Activity.ProjectActivity;
 import com.example.dashboard.Models.FileProject;
 import com.example.dashboard.Models.Patient;
+import com.example.dashboard.Models.Project;
 import com.example.dashboard.R;
+import com.example.dashboard.Utils.StringUtil;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +58,24 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
         this.items = items;
         itemsFull = new ArrayList<>(items);
     }
+    public void addElement(FileProject project){
+        items.add(project);
+        notifyDataSetChanged();
+    }
+
+    public void editElement(FileProject project, int position){
+        FileProject projectAux = items.get(position);
+        projectAux.setNameFileProject(project.getNameFileProject());
+        projectAux.setDescriptionFileProject(project.getDescriptionFileProject());
+        projectAux.DateTimeInitial();
+        projectAux.setImageFileProject(project.getImageFileProject());
+        items.set(position,projectAux);
+        notifyDataSetChanged();
+    }
+    public void deleteElement(int position){
+        items.remove(position);
+        notifyDataSetChanged();
+    }
 
     @Override
     public int getItemCount(){
@@ -73,9 +93,7 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
         fileViewHolder.descriptionFile.setText(items.get(i).getDescriptionFileProject());
         fileViewHolder.dateFileProject.setText(items.get(i).getDateFileProject());
         fileViewHolder.timeFileProject.setText(items.get(i).getTimeFileProject());
-        //ADD IMAGE EN ITEM LAYOUT
-        //items.get(i).getImageFileProject();
-        //fileViewHolder.imageViewFileProject.setImageBitmap();
+        fileViewHolder.imageViewFileProject.setImageBitmap(StringUtil.decodeBase64AndSetImage(items.get(i).getImageFileProject()));
         fileViewHolder.moreOptionItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,6 +106,10 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
                         if(item.getTitle().equals("Open")){
                             //Intent intent = new Intent(context, ProjectActivity.class);
                             //context.startActivity(intent);
+                        }else if(item.getTitle().equals("Edit")){
+                            showAlertDialogEdit(items.get(i),i);
+                        }else if(item.getTitle().equals("Delete")){
+                            showAlertDialogDelete(i);
                         }
                         return true;
                     }
@@ -98,6 +120,66 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
 
 
     }
+
+    private void showAlertDialogDelete(final int position){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        dialog.setTitle("DELETE FILE PROJECT");
+        dialog.setMessage("Are you sure to delete  this file ? , All data will be deleted" );
+        dialog.setCancelable(false);
+        final LayoutInflater inflater = LayoutInflater.from(context);
+        dialog.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteElement(position);
+            }
+        });
+        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void showAlertDialogEdit(final FileProject project, final int position){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        dialog.setTitle("EDIT FILE PROJECT");
+        dialog.setCancelable(false);
+        final LayoutInflater inflater = LayoutInflater.from(context);
+        final View add_layout = inflater.inflate(R.layout.project_structure_data,null);
+        final TextInputEditText editDescription = add_layout.findViewById(R.id.txt_descriptionProject_1);
+        final TextInputEditText editName = add_layout.findViewById(R.id.txt_nameProject_1);
+        editDescription.setText(project.getDescriptionFileProject());
+        editName.setText(project.getNameFileProject());
+        dialog.setView(add_layout);
+        dialog.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String name = editName.getText().toString().trim();
+                String description = editDescription.getText().toString().trim();
+                if(name.length() == 0){
+                    editName.setError("Error ...");
+                    editName.requestFocus();
+                }else {
+                    FileProject project1 = new FileProject(name, description);
+                    project1.setImageFileProject(project.getImageFileProject());
+                    editElement(project1, position);
+                }
+            }
+        });
+        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+
     @Override
     public Filter getFilter(){
         return itemsFilter;

@@ -13,9 +13,11 @@ import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.dashboard.Activity.Doctor.Fragments.FragmentDoctorPatients;
 import com.example.dashboard.Activity.Doctor.Fragments.FragmentDoctorShare;
 import com.example.dashboard.R;
+import com.example.dashboard.Resources.Resource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,7 @@ public class DoctorActivity extends AppCompatActivity {
     private TextView textViewApp;
     private SearchView searchView;
     private SearchView searchViewShare;
+    private ImageView usuarioApp;
     private CardView cardOne;
     private CardView cardTwo;
     private boolean flagSearchOpen1;
@@ -53,6 +56,8 @@ public class DoctorActivity extends AppCompatActivity {
         textViewApp = (TextView) findViewById(R.id.textApp);
         searchView = (SearchView) findViewById(R.id.searchPatient);
         searchViewShare = (SearchView) findViewById(R.id.searchProjectShare);
+        usuarioApp = (ImageView) findViewById(R.id.usuarioApp);
+        Glide.with(this).load(Resource.urlImageUserLogin).into(usuarioApp);
         flagSearchOpen1 = false;
         flagSearchOpen2 = false;
         searchViewShare.setOnSearchClickListener(new View.OnClickListener() {

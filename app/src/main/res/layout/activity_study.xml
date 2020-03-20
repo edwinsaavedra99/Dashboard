@@ -63,7 +63,7 @@
             android:layout_margin="10dp"
             app:cardMaxElevation="5dp"
             android:layout_centerVertical="true"
-            app:cardCornerRadius="20dp"
+            app:cardCornerRadius="18dp"
             app:cardBackgroundColor="#D0000000"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">

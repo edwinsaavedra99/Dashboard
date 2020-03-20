@@ -199,7 +199,7 @@ public class ProjectActivity extends AppCompatActivity {
                 60,TimeUnit.SECONDS).build();
         JSONObject postdata = new JSONObject();
         try {
-            postdata.put("usuario", Resource.usuario);
+            postdata.put("usuario", Resource.emailUserLogin);
             System.out.println(postdata.toString());
 
         } catch(JSONException e){

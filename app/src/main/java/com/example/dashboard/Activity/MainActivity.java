@@ -40,7 +40,7 @@ import com.example.dashboard.Animations.MyAnimation;
 import com.example.dashboard.Filters.MyFilters;
 import com.example.dashboard.Resources.Resource;
 import com.example.dashboard.Utils.ControlMenu;
-import com.example.dashboard.Utils.Files;
+import com.example.dashboard.Utils.StringUtil;
 import com.example.dashboard.R;
 import com.example.dashboard.Services.FiguresService;
 import com.google.android.material.textfield.TextInputEditText;
@@ -266,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean longClick = false;
     private int mActivePointerId = INVALID_POINTER_ID;
     private LinearLayout rootLayout;
-    private Files dataFiles;
+    private StringUtil dataStringUtil;
     private AlertDialog dialog;
     //--End Attributes of class
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -1713,7 +1713,7 @@ public class MainActivity extends AppCompatActivity {
             postdata.put("information",posdate123);
             System.out.println(postdata.toString());
             //System.out.println(myListSegmentation.getBase64String());
-            // dataFiles.writeJSONFile(postdata.toString());
+            // dataStringUtil.writeJSONFile(postdata.toString());
 
         } catch(JSONException e){
             e.printStackTrace();
@@ -1776,7 +1776,7 @@ public class MainActivity extends AppCompatActivity {
             postdata.put("information",posdate123);
             System.out.println(postdata.toString());
             //System.out.println(myListSegmentation.getBase64String());
-            // dataFiles.writeJSONFile(postdata.toString());
+            // dataStringUtil.writeJSONFile(postdata.toString());
 
         } catch(JSONException e){
             e.printStackTrace();
@@ -2264,11 +2264,6 @@ public class MainActivity extends AppCompatActivity {
                 listColors.get(i).setColorFilter(Color.rgb(Util.getCollections()[i][0],Util.getCollections()[i][1],Util.getCollections()[i][2]));
         }
         scaleSort = 3;
-        try {
-            dataFiles = new Files("miarchivo","/carpeta/");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         //--End Initializing
     }//End Method
 

@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">AFD</string>
+    <string name="default_web_client_id">368851187486-cjhp8qv7cq362churm1q4fte8bumrpa6.apps.googleusercontent.com</string>
     <string name="text_title_login">AFD Project</string>
 
     <!-- TODO: Remove or change this placeholder text -->

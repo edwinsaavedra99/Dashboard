@@ -11,11 +11,20 @@ public class FileProject {
     private String timeFileProject;
     private String descriptionFileProject;
 
+    public FileProject(String nameFileProject, String descriptionFileProject) {
+        this.nameFileProject = nameFileProject;
+        this.descriptionFileProject = descriptionFileProject;
+        DateTimeInitial();
+    }
+
     public FileProject(String imageFileProject, String nameFileProject, String descriptionFileProject) {
         this.imageFileProject = imageFileProject;
         this.nameFileProject = nameFileProject;
         this.descriptionFileProject = descriptionFileProject;
+        DateTimeInitial();
+    }
 
+    public void DateTimeInitial(){
         Date date = new Date();
         DateFormat hourFormat = new SimpleDateFormat("HH:mm:ss");
         this.timeFileProject = hourFormat.format(date);

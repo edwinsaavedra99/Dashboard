@@ -10,13 +10,8 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ImageDecoder;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -35,7 +30,6 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dashboard.Animations.MyAnimation;
@@ -43,9 +37,7 @@ import com.example.dashboard.Filters.GroupFilters;
 import com.example.dashboard.Filters.MyFilters;
 import com.example.dashboard.Resources.Resource;
 import com.example.dashboard.Utils.ControlMenu;
-import com.example.dashboard.Utils.Files;
 import com.example.dashboard.R;
-import com.example.dashboard.Services.FiguresService;
 import com.google.android.material.textfield.TextInputEditText;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -72,7 +64,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import static android.graphics.Bitmap.Config.ARGB_8888;
+
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
 /**
@@ -1436,7 +1428,7 @@ public class LandMarkModelActivity extends AppCompatActivity {
         try {
 
             //UTILIZAR CLASE RESOURCE SI SE NECESITA
-            String usuario = Resource.usuario;
+            String usuario = Resource.emailUserLogin;
             int role = Resource.role;
             int carpeta = Resource.idCarpeta;
             int file = Resource.idFile;
