@@ -2102,7 +2102,7 @@ public class MainActivity extends AppCompatActivity {
         menu_right.setBackgroundColor(Color.parseColor("#80000000"));
         getFigures = findViewById(R.id.getFigures);
         layoutImageRx = findViewById(R.id.layoutImageRx);
-        myListFigures = new ListFigure(this,layoutImageRx);
+        myListFigures = new ListFigure(this,layoutImageRx,new DisplayMetrics());
         layoutImageRx.addView(myListFigures);
         //Animation
         Animation = new MyAnimation();

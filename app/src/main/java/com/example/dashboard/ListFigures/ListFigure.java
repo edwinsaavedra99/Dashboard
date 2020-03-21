@@ -11,6 +11,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Base64;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.LinearLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -41,7 +43,9 @@ public class ListFigure  extends View {
     private int[] figureColour = {183, 149, 11};
     private float getPastX = 0;
     private float getPastY = 0;
+    private DisplayMetrics metrics;
     private float touchX = 0;
+    private int alto=0,ancho= 0;
     private float touchY = 0;
     private float mPositionX;
     private float mPositionY;
@@ -65,10 +69,11 @@ public class ListFigure  extends View {
     /**
      * Class Constructor
      * @param context The View*/
-    public ListFigure(Context context,LinearLayout _layout){
+    public ListFigure(Context context,LinearLayout _layout,DisplayMetrics metrics){
         super(context);
         myFigures = new ArrayList<>();
         layout = _layout;
+        this.metrics = metrics;
         scaleGestureDetector = new ScaleGestureDetector(context, new ScaleListener());
         figureSelected = -1;
         initialStyleFigure();
@@ -76,8 +81,8 @@ public class ListFigure  extends View {
     }//Closing the class constructor
     public void loadImage(Bitmap mImage){
         mBoard = new BitmapDrawable(getResources(),mImage);
+        this.mImage = mImage;
         invalidate();
-        //requestLayout();
     }
     /**
      * Method changeModeTouch : change modeTouch if is 0 change to 1 else change to 0
@@ -89,6 +94,75 @@ public class ListFigure  extends View {
             modeTouch = 0;
         }
     }
+
+    public void readDataIndicators(JSONArray jsonArray,float width, float height) throws JSONException {
+        int altoCa = metrics.heightPixels;
+        int anchoCa = metrics.widthPixels;
+        float medioCa = (float) altoCa/anchoCa;
+        int altoIm = mBoard.getIntrinsicHeight();
+        int anchoIm = mBoard.getIntrinsicWidth();
+        float medioIm = (float)altoIm/anchoIm;
+        if(medioCa<medioIm){
+            ancho = anchoCa;
+            alto =(int)(medioIm*ancho);
+        }else{
+            alto = altoCa;
+            ancho = (int) (alto/medioIm);
+        }
+        generalWidth = ancho;
+        generalHeight = alto;
+        System.out.println("information : generalWidth - "+generalWidth+", generalHeight - "+generalHeight);
+        figureSelected = -1;
+        myFigures.clear();
+        invalidate();
+        requestLayout();
+        for (int i = 0; i< jsonArray.length(); i++){
+            JSONObject aux = jsonArray.getJSONObject(i);
+            int type = Integer.parseInt(aux.getString("type"));
+            int[] colour = {Integer.parseInt(aux.getString("r")), Integer.parseInt(aux.getString("g")),Integer.parseInt(aux.getString("b"))};
+            switch (type){
+                case 1:{ //circle
+                    float x = Float.parseFloat(aux.getString("x"))*generalWidth/width;
+                    float y = Float.parseFloat(aux.getString("y"))*generalHeight/height;
+                    float radius = Float.parseFloat(aux.getString("radius"))*generalWidth/width;
+                    addCircle(x,y,radius);
+                    break;
+                }
+                case 2:{
+                    float left = Float.parseFloat(aux.getString("left"))*generalWidth/width;
+                    float top = Float.parseFloat(aux.getString("top"))*generalHeight/height;
+                    float right = Float.parseFloat(aux.getString("right"))*generalWidth/width;
+                    float bottom = Float.parseFloat(aux.getString("bottom"))*generalHeight/height;
+                    addEllipse(left,top,right,bottom);
+                    break;
+                }
+                case 3:{
+                    float left = Float.parseFloat(aux.getString("left"))*generalWidth/width;
+                    float top = Float.parseFloat(aux.getString("top"))*generalHeight/height;
+                    float right = Float.parseFloat(aux.getString("right"))*generalWidth/width;
+                    float bottom = Float.parseFloat(aux.getString("bottom"))*generalHeight/height;
+                    addRectangle(left,top,right,bottom);
+                    break;
+                }
+                case 4:{
+                    float startX = Float.parseFloat(aux.getString("startX"))*generalWidth/width;
+                    float startY = Float.parseFloat(aux.getString("startY"))*generalHeight/height;
+                    float stopX = Float.parseFloat(aux.getString("stopX"))*generalWidth/width;
+                    float stopY = Float.parseFloat(aux.getString("stopY"))*generalHeight/height;
+                    addLine(startX,startY,stopX,stopY);
+                    break;
+                }
+                case 5:{
+                    float x = Float.parseFloat(aux.getString("x"))*generalWidth/width;
+                    float y = Float.parseFloat(aux.getString("y"))*generalHeight/height;
+                    addPoint(x,y);
+                    break;
+                }
+            }
+        }
+        invalidate();
+    }
+
     public JSONArray dataFigures() throws JSONException {
         JSONArray jsonArray =new JSONArray();
         for(int i = 0 ;i<this.myFigures.size();i++){
@@ -385,7 +459,6 @@ public class ListFigure  extends View {
             int altoIm = mBoard.getIntrinsicHeight();
             int anchoIm = mBoard.getIntrinsicWidth();
             float medioIm = (float)altoIm/anchoIm;
-            int alto,ancho;
             if(medioCa<medioIm){
                 ancho = anchoCa;
                 alto =(int)(medioIm*ancho);

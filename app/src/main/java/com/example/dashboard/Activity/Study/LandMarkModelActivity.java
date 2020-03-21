@@ -1450,7 +1450,9 @@ public class LandMarkModelActivity extends AppCompatActivity {
             posdate123.put("imageName","image_rx.jpg");
 
             postdata.put("information",posdate123);
-            System.out.println(postdata.toString());
+            System.out.println(posdate123.toString());
+            //System.out.println("******************************");
+            //System.out.println(postdata.toString());
 
         } catch(JSONException e){
             e.printStackTrace();
@@ -1485,7 +1487,7 @@ public class LandMarkModelActivity extends AppCompatActivity {
     public void openLandMarks(){
         try {
             //String rpta = LandMarkService.readLandMarks();
-            String rpta = loadJSONFromAsset("raw/landmark.json");
+            String rpta = loadJSONFromAsset("raw/landmarktest.json");
             JSONObject landMarks = new JSONObject(rpta);
             String image = landMarks.getString("image");
             Bitmap bitmap = myListSegmentation.decodeBase64AndSetImage(image);

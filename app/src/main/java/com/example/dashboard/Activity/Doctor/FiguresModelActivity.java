@@ -19,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -35,6 +36,7 @@ import com.example.dashboard.R;
 import com.example.dashboard.Services.FiguresService;
 import com.google.android.material.textfield.TextInputEditText;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opencv.android.OpenCVLoader;
@@ -201,7 +203,7 @@ public class FiguresModelActivity extends AppCompatActivity {
         //setTheme(R.style.AppTheme);
         //Add Layout Activity XML
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_figures_model);
         getSupportActionBar().hide();
         //Load OpenCV
         OpenCVLoader.initDebug();
@@ -1085,6 +1087,10 @@ public class FiguresModelActivity extends AppCompatActivity {
         });
         dialog.show();
     }
+
+
+
+
     public void saveIndicator(){
         MediaType MEDIA_TYPE =
                 MediaType.parse("application/json");
@@ -1104,7 +1110,7 @@ public class FiguresModelActivity extends AppCompatActivity {
             posdate123.put("profileName","Edwin");
             posdate123.put("imageName","image_rx.jpg");
             postdata.put("information",posdate123);
-            System.out.println(postdata.toString());
+            System.out.println(posdate123.toString());
             //System.out.println(myListSegmentation.getBase64String());
             // dataFiles.writeJSONFile(postdata.toString());
 
@@ -1166,7 +1172,49 @@ public class FiguresModelActivity extends AppCompatActivity {
 
 
     public void openFigures(){
+        try {
+            //String rpta = LandMarkService.readLandMarks();
+            String rpta = loadJSONFromAsset("raw/indicator.json");
+            JSONObject landMarks = new JSONObject(rpta);
+            String image = landMarks.getString("image");
+            Bitmap bitmap = myListFigures.decodeBase64AndSetImage(image);
+            int flag = 0;
+            FileOutputStream outputStream = null;
+            String fileName = "photo";
+            File file = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            File imageFile = null;
+            try {
+                imageFile = File.createTempFile(fileName,".JPEG",file);
+                currentPhotoPath = imageFile.getAbsolutePath();
+                outputStream = new FileOutputStream(imageFile);
+                bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
+                outputStream.flush();
+                outputStream.close();
+                flag = 1;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(flag == 1){
+                Mat aux = Imgcodecs.imread(currentPhotoPath);
+                Bitmap imageBitmap = BitmapFactory.decodeFile(currentPhotoPath);
+                myListFigures.loadImage(imageBitmap);
+                if(aux != null){
+                    img = aux;
+                    myFilters = new MyFilters(aux,imageBitmap);
+                    updateFilters(imageBitmap,aux);
+                }else{
+                    System.out.println("error");
+                }
+            }       //
+            JSONObject information = landMarks.getJSONObject("information");
+            JSONArray jsonArray = information.getJSONArray("indicators");
+            float imageX = Float.parseFloat(information.getString("imageX"));
+            float imagey = Float.parseFloat(information.getString("imagey"));
+            myListFigures.readDataIndicators(jsonArray,imageX,imagey);
 
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void getFilterService(String image, String nameFilter,int cod){
@@ -1390,9 +1438,11 @@ public class FiguresModelActivity extends AppCompatActivity {
         menu_right = findViewById(R.id.contenedor_menu_right);
         menu_left.setBackgroundColor(Color.parseColor("#80000000"));
         menu_right.setBackgroundColor(Color.parseColor("#80000000"));
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
         getFigures = findViewById(R.id.getFigures);
         layoutImageRx = findViewById(R.id.layoutImageRx);
-        myListFigures = new ListFigure(this,layoutImageRx);
+        myListFigures = new ListFigure(this,layoutImageRx,metrics);
         layoutImageRx.addView(myListFigures);
         //Animation
         Animation = new MyAnimation();
@@ -1497,20 +1547,25 @@ public class FiguresModelActivity extends AppCompatActivity {
 
 
     public void initialImage(String uri){
-        if(uri!=null){
-            Mat aux = Imgcodecs.imread(uri);
-            Bitmap imageBitmap = BitmapFactory.decodeFile(uri);
-            myListFigures.loadImage(imageBitmap);
-            if(aux != null){
-                img = aux;
-                this.original = imageBitmap;
-                updateFilters(imageBitmap,aux);
-            }else{
-                System.out.println("error");
+        if(Resource.openFile){
+            openFigures();
+            Resource.openFile = false;
+        }else {
+            if (uri != null) {
+                Mat aux = Imgcodecs.imread(uri);
+                Bitmap imageBitmap = BitmapFactory.decodeFile(uri);
+                myListFigures.loadImage(imageBitmap);
+                if (aux != null) {
+                    img = aux;
+                    this.original = imageBitmap;
+                    updateFilters(imageBitmap, aux);
+                } else {
+                    System.out.println("error");
+                }
+                myListFigures.loadImage(this.original);
+                myFilters = new MyFilters(this.img, this.original);
+                updateFilters(this.original, img);
             }
-            myListFigures.loadImage(this.original);
-            myFilters = new MyFilters(this.img,this.original);
-            updateFilters(this.original,img);
         }
     }
 

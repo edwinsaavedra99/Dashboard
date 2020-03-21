@@ -62,6 +62,7 @@ public class Circle extends Figure{
         object.put("id",id);
         object.put("x",this.centerX);
         object.put("y",this.centerY);
+        object.put("radius",this.radius);
         object.put("comment",this.getDescription());
         object.put("r",this.getColour()[0]);
         object.put("g",this.getColour()[1]);
