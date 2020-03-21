@@ -2,6 +2,7 @@ package com.example.dashboard.Adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,11 +18,15 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.dashboard.Activity.Doctor.FiguresModelActivity;
+import com.example.dashboard.Activity.FileProjectActivity;
 import com.example.dashboard.Activity.ProjectActivity;
+import com.example.dashboard.Activity.Study.LandMarkModelActivity;
 import com.example.dashboard.Models.FileProject;
 import com.example.dashboard.Models.Patient;
 import com.example.dashboard.Models.Project;
 import com.example.dashboard.R;
+import com.example.dashboard.Resources.Resource;
 import com.example.dashboard.Utils.StringUtil;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -104,6 +109,15 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
                     public boolean onMenuItemClick(MenuItem item) {
                         System.out.println("SELECT ITEM: "+ item.getTitle()+"position: "+i);
                         if(item.getTitle().equals("Open")){
+                            if(Resource.role == 2) { //study
+                                Resource.openFile = true;
+                                Intent intent = new Intent(context, LandMarkModelActivity.class);
+                                context.startActivity(intent);
+                            }else if (Resource.role == 1){ //doctor
+                                Resource.openFile = true;
+                                Intent intent = new Intent(context, FiguresModelActivity.class);
+                                context.startActivity(intent);
+                            }
                             //Intent intent = new Intent(context, ProjectActivity.class);
                             //context.startActivity(intent);
                         }else if(item.getTitle().equals("Edit")){

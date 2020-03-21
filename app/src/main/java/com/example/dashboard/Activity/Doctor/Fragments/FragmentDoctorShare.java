@@ -25,6 +25,7 @@ import com.example.dashboard.Adapter.PatientAdapter;
 import com.example.dashboard.Models.FileProject;
 import com.example.dashboard.Models.Patient;
 import com.example.dashboard.R;
+import com.example.dashboard.Utils.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,10 +62,11 @@ public class FragmentDoctorShare extends Fragment {
 
         /*DATA BASE*/
         List list = new ArrayList();
-        list.add(new FileProject("","RADIOGRAFIA_1","DESGUARRE DEL FEMUR Y LIGAMENTOS ROTOS"));
-        list.add(new FileProject("","RADIOGRAFIA_2","DESGUARRE DEL FEMUR Y LIGAMENTOS ROTOS"));
-        list.add(new FileProject("","RADIOGRAFIA_3","DESGUARRE DEL FEMUR Y LIGAMENTOS ROTOS"));
-
+        String imag64 = StringUtil.loadFromAsset("raw/image64.txt",getActivity());
+        list.add(new FileProject(imag64,"NOMBRE DE FILE PROJECT 1","ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
+        list.add(new FileProject(imag64,"NOMBRE DE FILE PROJECT 2","ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
+        list.add(new FileProject(imag64,"NOMBRE DE FILE PROJECT 3","ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
+        list.add(new FileProject(imag64,"NOMBRE DE FILE PROJECT 4","ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
         if(list.isEmpty())
             linearLayout.setVisibility(View.VISIBLE);
         else

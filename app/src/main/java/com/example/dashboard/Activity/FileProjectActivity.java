@@ -27,6 +27,8 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.example.dashboard.Activity.Doctor.FiguresModelActivity;
 import com.example.dashboard.Activity.Study.LandMarkModelActivity;
 import com.example.dashboard.Adapter.FileProjectAdapter;
 import com.example.dashboard.Models.FileProject;
@@ -48,6 +50,7 @@ public class FileProjectActivity extends AppCompatActivity {
     private TextView textViewApp;
     private SearchView searchViewFileProject;
     private ImageView addFileProject;
+    private ImageView usuarioApp;
     private CardView cardViewUsuario;
     private Uri imageurl;
     private String currentPhotoPath;
@@ -65,6 +68,8 @@ public class FileProjectActivity extends AppCompatActivity {
         searchViewFileProject = findViewById(R.id.searchFileProject);
         addFileProject = findViewById(R.id.addFileProject);
         flag = 0;
+        usuarioApp = (ImageView) findViewById(R.id.usuarioApp);
+        Glide.with(this).load(Resource.urlImageUserLogin).into(usuarioApp);
         addFileProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,10 +109,17 @@ public class FileProjectActivity extends AppCompatActivity {
         });
         List list = new ArrayList();
         String imag64 = StringUtil.loadFromAsset("raw/image64.txt",this);
-        list.add(new FileProject(imag64,"NOMBRE DE FILE PROJECT 1","ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
-        list.add(new FileProject(imag64,"NOMBRE DE FILE PROJECT 2","ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
-        list.add(new FileProject(imag64,"NOMBRE DE FILE PROJECT 3","ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
-        list.add(new FileProject(imag64,"NOMBRE DE FILE PROJECT 4","ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
+        if(Resource.role == 2) { //study
+            list.add(new FileProject(imag64, "NOMBRE DE FILE PROJECT LANDMARK 1", "ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
+            list.add(new FileProject(imag64, "NOMBRE DE FILE PROJECT LANDMARK 2", "ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
+            list.add(new FileProject(imag64, "NOMBRE DE FILE PROJECT LANDMARK 3", "ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
+            list.add(new FileProject(imag64, "NOMBRE DE FILE PROJECT LANDMARK 4", "ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
+        }else if (Resource.role == 1){
+            list.add(new FileProject(imag64, "NOMBRE DE FILE PROJECT FIGURES 1", "ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
+            list.add(new FileProject(imag64, "NOMBRE DE FILE PROJECT FIGURES 2", "ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
+            list.add(new FileProject(imag64, "NOMBRE DE FILE PROJECT FIGURES 3", "ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
+            list.add(new FileProject(imag64, "NOMBRE DE FILE PROJECT FIGURES 4", "ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
+        }
         addFileProject.setBackgroundColor(Color.parseColor("#80000000"));
         recyclerViewFileProject = (RecyclerView) findViewById(R.id.recicler_File);
         recyclerViewFileProject.setHasFixedSize(true);
@@ -153,13 +165,15 @@ public class FileProjectActivity extends AppCompatActivity {
                     editName.requestFocus();
                 }else {
                     if (flag == 1) {
-
-                        //Resource.uriImageResource;
-
                         FileProject project = new FileProject(Resource.uriImageResource,name, description);
                         adapterFileProject.addElement(project);
-                        Intent intent = new Intent(FileProjectActivity.this, LandMarkModelActivity.class);
-                        startActivity(intent);
+                        if(Resource.role == 2) { //study
+                            Intent intent = new Intent(FileProjectActivity.this, LandMarkModelActivity.class);
+                            startActivity(intent);
+                        }else if (Resource.role == 1){ //doctor
+                            Intent intent = new Intent(FileProjectActivity.this, FiguresModelActivity.class);
+                            startActivity(intent);
+                        }
                     } else {
                         Toast.makeText(FileProjectActivity.this, "Insert-Image, Please", Toast.LENGTH_SHORT).show();
                     }

@@ -30,6 +30,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import com.example.dashboard.Activity.Study.LandMarkModelActivity;
 import com.example.dashboard.Figures.*;
 
 import static android.view.MotionEvent.INVALID_POINTER_ID;
@@ -42,6 +43,7 @@ import static android.view.MotionEvent.INVALID_POINTER_ID;
 @SuppressLint("ViewConstructor")
 public class ListSegmentation extends View {
     //Class Attributes
+    private Context context;
     private ArrayList<Figure> segmentation;
     private ArrayList<Figure> segmentationMin;
     private int[] color = {183, 149, 11};
@@ -155,6 +157,7 @@ public class ListSegmentation extends View {
      * @param viewZoom : layout zoom Image RX*/
     public ListSegmentation (Context context, LinearLayout viewZoom, CardView cardView, LinearLayout content, DisplayMetrics metrics, int dimen){
         super(context);
+        this.context = context;
         this.content = content;
         this.viewZoom = viewZoom;
         layout = content;
@@ -753,9 +756,28 @@ public class ListSegmentation extends View {
     }//End Method
 
     public void readDataSegments(JSONArray jsonArray,float width, float height) throws JSONException {
+        int altoCa = metrics.heightPixels;
+        int anchoCa = metrics.widthPixels;
+        float medioCa = (float) altoCa/anchoCa;
+        int altoIm = mBoard.getIntrinsicHeight();
+        int anchoIm = mBoard.getIntrinsicWidth();
+        float medioIm = (float)altoIm/anchoIm;
+        if(medioCa<medioIm){
+            ancho = anchoCa;
+            alto =(int)(medioIm*ancho);
+        }else{
+            alto = altoCa;
+            ancho = (int) (alto/medioIm);
+        }
+        generalWidth = ancho;
+        generalHeight = alto;
+        System.out.println("information : generalWidth - "+generalWidth+", generalHeight - "+generalHeight);
         figureSelected = -1;
         segmentation.clear();
         zoomList.segmentation.clear();
+        invalidate();
+        zoomList.invalidate();
+        requestLayout();
         for (int i = 0; i< jsonArray.length(); i++){
             JSONObject aux = jsonArray.getJSONObject(i);
             int[] colour = {Integer.parseInt(aux.getString("r")), Integer.parseInt(aux.getString("g")),Integer.parseInt(aux.getString("b"))};

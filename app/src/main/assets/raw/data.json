@@ -1,0 +1,131 @@
+{
+  "medicine":{
+    "shared":[
+      {
+        "email":"wilmerpacheco@gmail.com",
+        "caseshared":[
+          {
+            "patient":74596074,
+            "record":"Pierna",
+            "file":{
+              "name":"information.jpg",
+              "description":"fadasdas",
+              "image":"asdfghjkewrtyimagen 50x50"
+            }
+          },
+          {
+            "patient":74596074,
+            "record":"Pierna",
+            "file":{
+              "name":"information.jpg",
+              "description":"fadasdas",
+              "image":"asdfghjkewrty"
+            }
+          }
+        ]
+      }
+    ],
+    "patient": [
+      {
+        "record":[
+          {
+            "file": [
+              {
+                "name":"information.jpg",
+                "description":"fadasdas",
+                "image":"asdfghjkewrty"
+              },
+              {
+                "name":"information.jpg",
+                "description":"fadasdas",
+                "image":"asdfghjkewrty"
+              }
+            ],
+            "name": "Analisis de cadera Antero-posterior"
+          }
+        ],
+        "dni": 75586074,
+        "name":"wilmer alberto",
+        "description":"RX cadera",
+        "age":15,
+        "gender":"0",
+        "residency":"fdsfsd"
+      },
+      {
+        "record":[
+          {
+            "file": [
+              {
+                "name":"information.jpg",
+                "description":"fadasdas",
+                "image":"asdfghjkewrty"
+              },
+              {
+                "name":"information.jpg",
+                "description":"fadasdas",
+                "image":"asdfghjkewrty"
+              }
+            ],
+            "name": "Analisis de cadera Antero-posterior"
+          }
+        ],
+        "name":"wilmer alberto",
+        "description":"RX cadera",
+        "age":15,
+        "gender":"0",
+        "residency":"fdsfsd"
+      }
+    ]
+  },
+  "study":{
+    "shared":[
+      {
+        "email":"edwinsaavedra@gmail.com",
+        "caseshared":[
+          {
+            "record":"",
+            "file":""
+          },
+          {
+            "record":"",
+            "file":""
+          }
+        ]
+      }
+    ],
+    "project": [
+      {
+        "files": [
+          {
+            "name":"information.jpg",
+            "description":"fadasdas",
+            "image":"asdfghjkewrty"
+          },
+          {
+            "name":"information.jpg",
+            "description":"fadasdas",
+            "image":"asdfghjkewrty"
+          }
+        ],
+        "name": "Proyecto 1"
+      },
+      {
+        "files": [
+          {
+            "name":"information.jpg",
+            "description":"fadasdas",
+            "image":"asdfghjkewrty"
+          },
+          {
+            "name":"information.jpg",
+            "description":"fadasdas",
+            "image":"asdfghjkewrty"
+          }
+        ],
+        "name": "Proyecto 1"
+      }
+    ]
+  }
+}
+
+

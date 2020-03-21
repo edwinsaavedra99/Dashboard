@@ -38,11 +38,13 @@ import com.example.dashboard.Filters.MyFilters;
 import com.example.dashboard.Resources.Resource;
 import com.example.dashboard.Utils.ControlMenu;
 import com.example.dashboard.R;
+import com.example.dashboard.Utils.StringUtil;
 import com.google.android.material.textfield.TextInputEditText;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opencv.android.OpenCVLoader;
+import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
@@ -251,6 +253,8 @@ public class LandMarkModelActivity extends AppCompatActivity {
         //Initializing Properties
         initialProperties();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+
 
         infoFigures.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1477,22 +1481,52 @@ public class LandMarkModelActivity extends AppCompatActivity {
             }
         });
     }
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void openLandMarks(){
         try {
             //String rpta = LandMarkService.readLandMarks();
             String rpta = loadJSONFromAsset("raw/landmark.json");
             JSONObject landMarks = new JSONObject(rpta);
             String image = landMarks.getString("image");
-            myListSegmentation.loadImage(myListSegmentation.decodeBase64AndSetImage(image));
+            Bitmap bitmap = myListSegmentation.decodeBase64AndSetImage(image);
+            int flag = 0;
+            FileOutputStream outputStream = null;
+            String fileName = "photo";
+            File file = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            File imageFile = null;
+            try {
+                imageFile = File.createTempFile(fileName,".JPEG",file);
+                currentPhotoPath = imageFile.getAbsolutePath();
+                outputStream = new FileOutputStream(imageFile);
+                bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
+                outputStream.flush();
+                outputStream.close();
+                flag = 1;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(flag == 1){
+                Mat aux = Imgcodecs.imread(currentPhotoPath);
+                Bitmap imageBitmap = BitmapFactory.decodeFile(currentPhotoPath);
+                myListSegmentation.loadImage(imageBitmap);
+                if(aux != null){
+                    img = aux;
+                    myFilters = new MyFilters(aux,imageBitmap);
+                    updateFilters(imageBitmap,aux);
+                }else{
+                    System.out.println("error");
+                }
+            }
+            myListSegmentation.addCircleSegmentation(12,12,12,-1,"123", colour);
+            myListSegmentation.clearList();
+            myListSegmentation.deleteMemory();         //
             JSONObject information = landMarks.getJSONObject("information");
             JSONArray jsonArray = information.getJSONArray("landmarks");
             float imageX = Float.parseFloat(information.getString("imageX"));
             float imagey = Float.parseFloat(information.getString("imagey"));
             myListSegmentation.readDataSegments(jsonArray,imageX,imagey);
 
-        }/* catch (IOException e1) {
-            e1.printStackTrace();
-        }*/ catch (JSONException e) {
+        }catch (JSONException e) {
             e.printStackTrace();
         }
     }
@@ -1556,9 +1590,11 @@ public class LandMarkModelActivity extends AppCompatActivity {
                     }
                     case 3:{
                         auxOriginal2 = null;
+                        break;
                     }
                     case 4:{
                         auxOriginal3 = null;
+                        break;
                     }
                 }
                 //auxOriginal = null;
@@ -1571,7 +1607,6 @@ public class LandMarkModelActivity extends AppCompatActivity {
                     throws IOException {
                 if (response.isSuccessful()){
                     final String responseData = response.body().string();
-
                     switch (codHttpFilter){
                         case 1:{
                             auxOriginal = myListSegmentation.decodeBase64AndSetImage(responseData);
@@ -1594,20 +1629,13 @@ public class LandMarkModelActivity extends AppCompatActivity {
                             break;
                         }
                     }
-
-
-
                     dialog.dismiss();
-
                 }
             }
-
         });
-
     }
 
     public void filtersWithProgressBar(){
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
         builder.setView(R.layout.layout_loading);
@@ -1672,7 +1700,7 @@ public class LandMarkModelActivity extends AppCompatActivity {
         groupVariantOpenCv.setImageBitmap(GroupFilters.makeTransparent(myFilters.filterColor(5),80,"Variant"));
         groupBordersOpenCv.setImageBitmap(GroupFilters.makeTransparent(myFilters.filterCanny(),80,"Borders"));
         groupCalorOpenCv.setImageBitmap(GroupFilters.makeTransparent(myFilters.filterColor(2),80,"Calor"));
-        groupColorsOpenCv.setImageBitmap(GroupFilters.makeTransparent(myFilters.filterSummer(),80,"Colors"));
+        groupColorsOpenCv.setImageBitmap(GroupFilters.makeTransparent(myFilters.filterColor(6),80,"Colors"));
         openCvHttp.setImageBitmap(GroupFilters.makeTransparent(myFilters.filterRGB(),80,"Rx-Server"));
         openCv.setImageBitmap(GroupFilters.makeText(myFilters.filterCanny(),"Canny"));
         openCv1.setImageBitmap(GroupFilters.makeText(myFilters.filerSepia(),"Sepia"));
@@ -1875,23 +1903,29 @@ public class LandMarkModelActivity extends AppCompatActivity {
     }//End Method
 
 
-    public void initialImage(String uri){
-        if(uri!=null){
-            Mat aux = Imgcodecs.imread(uri);
-            Bitmap imageBitmap = BitmapFactory.decodeFile(uri);
-            myListSegmentation.loadImage(imageBitmap);
-            if(aux != null){
-                img = aux;
-                this.original = imageBitmap;
-                updateFilters(imageBitmap,aux);
-            }else{
-                System.out.println("error");
-            }
-            myListSegmentation.loadImage(this.original);
-            myFilters = new MyFilters(this.img,this.original);
-            updateFilters(this.original,img);
-        }else{
 
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    public void initialImage(String uri){
+        if(Resource.openFile){
+            openLandMarks();
+            Resource.openFile = false;
+        }else {
+            if (uri != null) {
+                Mat aux = Imgcodecs.imread(uri);
+                Bitmap imageBitmap = BitmapFactory.decodeFile(uri);
+                myListSegmentation.loadImage(imageBitmap);
+                if (aux != null) {
+                    img = aux;
+                    this.original = imageBitmap;
+                    updateFilters(imageBitmap, aux);
+                } else {
+                    System.out.println("error");
+                }
+                myListSegmentation.loadImage(this.original);
+                myFilters = new MyFilters(this.img, this.original);
+                updateFilters(this.original, img);
+            }
         }
     }
 

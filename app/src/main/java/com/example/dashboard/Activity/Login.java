@@ -70,10 +70,13 @@ public class Login extends AppCompatActivity {
         if(account == null){
             Toast.makeText(this, "Please Login", Toast.LENGTH_SHORT).show();
         }else {
-            System.out.println("usuario logeado:"+account.getDisplayName()+ "\n"+ "email:"+account.getEmail());
             Resource.emailUserLogin = account.getEmail();
             Resource.nameUserLogin = account.getDisplayName();
-            Resource.urlImageUserLogin = account.getPhotoUrl().toString();
+            Resource.urlImageUserLogin = account.getPhotoUrl()+"";
+
+            //Llamar al servicio - este servicio veriica el correo electronico
+            // - si no hay data crea las carpetas en caso contrario - devulve toda su estructura
+
             Intent intent = new Intent(Login.this, HomeActivity.class);
             startActivity(intent);
             // onExploredClicked();

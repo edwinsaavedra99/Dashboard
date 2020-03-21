@@ -3,6 +3,7 @@ package com.example.dashboard.Activity;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,12 +20,15 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.dashboard.Adapter.ProjectAdapter;
 import com.example.dashboard.Models.Project;
 import com.example.dashboard.R;
@@ -56,21 +60,13 @@ public class ProjectActivity extends AppCompatActivity {
     private ProjectAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private ImageView addProject;
-
-    protected static final int PICK_IMAGE =0;
-    protected static final int REQUEST_IMAGE_CAPTURE = 1;
-    private Uri imageurl;
-    private ImageView import_;
-    private AlertDialog dialog_image;
-    private ImageView camera;
-    private ImageView galery;
-    private TextView txt_camera;
-    private  TextView txt_galery;
-    private int flagimage =0;
-    private String currentPhotoPath;
-    private ImageButton imageButton;
+    private ImageView usuarioApp;
+    private TextView textViewApp;
     private JSONObject respuestaConsulta;
     private List list;
+    private int flag;
+    private SearchView searchViewProject;
+    private CardView cardViewUsuario;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,24 +82,54 @@ public class ProjectActivity extends AppCompatActivity {
         list.add(new Project("Project 03"));
         list.add(new Project("Project 04"));
         list.add(new Project("Project 05"));
-
-
-
         addProject.setColorFilter(Color.WHITE);
+        cardViewUsuario = (CardView) findViewById(R.id.cardUsuario);
+        searchViewProject = findViewById(R.id.searchProject);
         recyclerView = (RecyclerView) findViewById(R.id.recicler_project);
         recyclerView.setHasFixedSize(true);
+        textViewApp = findViewById(R.id.textApp);
         layoutManager = new GridLayoutManager(getApplicationContext(),2);
         recyclerView.setLayoutManager(layoutManager);
         adapter =  new ProjectAdapter(list,getApplicationContext());
         recyclerView.setAdapter(adapter);
-
+        usuarioApp = (ImageView) findViewById(R.id.usuarioApp);
+        Glide.with(this).load(Resource.urlImageUserLogin).into(usuarioApp);
         addProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ShowAddDialog();
             }
         });
+        searchViewProject.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        searchViewProject.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+        /*DATA BASE*/
+        searchViewProject.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cardViewUsuario.setVisibility(View.GONE);
+                textViewApp.setVisibility(View.GONE);
+
+            }
+        });
+        searchViewProject.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                cardViewUsuario.setVisibility(View.VISIBLE);
+                textViewApp.setVisibility(View.VISIBLE);
+                return false;
+            }
+        });
 
     }
 
@@ -113,33 +139,17 @@ public class ProjectActivity extends AppCompatActivity {
         dialog.setMessage("Insert Project's Data: " );
         dialog.setCancelable(false);
         final LayoutInflater inflater = LayoutInflater.from(this);
-        View add_layout = inflater.inflate(R.layout.data_project,null);
-        final TextInputEditText editDescription = add_layout.findViewById(R.id.txt_description);
-        imageButton = add_layout.findViewById(R.id.addImageProject);
-        imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    Intent gallery = new Intent();
-                    gallery.setType("image/*");
-                    gallery.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(gallery, "Select picture"), 4);
-                    Toast.makeText(getApplicationContext(), "image from galery", Toast.LENGTH_SHORT).show();
-                }catch (Exception e){
-                    e.printStackTrace();
-                    System.out.println(e.getMessage());
-                    Toast.makeText(getApplicationContext(),"Ups :)",Toast.LENGTH_SHORT).show();
+        final View add_layout = inflater.inflate(R.layout.project_structure_data,null);
 
-                }
-            }
-        });
+        final TextInputEditText editDescription = add_layout.findViewById(R.id.txt_descriptionProject_1);
+        final TextInputEditText editName = add_layout.findViewById(R.id.txt_nameProject_1);
+
         dialog.setView(add_layout);
-        dialog.setPositiveButton("START PROJECT", new DialogInterface.OnClickListener() {
+        dialog.setPositiveButton("ADD PROJECT", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                getApplicationContext().startActivity(intent);
-
+                Project project = new Project(editName.getText().toString(),editDescription.getText().toString());
+                adapter.addElement(project);
             }
         });
         dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
@@ -151,43 +161,6 @@ public class ProjectActivity extends AppCompatActivity {
 
         dialog.show();
 
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        super.onActivityResult(requestCode,resultCode,data);
-        if(requestCode == 4 && resultCode == RESULT_OK){
-            int flag = 0;
-            imageurl = data.getData();
-            FileOutputStream outputStream = null;
-            String fileName = "photo";
-            File file = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-            try{
-                Bitmap bitmap = null;
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
-                    bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(getContentResolver(),imageurl));
-                }else{
-                    bitmap =  MediaStore.Images.Media.getBitmap(getContentResolver(),imageurl);;
-                }
-                File imageFile = File.createTempFile(fileName,".JPEG",file);
-                currentPhotoPath = imageFile.getAbsolutePath();
-                outputStream = new FileOutputStream(imageFile);
-                bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
-                outputStream.flush();
-                outputStream.close();
-                flag = 1;
-            }catch (Exception e ){
-                e.printStackTrace();
-            }
-            if(flag == 1){
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                Bitmap imageBitmap = BitmapFactory.decodeFile(currentPhotoPath);
-                imageButton.setImageBitmap(imageBitmap);
-                Resource.uriImageResource = currentPhotoPath;
-
-            }
-        }
     }
 
     public void setProjects(){
