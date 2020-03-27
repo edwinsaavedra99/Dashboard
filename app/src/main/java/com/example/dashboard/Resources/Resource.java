@@ -1,5 +1,7 @@
 package com.example.dashboard.Resources;
 
+import org.json.JSONObject;
+
 public class Resource {
 
     public static String uriImageResource = null;   // para comunicar activity
@@ -11,9 +13,12 @@ public class Resource {
     public static int role;
 
 
-    public static int idCarpeta = 0;
+    public static String idCarpeta = "unsa";
     public static int idFile = 0;
+    public static int idPacient = 75586974;
 
     public static boolean openFile=false;
 
+    public static JSONObject infoStudy;
+    public static JSONObject infoMedicine;
 }

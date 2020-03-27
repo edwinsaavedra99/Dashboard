@@ -1,5 +1,8 @@
 package com.example.dashboard.Models;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class Patient {
 
     private String name;
@@ -16,6 +19,24 @@ public class Patient {
         this.description = description;
         this.cod = cod;
         this.sex = sex;
+    }
+
+    public JSONObject getJsonPatient(){
+        JSONObject patient = new JSONObject();
+        try {
+            patient.put("name",this.name);
+            patient.put("residency",this.residencia);
+            patient.put("age",this.age);
+            patient.put("description",this.description);
+            patient.put("dni",this.cod);
+            if (sex)  //true - masculino
+                patient.put("gender",0);
+            else  //false - femenino
+                patient.put("gender",1);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return patient;
     }
 
     public String getName() {

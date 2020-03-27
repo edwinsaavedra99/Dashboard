@@ -29,6 +29,7 @@ import com.example.dashboard.Figures.Line;
 import com.example.dashboard.Models.Patient;
 import com.example.dashboard.Models.Project;
 import com.example.dashboard.R;
+import com.example.dashboard.Resources.Resource;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
@@ -105,6 +106,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
                     public boolean onMenuItemClick(MenuItem item) {
                         System.out.println("SELECT ITEM: "+ item.getTitle()+"position: "+i);
                         if(item.getTitle().equals("Open")){
+                            Resource.idCarpeta = items.get(i).getNameProject();
                             Intent intent = new Intent(context, FileProjectActivity.class);
                             context.startActivity(intent);
                         }else if(item.getTitle().equals("Edit")){
@@ -180,15 +182,13 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
         dialog.setCancelable(false);
         final LayoutInflater inflater = LayoutInflater.from(context);
         final View add_layout = inflater.inflate(R.layout.project_structure_data,null);
-        final TextInputEditText editDescription = add_layout.findViewById(R.id.txt_descriptionProject_1);
         final TextInputEditText editName = add_layout.findViewById(R.id.txt_nameProject_1);
-        editDescription.setText(project.getDescription());
         editName.setText(project.getNameProject());
         dialog.setView(add_layout);
         dialog.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Project project1 = new Project(editName.getText().toString(),editDescription.getText().toString());
+                Project project1 = new Project(editName.getText().toString(),"");
                 editElement(project1,position);
             }
         });

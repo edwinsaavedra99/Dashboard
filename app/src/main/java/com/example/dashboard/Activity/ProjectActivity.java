@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.dashboard.Adapter.ProjectAdapter;
+import com.example.dashboard.Models.Patient;
 import com.example.dashboard.Models.Project;
 import com.example.dashboard.R;
 import com.google.android.material.textfield.TextInputEditText;
@@ -140,16 +141,15 @@ public class ProjectActivity extends AppCompatActivity {
         dialog.setCancelable(false);
         final LayoutInflater inflater = LayoutInflater.from(this);
         final View add_layout = inflater.inflate(R.layout.project_structure_data,null);
-
-        final TextInputEditText editDescription = add_layout.findViewById(R.id.txt_descriptionProject_1);
         final TextInputEditText editName = add_layout.findViewById(R.id.txt_nameProject_1);
 
         dialog.setView(add_layout);
         dialog.setPositiveButton("ADD PROJECT", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Project project = new Project(editName.getText().toString(),editDescription.getText().toString());
-                adapter.addElement(project);
+                Project project = new Project(editName.getText().toString(),"");
+                //adapter.addElement(project);
+                addProjectService(Resource.emailUserLogin,Resource.idPacient,project.getNameProject());
             }
         });
         dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
@@ -162,6 +162,47 @@ public class ProjectActivity extends AppCompatActivity {
         dialog.show();
 
     }
+
+    public void addProjectService(String email, int patient, String record){
+
+        MediaType MEDIA_TYPE =
+                MediaType.parse("application/json");
+        final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,
+                TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(
+                60,TimeUnit.SECONDS).build();
+        JSONObject postdata = new JSONObject();
+        try {
+            postdata.put("email",email);
+            postdata.put("patient",patient);
+            postdata.put("record",record);
+        } catch(JSONException e){
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(MEDIA_TYPE,
+                postdata.toString());
+        final Request request = new Request.Builder()
+                .url(getString(R.string.url)+"medicine/createrecord")
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onResponse(Call call, Response response)
+                    throws IOException {
+                if (response.isSuccessful()){
+                    final String responseData = response.body().string();
+                    System.out.println("*****"+responseData);
+
+                }
+            }
+        });
+    }
+
 
     public void setProjects(){
         MediaType MEDIA_TYPE =

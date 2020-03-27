@@ -48,7 +48,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import com.example.dashboard.ListFigures.ListFigure;
@@ -1099,28 +1102,30 @@ public class FiguresModelActivity extends AppCompatActivity {
                 60,TimeUnit.SECONDS).build();
         JSONObject postdata = new JSONObject();
         try {
-            postdata.put("image", myListFigures.getBase64String());
+            Date date = new Date();
+            DateFormat hourdateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+            String infoDate = hourdateFormat.format(date);
+            postdata.put("patient",75586974);
+            postdata.put("email",Resource.emailUserLogin);
+            postdata.put("record","unsa");
             JSONObject posdate123 = new JSONObject();
             posdate123.put("imageX",myListFigures.getGeneralWidth());
             posdate123.put("imagey",myListFigures.getGeneralHeight());
             posdate123.put("profileItems",null);
-            posdate123.put("indicatorsNumber",0);
             posdate123.put("indicators",myListFigures.dataFigures());
-            posdate123.put("indicatorsCreated",myListFigures.getMyFigures().size());
-            posdate123.put("profileName","Edwin");
-            posdate123.put("imageName","image_rx.jpg");
+            posdate123.put("description","esta es la descripcion");
+            posdate123.put("date",infoDate);
+            posdate123.put("name","file1Indicator");
             postdata.put("information",posdate123);
+            postdata.put("image", myListFigures.getBase64String());
             System.out.println(posdate123.toString());
-            //System.out.println(myListSegmentation.getBase64String());
-            // dataFiles.writeJSONFile(postdata.toString());
-
         } catch(JSONException e){
             e.printStackTrace();
         }
         RequestBody body = RequestBody.create(MEDIA_TYPE,
                 postdata.toString());
         final Request request = new Request.Builder()
-                .url("http://192.168.12.121:5000/indicator") /*URL ... INDEX PX DE WILMER*/
+                .url(getString(R.string.url)+"/indicator") /*URL ... INDEX PX DE WILMER*/
                 .post(body)
                 .addHeader("Content-Type", "application/json")
                 .build();
@@ -1241,7 +1246,7 @@ public class FiguresModelActivity extends AppCompatActivity {
         RequestBody body = RequestBody.create(MEDIA_TYPE,
                 postdata.toString());
         final Request request = new Request.Builder()
-                .url("http://192.168.12.121:5000/filters")
+                .url("http://18.219.234.29:5000/filters")
                 .post(body)
                 .addHeader("Content-Type", "application/json")
                 .build();

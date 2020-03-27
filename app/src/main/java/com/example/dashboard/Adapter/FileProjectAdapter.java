@@ -163,21 +163,18 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
         dialog.setCancelable(false);
         final LayoutInflater inflater = LayoutInflater.from(context);
         final View add_layout = inflater.inflate(R.layout.project_structure_data,null);
-        final TextInputEditText editDescription = add_layout.findViewById(R.id.txt_descriptionProject_1);
         final TextInputEditText editName = add_layout.findViewById(R.id.txt_nameProject_1);
-        editDescription.setText(project.getDescriptionFileProject());
         editName.setText(project.getNameFileProject());
         dialog.setView(add_layout);
         dialog.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String name = editName.getText().toString().trim();
-                String description = editDescription.getText().toString().trim();
                 if(name.length() == 0){
                     editName.setError("Error ...");
                     editName.requestFocus();
                 }else {
-                    FileProject project1 = new FileProject(name, description);
+                    FileProject project1 = new FileProject(name, "");
                     project1.setImageFileProject(project.getImageFileProject());
                     editElement(project1, position);
                 }

@@ -28,25 +28,5 @@
                 android:layout_height="wrap_content"
                 android:text="" />
         </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="match_parent"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:hint="Description Project"
-            app:endIconMode="clear_text"
-            app:endIconTint="@color/coloApp"
-            app:startIconDrawable="@drawable/ic_insert_drive_file_black_24dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:inputType="text"
-                android:id="@+id/txt_descriptionProject_1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="" />
-        </com.google.android.material.textfield.TextInputLayout>
-
     </LinearLayout>
 </androidx.cardview.widget.CardView>

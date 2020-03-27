@@ -29,7 +29,9 @@ import com.example.dashboard.Activity.ProjectActivity;
 import com.example.dashboard.Activity.Study.LandMarkModelActivity;
 import com.example.dashboard.Figures.Line;
 import com.example.dashboard.Models.Patient;
+import com.example.dashboard.Models.Project;
 import com.example.dashboard.R;
+import com.example.dashboard.Resources.Resource;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -69,7 +71,10 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientV
          this.items = items;
          itemsFull = new ArrayList<>(items);
     }
-
+    public void addElement(Patient patient){
+        items.add(patient);
+        notifyDataSetChanged();
+    }
     @Override
     public int getItemCount(){
         return items.size();
@@ -102,6 +107,7 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientV
                         System.out.println("SELECT ITEM: "+ item.getTitle()+"position: "+i);
                         if(item.getTitle().equals("Open")){
                             Intent intent = new Intent(context, ProjectActivity.class);
+
                             context.startActivity(intent);
                         }else if(item.getTitle().equals("Edit")){
 

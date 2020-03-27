@@ -110,6 +110,7 @@ public class StudyActivity extends AppCompatActivity {
         searchViewShare = (SearchView) findViewById(R.id.searchProjectStudyShare);
         usuarioApp = (ImageView) findViewById(R.id.usuarioAppStudy);
         Glide.with(this).load(Resource.urlImageUserLogin).into(usuarioApp);
+        //getInfoStudy();
         flagSearchOpen1 = false;
         flagSearchOpen2 = false;
         searchViewShare.setOnSearchClickListener(new View.OnClickListener() {
@@ -222,5 +223,49 @@ public class StudyActivity extends AppCompatActivity {
     }
 
 
+    public void getInfoStudy(){
+        MediaType MEDIA_TYPE =
+                MediaType.parse("application/json");
+        final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,
+                TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(
+
+                60,TimeUnit.SECONDS).build();
+        JSONObject postdata = new JSONObject();
+        try {
+            postdata.put("email", Resource.emailUserLogin);
+            //System.out.println(postdata.toString());
+
+        } catch(JSONException e){
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(MEDIA_TYPE,
+                postdata.toString());
+        final Request request = new Request.Builder()
+                .url(getString(R.string.url)+"study/information") /*URL ... INDEX PX DE WILMER*/
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                System.out.println("Wilmer ERROR :" + e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response)
+                    throws IOException {
+                if (response.isSuccessful()){
+                    final String responseData = response.body().string();
+                    System.out.println("-------**********-----------"+responseData);
+                    try {
+                        Resource.infoStudy =  new JSONObject(responseData);;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
 
 }

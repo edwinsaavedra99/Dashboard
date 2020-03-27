@@ -30,7 +30,7 @@ public class FileProject {
         this.timeFileProject = hourFormat.format(date);
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         this.DateFileProject = dateFormat.format(date);
-        DateFormat hourdateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+        DateFormat hourdateFormat = new SimpleDateFormat("dd/MM/yyyy/HH/mm/ss");
         String test = hourdateFormat.format(date);
         System.out.println(test);
     }

@@ -53,7 +53,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import com.example.dashboard.Figures.Circle;
 import com.example.dashboard.ListFigures.ListFigure;
@@ -1430,36 +1433,27 @@ public class LandMarkModelActivity extends AppCompatActivity {
         final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(60,TimeUnit.SECONDS).build();
         JSONObject postdata = new JSONObject();
         try {
-
-            //UTILIZAR CLASE RESOURCE SI SE NECESITA
-            String usuario = Resource.emailUserLogin;
-            int role = Resource.role;
-            int carpeta = Resource.idCarpeta;
-            int file = Resource.idFile;
-
+            Date date = new Date();
+            DateFormat hourdateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+            String infoDate = hourdateFormat.format(date);
             postdata.put("image", myListSegmentation.getBase64String());
-
+            postdata.put("email",Resource.emailUserLogin);
+            postdata.put("record","covid");
             JSONObject posdate123 = new JSONObject();
             posdate123.put("imageX",myListSegmentation.getGeneralWidth());
             posdate123.put("imagey",myListSegmentation.getGeneralHeight());
             posdate123.put("profileItems",null);
-            posdate123.put("landmarksNumber",0);
             posdate123.put("landmarks",myListSegmentation.dataSegments());
-            posdate123.put("landmarksCreated",myListSegmentation.getSegmentation().size());
-            posdate123.put("profileName","Edwin");
-            posdate123.put("imageName","image_rx.jpg");
-
+            posdate123.put("name","file1");
+            posdate123.put("description","esta es la descripcion");
+            posdate123.put("date",infoDate);
             postdata.put("information",posdate123);
-            System.out.println(posdate123.toString());
-            //System.out.println("******************************");
-            //System.out.println(postdata.toString());
-
         } catch(JSONException e){
             e.printStackTrace();
         }
         RequestBody body = RequestBody.create(MEDIA_TYPE,postdata.toString());
         final Request request = new Request.Builder()
-                .url("http://192.168.12.121:5000/landmark") /*URL ... INDEX Pc DE WILMER*/
+                .url(getString(R.string.url)+"/landmark") /*URL ... INDEX Pc DE WILMER*/
                 .post(body)
                 .addHeader("Content-Type", "application/json")
                 .build();
@@ -1573,7 +1567,7 @@ public class LandMarkModelActivity extends AppCompatActivity {
         RequestBody body = RequestBody.create(MEDIA_TYPE,
                 postdata.toString());
         final Request request = new Request.Builder()
-                .url("http://192.168.12.121:5000/filters")
+                .url("http://18.219.234.29:5000/filters")
                 .post(body)
                 .addHeader("Content-Type", "application/json")
                 .build();
@@ -1932,6 +1926,7 @@ public class LandMarkModelActivity extends AppCompatActivity {
     }
 
 }//End Class
+
 
 
 

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:cardElevation="10dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:hint="Name Patient"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/coloApp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:inputType="text"
+                android:id="@+id/txt_namePatient"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:hint="Description Patient"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/coloApp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:inputType="text"
+                android:id="@+id/txt_descriptionPatient"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:hint="Age Patient"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/coloApp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:inputType="number"
+                android:id="@+id/txt_agePatient"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:hint="Address Patient"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/coloApp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:inputType="text"
+                android:id="@+id/addreesPatient"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:hint="DNI Patient"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/coloApp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:inputType="number"
+                android:id="@+id/dniPatient"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <TextView
+            android:layout_marginBottom="12dp"
+            android:padding="12dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:text="Gender Patient"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></TextView>
+        <RadioGroup
+            android:paddingLeft="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:tag="sex"
+            android:id="@+id/sexPatient"
+            android:textAlignment="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+            <RadioButton
+                android:checked="true"
+                android:buttonTint="#E0000000"
+                android:id="@+id/radioMasculino"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Masculino" />
+            <RadioButton
+                android:buttonTint="#E0000000"
+                android:id="@+id/radioFemenino"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Femenino" />
+        </RadioGroup>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
