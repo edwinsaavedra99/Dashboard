@@ -106,7 +106,7 @@ public class FragmentDoctorPatients extends Fragment {
         RequestBody body = RequestBody.create(MEDIA_TYPE,
                 postdata.toString());
         final Request request = new Request.Builder()
-                .url(getString(R.string.url)+"medicine/information") /*URL ... INDEX PX DE WILMER*/
+                .url(getString(R.string.url)+"medicine/selectpatients") /*URL ... INDEX PX DE WILMER*/
                 .post(body)
                 .addHeader("Content-Type", "application/json")
                 .build();

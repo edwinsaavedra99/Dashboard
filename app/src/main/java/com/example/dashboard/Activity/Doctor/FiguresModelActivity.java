@@ -229,7 +229,6 @@ public class FiguresModelActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Animation.animationScale(saveFigures,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
                 showSaveDialog();
-                showToast("Data Save Successfully");
             }
         });
         //back menu right
@@ -1064,8 +1063,8 @@ public class FiguresModelActivity extends AppCompatActivity {
  
     private void showSaveDialog(){
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("INFO FIGURE: ");
-        dialog.setMessage("Please description figure");
+        dialog.setTitle("SAVE: ");
+        dialog.setMessage("Please insert Name and Description");
         LayoutInflater inflater = LayoutInflater.from(this);
         @SuppressLint("InflateParams") View login_layout = inflater.inflate(R.layout.layout_save_figure,null);
         final TextInputEditText nameDescription = login_layout.findViewById(R.id.txt_nameProject);
@@ -1179,10 +1178,19 @@ public class FiguresModelActivity extends AppCompatActivity {
                     final String responseData = response.body().string();
                     System.out.println("**************RESPUESTA ****************");
                     System.out.println(responseData);
-                    System.out.println("**************RESPUESTA ****************");
-                    Resource.openFile = true;
-                    Resource.nameFile = name;
-                    Resource.descriptionFile = descripcion;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(responseData.equals("error")){
+                                Toast.makeText(getApplicationContext(),"Error: The name is already",Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(getApplicationContext(),"Save Successfully",Toast.LENGTH_SHORT).show();
+                                Resource.openFile = true;
+                                Resource.nameFile = name;
+                                Resource.descriptionFile = descripcion;
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -1283,7 +1291,7 @@ public class FiguresModelActivity extends AppCompatActivity {
         RequestBody body = RequestBody.create(MEDIA_TYPE,
                 postdata.toString());
         final Request request = new Request.Builder()
-                .url("http://18.219.234.29:5000/filters")
+                .url(getString(R.string.url)+"filters")
                 .post(body)
                 .addHeader("Content-Type", "application/json")
                 .build();

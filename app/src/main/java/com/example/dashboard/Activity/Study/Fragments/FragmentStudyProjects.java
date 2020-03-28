@@ -86,7 +86,7 @@ public class FragmentStudyProjects extends Fragment {
         RequestBody body = RequestBody.create(MEDIA_TYPE,
                 postdata.toString());
         final Request request = new Request.Builder()
-                .url(getString(R.string.url)+"study/information") /*URL ... INDEX PX DE WILMER*/
+                .url(getString(R.string.url)+"study/selectprojects") /*URL ... INDEX PX DE WILMER*/
                 .post(body)
                 .addHeader("Content-Type", "application/json")
                 .build();
@@ -108,11 +108,9 @@ public class FragmentStudyProjects extends Fragment {
                                 if(Resource.infoStudy!=null){
                                     list = new ArrayList();
                                     try {
-                                        JSONArray jsonArray = Resource.infoStudy.getJSONArray("proyectos");
+                                        JSONArray jsonArray = Resource.infoStudy.getJSONArray("projects");
                                         for(int i = 0; i<jsonArray.length();i++){
-                                            JSONObject aux = jsonArray.getJSONObject(i);
-                                            String name = aux.getString("project");
-                                            list.add(new Project(name));
+                                            list.add(new Project(jsonArray.get(i).toString()));
                                         }
                                         adapter =  new ProjectAdapter(list,getActivity());
                                         recyclerView.setAdapter(adapter);

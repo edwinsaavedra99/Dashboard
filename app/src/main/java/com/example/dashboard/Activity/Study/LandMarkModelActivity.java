@@ -476,10 +476,7 @@ public class LandMarkModelActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Animation.animationScale(saveData,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
-                Toast toast;
-                toast = Toast.makeText(getApplicationContext(),"Data Save Successfully",Toast.LENGTH_SHORT);
-                toast.show();
-                saveLandMarks();
+                showSaveDialog();
             }
         });
         preview.setOnClickListener(new View.OnClickListener() {
@@ -1384,8 +1381,42 @@ public class LandMarkModelActivity extends AppCompatActivity {
         getOpenCvHttp4.setVisibility(View.GONE);
     }
 
-    private void showSaveDialog(final boolean flagSegmentation){
-
+    private void showSaveDialog(){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("SAVE: ");
+        dialog.setMessage("Please insert Name and Description");
+        LayoutInflater inflater = LayoutInflater.from(this);
+        @SuppressLint("InflateParams") View login_layout = inflater.inflate(R.layout.layout_save_figure,null);
+        final TextInputEditText nameDescription = login_layout.findViewById(R.id.txt_nameProject);
+        final TextInputEditText editDescription = login_layout.findViewById(R.id.txt_descriptionProject);
+        if(Resource.openFile){
+            nameDescription.setText(Resource.nameFile);
+            editDescription.setText(Resource.descriptionFile);
+        }else{
+            nameDescription.setText("");
+            editDescription.setText("");
+        }
+        dialog.setView(login_layout);
+        dialog.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String name = nameDescription.getText().toString().trim();
+                String description = editDescription.getText().toString().trim();
+                if(name.length() == 0){
+                    nameDescription.setError("Error ...");
+                    nameDescription.requestFocus();
+                }else {
+                    saveLandMarks(name,description);
+                }
+            }
+        });
+        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     private void showInfoDialog(final boolean flagSegmentation) {
@@ -1419,12 +1450,7 @@ public class LandMarkModelActivity extends AppCompatActivity {
     }
 
 
-    public void saveLandMarks(){
-       /* try {
-            LandMarkService.sendLandMarks(myListSegmentation.getBase64String(),myListSegmentation);
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }*/
+    public void saveLandMarks(String name, String description){
         MediaType MEDIA_TYPE = MediaType.parse("application/json");
         final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(60,TimeUnit.SECONDS).build();
         JSONObject postdata = new JSONObject();
@@ -1434,14 +1460,14 @@ public class LandMarkModelActivity extends AppCompatActivity {
             String infoDate = hourdateFormat.format(date);
             postdata.put("image", myListSegmentation.getBase64String());
             postdata.put("email",Resource.emailUserLogin);
-            postdata.put("record","covid");
+            postdata.put("project",Resource.idCarpeta);
             JSONObject posdate123 = new JSONObject();
             posdate123.put("imageX",myListSegmentation.getGeneralWidth());
             posdate123.put("imagey",myListSegmentation.getGeneralHeight());
             posdate123.put("profileItems",null);
             posdate123.put("landmarks",myListSegmentation.dataSegments());
-            posdate123.put("name","file1");
-            posdate123.put("description","esta es la descripcion");
+            posdate123.put("name",name);
+            posdate123.put("description",description);
             posdate123.put("date",infoDate);
             postdata.put("information",posdate123);
         } catch(JSONException e){

@@ -228,20 +228,27 @@ public class FileProjectActivity extends AppCompatActivity {
         MediaType MEDIA_TYPE = MediaType.parse("application/json");
         final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60, TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(60,TimeUnit.SECONDS).build();
         JSONObject postdata = new JSONObject();
-        try {
-            postdata.put("email", Resource.emailUserLogin);
-        } catch(JSONException e){
-            e.printStackTrace();
+        String addURL = "";
+        if(role == 1) { //medicine
+            addURL = "medicine/selectfiles";
+            try {
+                postdata.put("email", Resource.emailUserLogin);
+                postdata.put("dni",Resource.idPacient);
+                postdata.put("record",Resource.idCarpeta);
+            } catch(JSONException e){
+                e.printStackTrace();
+            }
+        }else if(role == 2){ //study
+            addURL = "study/selectfiles";
+            try {
+                postdata.put("email", Resource.emailUserLogin);
+                postdata.put("project",Resource.idCarpeta);
+            } catch(JSONException e){
+                e.printStackTrace();
+            }
         }
         RequestBody body = RequestBody.create(MEDIA_TYPE,
                 postdata.toString());
-        String addURL = "";
-        if(role == 1) { //medicine
-             addURL = "medicine/information";
-        }else if(role == 2){ //study
-            addURL = "study/information";
-        }
-
         final Request request = new Request.Builder()
                 .url(getString(R.string.url)+addURL) /*URL ... INDEX PX DE WILMER*/
                 .post(body)
@@ -267,26 +274,14 @@ public class FileProjectActivity extends AppCompatActivity {
                                     if(Resource.infoMedicine!=null){
                                         list = new ArrayList();
                                         try {
-                                            JSONArray jsonArray = Resource.infoMedicine.getJSONArray("patients");
-                                            for(int i = 0; i<jsonArray.length();i++){
-                                                JSONObject aux = jsonArray.getJSONObject(i);
-                                                if(aux.getInt("dni") == Resource.idPacient){
-                                                    JSONArray jsonArray1 = aux.getJSONArray("record");
-                                                    for(int j = 0; j<jsonArray1.length();j++){
-                                                        JSONObject jsonObject = jsonArray1.getJSONObject(j);
-                                                        if(jsonObject.getString("name").equals(Resource.idCarpeta)){
-                                                            JSONArray jsonArray2 = jsonObject.getJSONArray("files");
-                                                            for(int k = 0; k < jsonArray2.length();k++){
-                                                                JSONObject jsonObject1 = jsonArray2.getJSONObject(k);
-                                                                String image = jsonObject1.getString("image");
-                                                                String name = jsonObject1.getString("name");
-                                                                String description = jsonObject1.getString("description");
-                                                                String date = jsonObject1.getString("date");
-                                                                list.add(new FileProject(image,name,description,date));
-                                                            }
-                                                        }
-                                                    }
-                                                }
+                                            JSONArray jsonArray = Resource.infoMedicine.getJSONArray("files");
+                                            for(int k = 0; k < jsonArray.length();k++){
+                                                JSONObject jsonObject1 = jsonArray.getJSONObject(k);
+                                                String image = jsonObject1.getString("image");
+                                                String name = jsonObject1.getString("name");
+                                                String description = jsonObject1.getString("description");
+                                                String date = jsonObject1.getString("date");
+                                                list.add(new FileProject(image,name,description,date));
                                             }
                                             adapterFileProject =  new FileProjectAdapter(list,getApplicationContext());
                                             recyclerViewFileProject.setAdapter(adapterFileProject);
@@ -295,10 +290,26 @@ public class FileProjectActivity extends AppCompatActivity {
                                         }
                                     }
                                 }else if(role ==2){ //study
-
+                                    Resource.infoStudy =  new JSONObject(responseData);;
+                                    if(Resource.infoStudy!=null){
+                                        list = new ArrayList();
+                                        try {
+                                            JSONArray jsonArray = Resource.infoStudy.getJSONArray("files");
+                                            for(int k = 0; k < jsonArray.length();k++){
+                                                JSONObject jsonObject1 = jsonArray.getJSONObject(k);
+                                                String image = jsonObject1.getString("image");
+                                                String name = jsonObject1.getString("name");
+                                                String description = jsonObject1.getString("description");
+                                                String date = jsonObject1.getString("date");
+                                                list.add(new FileProject(image,name,description,date));
+                                            }
+                                            adapterFileProject =  new FileProjectAdapter(list,getApplicationContext());
+                                            recyclerViewFileProject.setAdapter(adapterFileProject);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
                                 }
-
-
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

@@ -230,7 +230,7 @@ public class ProjectActivity extends AppCompatActivity {
         RequestBody body = RequestBody.create(MEDIA_TYPE,
                 postdata.toString());
         final Request request = new Request.Builder()
-                .url(getString(R.string.url)+"medicine/selectpatients") /*URL ... INDEX PX DE WILMER*/
+                .url(getString(R.string.url)+"medicine/selectrecords") /*URL ... INDEX PX DE WILMER*/
                 .post(body)
                 .addHeader("Content-Type", "application/json")
                 .build();
@@ -253,10 +253,9 @@ public class ProjectActivity extends AppCompatActivity {
                                 if(Resource.infoMedicine!=null){
                                     list = new ArrayList();
                                     try {
-                                        JSONArray jsonArray = Resource.infoMedicine.getJSONArray("record");
+                                        JSONArray jsonArray = Resource.infoMedicine.getJSONArray("records");
                                         for(int i = 0; i<jsonArray.length();i++){
-                                            JSONObject aux = jsonArray.getJSONObject(i);
-                                            list.add(new Project(aux.getString("name")));
+                                            list.add(new Project(jsonArray.get(i).toString()));
                                         }
                                         adapter =  new ProjectAdapter(list,getApplicationContext());
                                         recyclerView.setAdapter(adapter);

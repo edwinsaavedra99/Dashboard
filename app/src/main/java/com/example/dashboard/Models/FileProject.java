@@ -29,8 +29,8 @@ public class FileProject {
         this.descriptionFileProject = descriptionFileProject;
         char[] test = dateFileProject.toCharArray();
         try {
-            this.DateFileProject = test[0] + test[1] + test[2] + test[3] + "/" + test[5] + test[6] + "/" + test[8] + test[9];
-            this.timeFileProject = test[11] + test[12] + ":" + test[14] + test[15] + ":" + test[17] + test[18];
+            this.DateFileProject = dateFileProject.substring(0,dateFileProject.indexOf("_")) + "/" + test[5] + test[6] + "/" + test[8] + test[9];
+            this.timeFileProject = dateFileProject.substring(11,13)  + ":" + test[17] + test[18];
         }catch (Exception e){
             this.DateFileProject = "";
             this.timeFileProject = "";
