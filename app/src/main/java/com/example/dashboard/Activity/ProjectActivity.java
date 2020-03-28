@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.dashboard.Adapter.PatientAdapter;
 import com.example.dashboard.Adapter.ProjectAdapter;
 import com.example.dashboard.Models.Patient;
 import com.example.dashboard.Models.Project;
@@ -76,13 +77,7 @@ public class ProjectActivity extends AppCompatActivity {
         /*DATA VIEW*/
         addProject = findViewById(R.id.addProject);
         /*DATA BASE*/
-        list = new ArrayList();
-        //initialComponentsActivity();
-        list.add(new Project("Project 01"));
-        list.add(new Project("Project 02"));
-        list.add(new Project("Project 03"));
-        list.add(new Project("Project 04"));
-        list.add(new Project("Project 05"));
+
         addProject.setColorFilter(Color.WHITE);
         cardViewUsuario = (CardView) findViewById(R.id.cardUsuario);
         searchViewProject = findViewById(R.id.searchProject);
@@ -91,8 +86,7 @@ public class ProjectActivity extends AppCompatActivity {
         textViewApp = findViewById(R.id.textApp);
         layoutManager = new GridLayoutManager(getApplicationContext(),2);
         recyclerView.setLayoutManager(layoutManager);
-        adapter =  new ProjectAdapter(list,getApplicationContext());
-        recyclerView.setAdapter(adapter);
+        getInfoMedicine();
         usuarioApp = (ImageView) findViewById(R.id.usuarioApp);
         Glide.with(this).load(Resource.urlImageUserLogin).into(usuarioApp);
         addProject.setOnClickListener(new View.OnClickListener() {
@@ -147,9 +141,16 @@ public class ProjectActivity extends AppCompatActivity {
         dialog.setPositiveButton("ADD PROJECT", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Project project = new Project(editName.getText().toString(),"");
-                //adapter.addElement(project);
-                addProjectService(Resource.emailUserLogin,Resource.idPacient,project.getNameProject());
+
+                String name = editName.getText().toString().trim();
+                if(name.length() != 0){
+                    Project project = new Project(editName.getText().toString(),"");
+                    addProjectService(Resource.emailUserLogin,Resource.idPacient,project.getNameProject());
+                }else{
+                    editName.setError("Error ...");
+                    editName.requestFocus();
+                }
+
             }
         });
         dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
@@ -163,7 +164,7 @@ public class ProjectActivity extends AppCompatActivity {
 
     }
 
-    public void addProjectService(String email, int patient, String record){
+    public void addProjectService(String email, int patient, final String record){
 
         MediaType MEDIA_TYPE =
                 MediaType.parse("application/json");
@@ -195,7 +196,19 @@ public class ProjectActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response)
                     throws IOException {
                 if (response.isSuccessful()){
+
                     final String responseData = response.body().string();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (responseData.equals("error")){
+                                Toast.makeText(getApplicationContext(),"The name already exists",Toast.LENGTH_SHORT).show();
+                            }else{
+                                Project project = new Project(record,"");
+                                adapter.addElement(project);
+                            }
+                        }
+                    });
                     System.out.println("*****"+responseData);
 
                 }
@@ -204,71 +217,61 @@ public class ProjectActivity extends AppCompatActivity {
     }
 
 
-    public void setProjects(){
-        MediaType MEDIA_TYPE =
-                MediaType.parse("application/json");
-        final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,
-                TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(
-
-                60,TimeUnit.SECONDS).build();
+    public void getInfoMedicine(){
+        MediaType MEDIA_TYPE = MediaType.parse("application/json");
+        final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(60,TimeUnit.SECONDS).build();
         JSONObject postdata = new JSONObject();
         try {
-            postdata.put("usuario", Resource.emailUserLogin);
-            System.out.println(postdata.toString());
-
+            postdata.put("email", Resource.emailUserLogin);
+            postdata.put("dni",Resource.idPacient);
         } catch(JSONException e){
             e.printStackTrace();
         }
         RequestBody body = RequestBody.create(MEDIA_TYPE,
                 postdata.toString());
         final Request request = new Request.Builder()
-                .url("http://192.168.137.1:5000/information") /*URL ... INDEX PX DE WILMER*/
+                .url(getString(R.string.url)+"medicine/selectpatients") /*URL ... INDEX PX DE WILMER*/
                 .post(body)
                 .addHeader("Content-Type", "application/json")
                 .build();
-
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                System.out.println("Wilmer ERROR :" + e);
-                //auxOriginal = myFilters.filterRGB();
+                e.printStackTrace();
             }
-
             @Override
             public void onResponse(Call call, Response response)
                     throws IOException {
                 if (response.isSuccessful()){
                     final String responseData = response.body().string();
-                    System.out.println(responseData);
-                    try {
-                        respuestaConsulta = new JSONObject(responseData);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    System.out.println("-------**********-----------"+responseData);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Resource.infoMedicine =  new JSONObject(responseData);;
+                                if(Resource.infoMedicine!=null){
+                                    list = new ArrayList();
+                                    try {
+                                        JSONArray jsonArray = Resource.infoMedicine.getJSONArray("record");
+                                        for(int i = 0; i<jsonArray.length();i++){
+                                            JSONObject aux = jsonArray.getJSONObject(i);
+                                            list.add(new Project(aux.getString("name")));
+                                        }
+                                        adapter =  new ProjectAdapter(list,getApplicationContext());
+                                        recyclerView.setAdapter(adapter);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
                 }
             }
         });
     }
 
-    public void initialComponentsActivity(){
-        setProjects();
-        if(respuestaConsulta!=null){
-            try {
-                JSONArray jsonArray = respuestaConsulta.getJSONArray("proyectos");
-                for(int i = 0; i<jsonArray.length();i++){
-                    JSONObject aux = jsonArray.getJSONObject(i);
-                    String name = aux.getString("carpeta");
-                    list.add(new Project(name));
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            /*myListSegmentation.loadImage(myListSegmentation.decodeBase64AndSetImage(image));
-            JSONObject information = landMarks.getJSONObject("information");
-            JSONArray jsonArray = information.getJSONArray("landmarks");
-            float imageX = Float.parseFloat(information.getString("imageX"));
-            float imagey = Float.parseFloat(information.getString("imagey"));
-            myListSegmentation.readDataSegments(jsonArray,imageX,imagey);*/
-        }
-    }
 }

@@ -15,9 +15,11 @@ public class Resource {
 
     public static String idCarpeta = "unsa";
     public static int idFile = 0;
-    public static int idPacient = 75586974;
+    public static int idPacient;
 
     public static boolean openFile=false;
+    public static String nameFile;
+    public static String descriptionFile;
 
     public static JSONObject infoStudy;
     public static JSONObject infoMedicine;

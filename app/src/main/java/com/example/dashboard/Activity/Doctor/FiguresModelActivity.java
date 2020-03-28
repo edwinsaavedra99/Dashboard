@@ -228,7 +228,7 @@ public class FiguresModelActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Animation.animationScale(saveFigures,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
-                saveIndicator();
+                showSaveDialog();
                 showToast("Data Save Successfully");
             }
         });
@@ -1062,7 +1062,43 @@ public class FiguresModelActivity extends AppCompatActivity {
         getOpenCvHttp4.setVisibility(View.GONE);
     }
  
-    private void showSaveDialog(final boolean flagSegmentation){  }
+    private void showSaveDialog(){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("INFO FIGURE: ");
+        dialog.setMessage("Please description figure");
+        LayoutInflater inflater = LayoutInflater.from(this);
+        @SuppressLint("InflateParams") View login_layout = inflater.inflate(R.layout.layout_save_figure,null);
+        final TextInputEditText nameDescription = login_layout.findViewById(R.id.txt_nameProject);
+        final TextInputEditText editDescription = login_layout.findViewById(R.id.txt_descriptionProject);
+        if(Resource.openFile){
+            nameDescription.setText(Resource.nameFile);
+            editDescription.setText(Resource.descriptionFile);
+        }else{
+            nameDescription.setText("");
+            editDescription.setText("");
+        }
+        dialog.setView(login_layout);
+        dialog.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String name = nameDescription.getText().toString().trim();
+                String description = editDescription.getText().toString().trim();
+                if(name.length() == 0){
+                    nameDescription.setError("Error ...");
+                    nameDescription.requestFocus();
+                }else {
+                    saveIndicator(name,description);
+                }
+            }
+        });
+        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
 
     private void showInfoDialog() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
@@ -1094,7 +1130,7 @@ public class FiguresModelActivity extends AppCompatActivity {
 
 
 
-    public void saveIndicator(){
+    public void saveIndicator(final String descripcion,final String name){
         MediaType MEDIA_TYPE =
                 MediaType.parse("application/json");
         final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,
@@ -1105,17 +1141,17 @@ public class FiguresModelActivity extends AppCompatActivity {
             Date date = new Date();
             DateFormat hourdateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
             String infoDate = hourdateFormat.format(date);
-            postdata.put("patient",75586974);
+            postdata.put("patient",Resource.idPacient);
             postdata.put("email",Resource.emailUserLogin);
-            postdata.put("record","unsa");
+            postdata.put("record",Resource.idCarpeta);
             JSONObject posdate123 = new JSONObject();
             posdate123.put("imageX",myListFigures.getGeneralWidth());
             posdate123.put("imagey",myListFigures.getGeneralHeight());
             posdate123.put("profileItems",null);
             posdate123.put("indicators",myListFigures.dataFigures());
-            posdate123.put("description","esta es la descripcion");
+            posdate123.put("description",descripcion);
             posdate123.put("date",infoDate);
-            posdate123.put("name","file1Indicator");
+            posdate123.put("name",name);
             postdata.put("information",posdate123);
             postdata.put("image", myListFigures.getBase64String());
             System.out.println(posdate123.toString());
@@ -1133,8 +1169,7 @@ public class FiguresModelActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                System.out.println("Wilmer ERROR :" + e);
-                //auxOriginal = myFilters.filterRGB();
+                e.printStackTrace();
             }
 
             @Override
@@ -1145,7 +1180,9 @@ public class FiguresModelActivity extends AppCompatActivity {
                     System.out.println("**************RESPUESTA ****************");
                     System.out.println(responseData);
                     System.out.println("**************RESPUESTA ****************");
-
+                    Resource.openFile = true;
+                    Resource.nameFile = name;
+                    Resource.descriptionFile = descripcion;
                 }
             }
         });

@@ -86,15 +86,11 @@ public class FragmentDoctorPatients extends Fragment {
                 return false;
             }
         });
-        List list = new ArrayList();
-        list.add(new Patient("EDWIN SAAVEDRA","Arequipa",21,"fractura",12345678,true));
         recyclerView = (RecyclerView) viewGroup.findViewById(R.id.recicler_patient);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new PatientAdapter(list,getActivity());
-        recyclerView.setAdapter(adapter);
-        //getInfoMedicine();
+        getInfoMedicine();
         return viewGroup;
     }
 
@@ -130,7 +126,7 @@ public class FragmentDoctorPatients extends Fragment {
                         public void run() {
                             try {
                                 Resource.infoMedicine =  new JSONObject(responseData);;
-                                if(Resource.infoStudy!=null){
+                                if(Resource.infoMedicine!=null){
                                     list = new ArrayList();
                                     try {
                                         JSONArray jsonArray = Resource.infoMedicine.getJSONArray("patients");
@@ -212,15 +208,17 @@ public class FragmentDoctorPatients extends Fragment {
                 }
                 if(editAge.getText().toString().trim().length() == 0){
                     flagAddPatient = false;
-                    age = Integer.parseInt(editAge.getText().toString().trim());
                     editAge.setError("Error ...");
                     editAge.requestFocus();
+                }else{
+                    age = Integer.parseInt(editAge.getText().toString().trim());
                 }
                 if(editDNI.getText().toString().trim().length() == 0){
                     flagAddPatient = false;
-                    dni = Integer.parseInt(editDNI.getText().toString().trim());
                     editDNI.setError("Error ...");
                     editDNI.requestFocus();
+                }else{
+                    dni = Integer.parseInt(editDNI.getText().toString().trim());
                 }
                 if(flagAddPatient) {
                     Patient patient = new Patient(name, residency, age, description, dni, sex);

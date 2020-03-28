@@ -53,7 +53,7 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientV
         public ImageView menuItem;
         public RelativeLayout cardLayout;
         public LinearLayout boxPatient;
-
+        public TextView dniPatient;
         public PatientViewHolder(View v){
             super(v);
             name = (TextView) v.findViewById(R.id.namePatient);
@@ -61,6 +61,7 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientV
             description = (TextView) v.findViewById(R.id.descrptionPatient);
             sex = (TextView) v.findViewById(R.id.sexPatient);
             home = (TextView) v.findViewById(R.id.homePatient);
+            dniPatient  = (TextView) v.findViewById(R.id.dniPatient);
             menuItem = (ImageView)v.findViewById(R.id.menuItemPatient);
             cardLayout = (RelativeLayout) v.findViewById(R.id.cardLayout);
             boxPatient = (LinearLayout) v.findViewById(R.id.boxPatient);
@@ -91,7 +92,8 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientV
         patientViewHolder.name.setText(items.get(i).getName());
         patientViewHolder.age.setText("Edad: "+items.get(i).getAge() + " , ");
         patientViewHolder.description.setText("Caso: "+items.get(i).getDescription());
-        patientViewHolder.home.setText("Residencia: "+items.get(i).getResidencia() );
+        patientViewHolder.home.setText("Residencia: "+items.get(i).getResidencia());
+        patientViewHolder.dniPatient.setText("DNI: "+ items.get(i).getCod());
         if(items.get(i).isSex())
             patientViewHolder.sex.setText("Sexo: Masculino ,");
         else
@@ -106,8 +108,8 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientV
                     public boolean onMenuItemClick(MenuItem item) {
                         System.out.println("SELECT ITEM: "+ item.getTitle()+"position: "+i);
                         if(item.getTitle().equals("Open")){
+                            Resource.idPacient = items.get(i).getCod();
                             Intent intent = new Intent(context, ProjectActivity.class);
-
                             context.startActivity(intent);
                         }else if(item.getTitle().equals("Edit")){
 

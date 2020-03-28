@@ -31,16 +31,32 @@ import com.bumptech.glide.Glide;
 import com.example.dashboard.Activity.Doctor.FiguresModelActivity;
 import com.example.dashboard.Activity.Study.LandMarkModelActivity;
 import com.example.dashboard.Adapter.FileProjectAdapter;
+import com.example.dashboard.Adapter.ProjectAdapter;
 import com.example.dashboard.Models.FileProject;
+import com.example.dashboard.Models.Project;
 import com.example.dashboard.R;
 import com.example.dashboard.Utils.StringUtil;
 import com.example.dashboard.Resources.Resource;
 import com.google.android.material.textfield.TextInputEditText;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class FileProjectActivity extends AppCompatActivity {
 
@@ -52,6 +68,7 @@ public class FileProjectActivity extends AppCompatActivity {
     private ImageView addFileProject;
     private ImageView usuarioApp;
     private CardView cardViewUsuario;
+    private List list;
     private Uri imageurl;
     private String currentPhotoPath;
     private ImageButton imageButton;
@@ -107,26 +124,12 @@ public class FileProjectActivity extends AppCompatActivity {
                 return false;
             }
         });
-        List list = new ArrayList();
-        String imag64 = StringUtil.loadFromAsset("raw/image64.txt",this);
-        if(Resource.role == 2) { //study
-            list.add(new FileProject(imag64, "NOMBRE DE FILE PROJECT LANDMARK 1", "ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
-            list.add(new FileProject(imag64, "NOMBRE DE FILE PROJECT LANDMARK 2", "ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
-            list.add(new FileProject(imag64, "NOMBRE DE FILE PROJECT LANDMARK 3", "ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
-            list.add(new FileProject(imag64, "NOMBRE DE FILE PROJECT LANDMARK 4", "ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
-        }else if (Resource.role == 1){
-            list.add(new FileProject(imag64, "NOMBRE DE FILE PROJECT FIGURES 1", "ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
-            list.add(new FileProject(imag64, "NOMBRE DE FILE PROJECT FIGURES 2", "ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
-            list.add(new FileProject(imag64, "NOMBRE DE FILE PROJECT FIGURES 3", "ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
-            list.add(new FileProject(imag64, "NOMBRE DE FILE PROJECT FIGURES 4", "ESTE SE REFIERE A LA FRACTURA DE UNA PIERNA"));
-        }
+        getInfo(Resource.role);
         addFileProject.setBackgroundColor(Color.parseColor("#80000000"));
         recyclerViewFileProject = (RecyclerView) findViewById(R.id.recicler_File);
         recyclerViewFileProject.setHasFixedSize(true);
         layoutManagerFileProject = new LinearLayoutManager(getApplicationContext());
         recyclerViewFileProject.setLayoutManager(layoutManagerFileProject);
-        adapterFileProject =  new FileProjectAdapter(list,getApplicationContext());
-        recyclerViewFileProject.setAdapter(adapterFileProject);
     }
 
     private void showAddFileProjectDialog(){
@@ -136,8 +139,6 @@ public class FileProjectActivity extends AppCompatActivity {
         dialog.setCancelable(false);
         final LayoutInflater inflater = LayoutInflater.from(this);
         View add_layout = inflater.inflate(R.layout.data_project,null);
-        final TextInputEditText editDescription = add_layout.findViewById(R.id.txt_descriptionProject);
-        final TextInputEditText editName = add_layout.findViewById(R.id.txt_nameProject);
         imageButton = add_layout.findViewById(R.id.addImageProject);
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,15 +159,10 @@ public class FileProjectActivity extends AppCompatActivity {
         dialog.setPositiveButton("START PROJECT", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String name = editName.getText().toString().trim();
-                String description = editDescription.getText().toString().trim();
-                if(name.length() == 0){
-                    editName.setError("Error ...");
-                    editName.requestFocus();
-                }else {
+
                     if (flag == 1) {
-                        FileProject project = new FileProject(Resource.uriImageResource,name, description);
-                        adapterFileProject.addElement(project);
+                        //FileProject project = new FileProject(Resource.uriImageResource,name, description);
+                        //adapterFileProject.addElement(project);
                         if(Resource.role == 2) { //study
                             Intent intent = new Intent(FileProjectActivity.this, LandMarkModelActivity.class);
                             startActivity(intent);
@@ -177,7 +173,7 @@ public class FileProjectActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(FileProjectActivity.this, "Insert-Image, Please", Toast.LENGTH_SHORT).show();
                     }
-                }
+
             }
         });
         dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
@@ -226,5 +222,92 @@ public class FileProjectActivity extends AppCompatActivity {
             }
         }
     }
+
+
+    public void getInfo(final int role){
+        MediaType MEDIA_TYPE = MediaType.parse("application/json");
+        final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60, TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(60,TimeUnit.SECONDS).build();
+        JSONObject postdata = new JSONObject();
+        try {
+            postdata.put("email", Resource.emailUserLogin);
+        } catch(JSONException e){
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(MEDIA_TYPE,
+                postdata.toString());
+        String addURL = "";
+        if(role == 1) { //medicine
+             addURL = "medicine/information";
+        }else if(role == 2){ //study
+            addURL = "study/information";
+        }
+
+        final Request request = new Request.Builder()
+                .url(getString(R.string.url)+addURL) /*URL ... INDEX PX DE WILMER*/
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+            @Override
+            public void onResponse(Call call, Response response)
+                    throws IOException {
+                if (response.isSuccessful()){
+                    final String responseData = response.body().string();
+                    System.out.println("-------**********-----------"+responseData);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                if(role == 1){//medicine
+                                    Resource.infoMedicine =  new JSONObject(responseData);;
+                                    if(Resource.infoMedicine!=null){
+                                        list = new ArrayList();
+                                        try {
+                                            JSONArray jsonArray = Resource.infoMedicine.getJSONArray("patients");
+                                            for(int i = 0; i<jsonArray.length();i++){
+                                                JSONObject aux = jsonArray.getJSONObject(i);
+                                                if(aux.getInt("dni") == Resource.idPacient){
+                                                    JSONArray jsonArray1 = aux.getJSONArray("record");
+                                                    for(int j = 0; j<jsonArray1.length();j++){
+                                                        JSONObject jsonObject = jsonArray1.getJSONObject(j);
+                                                        if(jsonObject.getString("name").equals(Resource.idCarpeta)){
+                                                            JSONArray jsonArray2 = jsonObject.getJSONArray("files");
+                                                            for(int k = 0; k < jsonArray2.length();k++){
+                                                                JSONObject jsonObject1 = jsonArray2.getJSONObject(k);
+                                                                String image = jsonObject1.getString("image");
+                                                                String name = jsonObject1.getString("name");
+                                                                String description = jsonObject1.getString("description");
+                                                                String date = jsonObject1.getString("date");
+                                                                list.add(new FileProject(image,name,description,date));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            adapterFileProject =  new FileProjectAdapter(list,getApplicationContext());
+                                            recyclerViewFileProject.setAdapter(adapterFileProject);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }else if(role ==2){ //study
+
+                                }
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
 
 }

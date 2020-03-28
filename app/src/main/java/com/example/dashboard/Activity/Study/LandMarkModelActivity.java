@@ -98,7 +98,6 @@ public class LandMarkModelActivity extends AppCompatActivity {
     //Layout for Image RX
     private LinearLayout layoutImageRx1;
     //View
-    private ListFigure myListFigures;
     private ListSegmentation myListSegmentation;
     //Animation
     private MyAnimation Animation;
@@ -1396,10 +1395,7 @@ public class LandMarkModelActivity extends AppCompatActivity {
         LayoutInflater inflater = LayoutInflater.from(this);
         View login_layout = inflater.inflate(R.layout.layout_info_figure,null);
         final TextInputEditText editDescription = login_layout.findViewById(R.id.txt_description);
-        if(flagSegmentation)
-            editDescription.setText(myListFigures.getDescriptionFigure());
-        else
-            editDescription.setText(myListSegmentation.getDescriptionFigure());
+        editDescription.setText(myListSegmentation.getDescriptionFigure());
         dialog.setView(login_layout);
         dialog.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
             @Override
@@ -1477,6 +1473,34 @@ public class LandMarkModelActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void showSaveLandMarksDialog() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("SAVE LANDMARKS: ");
+        dialog.setMessage("Please insert name and description:");
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View save_layout = inflater.inflate(R.layout.layout_info_figure,null);
+        //final TextInputEditText editTextName = save_layout.findViewById(R.id.txt_name_save);
+        //final TextInputEditText editDescription = save_layout.findViewById(R.id.txt_description_save);
+        dialog.setView(save_layout);
+        dialog.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast toast;
+                toast = Toast.makeText(getApplicationContext(), "Save Successfully", Toast.LENGTH_SHORT);
+                toast = Toast.makeText(getApplicationContext(), "No Save ", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
+        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void openLandMarks(){
         try {

@@ -23,7 +23,19 @@ public class FileProject {
         this.descriptionFileProject = descriptionFileProject;
         DateTimeInitial();
     }
-
+    public FileProject(String imageFileProject, String nameFileProject, String descriptionFileProject,String dateFileProject) {
+        this.imageFileProject = imageFileProject;
+        this.nameFileProject = nameFileProject;
+        this.descriptionFileProject = descriptionFileProject;
+        char[] test = dateFileProject.toCharArray();
+        try {
+            this.DateFileProject = test[0] + test[1] + test[2] + test[3] + "/" + test[5] + test[6] + "/" + test[8] + test[9];
+            this.timeFileProject = test[11] + test[12] + ":" + test[14] + test[15] + ":" + test[17] + test[18];
+        }catch (Exception e){
+            this.DateFileProject = "";
+            this.timeFileProject = "";
+        }
+    }
     public void DateTimeInitial(){
         Date date = new Date();
         DateFormat hourFormat = new SimpleDateFormat("HH:mm:ss");

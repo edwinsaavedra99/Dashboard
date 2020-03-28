@@ -111,10 +111,14 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
                         if(item.getTitle().equals("Open")){
                             if(Resource.role == 2) { //study
                                 Resource.openFile = true;
+                                Resource.nameFile = items.get(i).getNameFileProject();
+                                Resource.descriptionFile = items.get(i).getDescriptionFileProject();
                                 Intent intent = new Intent(context, LandMarkModelActivity.class);
                                 context.startActivity(intent);
                             }else if (Resource.role == 1){ //doctor
                                 Resource.openFile = true;
+                                Resource.nameFile = items.get(i).getNameFileProject();
+                                Resource.descriptionFile = items.get(i).getDescriptionFileProject();
                                 Intent intent = new Intent(context, FiguresModelActivity.class);
                                 context.startActivity(intent);
                             }
