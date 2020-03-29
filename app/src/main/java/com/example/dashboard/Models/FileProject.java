@@ -10,7 +10,7 @@ public class FileProject {
     private String DateFileProject;
     private String timeFileProject;
     private String descriptionFileProject;
-
+    private String dateAux;
     public FileProject(String nameFileProject, String descriptionFileProject) {
         this.nameFileProject = nameFileProject;
         this.descriptionFileProject = descriptionFileProject;
@@ -27,6 +27,7 @@ public class FileProject {
         this.imageFileProject = imageFileProject;
         this.nameFileProject = nameFileProject;
         this.descriptionFileProject = descriptionFileProject;
+        this.dateAux = dateFileProject;
         char[] test = dateFileProject.toCharArray();
         try {
             this.DateFileProject = dateFileProject.substring(0,dateFileProject.indexOf("_")) + "/" + test[5] + test[6] + "/" + test[8] + test[9];
@@ -87,5 +88,11 @@ public class FileProject {
         this.descriptionFileProject = descriptionFileProject;
     }
 
+    public String getDateAux() {
+        return dateAux;
+    }
 
+    public void setDateAux(String dateAux) {
+        this.dateAux = dateAux;
+    }
 }

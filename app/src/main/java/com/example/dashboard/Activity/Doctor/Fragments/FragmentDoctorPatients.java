@@ -176,6 +176,7 @@ public class FragmentDoctorPatients extends Fragment {
         final TextInputEditText editAge = add_layout.findViewById(R.id.txt_agePatient);
         final RadioGroup genderGroup = add_layout.findViewById(R.id.sexPatient);
         dialog.setView(add_layout);
+
         dialog.setPositiveButton("ADD PATIENT", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -198,13 +199,13 @@ public class FragmentDoctorPatients extends Fragment {
                 }
                 if(residency.length() == 0){
                     flagAddPatient = false;
-                    editResidencia.setError("Error ...");
-                    editResidencia.requestFocus();
+                   editResidencia.setError("Error ...");
+                  editResidencia.requestFocus();
                 }
                 if(description.length() == 0){
                     flagAddPatient = false;
                     editDescription.setError("Error ...");
-                    editDescription.requestFocus();
+                editDescription.requestFocus();
                 }
                 if(editAge.getText().toString().trim().length() == 0){
                     flagAddPatient = false;
@@ -223,6 +224,8 @@ public class FragmentDoctorPatients extends Fragment {
                 if(flagAddPatient) {
                     Patient patient = new Patient(name, residency, age, description, dni, sex);
                     addPatientService(Resource.emailUserLogin, patient);
+                }else{
+                    Toast.makeText(getActivity(),"Error in Data",Toast.LENGTH_SHORT).show();
                 }
 
 

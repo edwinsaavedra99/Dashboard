@@ -237,6 +237,8 @@ public class LandMarkModelActivity extends AppCompatActivity {
     private Mat img;
     private int mActivePointerId = INVALID_POINTER_ID;
     private AlertDialog dialog;
+    private String nameFileGlobal="";
+    private String descriptionFileGlobal="";
     //--End Attributes of class
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @SuppressLint("ClickableViewAccessibility")
@@ -685,7 +687,7 @@ public class LandMarkModelActivity extends AppCompatActivity {
         openSegments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openLandMarks();
+                openService();
             }
         });
 
@@ -1389,24 +1391,21 @@ public class LandMarkModelActivity extends AppCompatActivity {
         @SuppressLint("InflateParams") View login_layout = inflater.inflate(R.layout.layout_save_figure,null);
         final TextInputEditText nameDescription = login_layout.findViewById(R.id.txt_nameProject);
         final TextInputEditText editDescription = login_layout.findViewById(R.id.txt_descriptionProject);
-        if(Resource.openFile){
-            nameDescription.setText(Resource.nameFile);
-            editDescription.setText(Resource.descriptionFile);
-        }else{
-            nameDescription.setText("");
-            editDescription.setText("");
-        }
+        nameDescription.setText(nameFileGlobal);
+        editDescription.setText(descriptionFileGlobal);
         dialog.setView(login_layout);
         dialog.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String name = nameDescription.getText().toString().trim();
                 String description = editDescription.getText().toString().trim();
-                if(name.length() == 0){
+                if(name.length() == 0 || name.contains("@")){
                     nameDescription.setError("Error ...");
                     nameDescription.requestFocus();
                 }else {
                     saveLandMarks(name,description);
+                    nameFileGlobal = name;
+                    descriptionFileGlobal = description;
                 }
             }
         });
@@ -1500,39 +1499,65 @@ public class LandMarkModelActivity extends AppCompatActivity {
         });
     }
 
-    private void showSaveLandMarksDialog() {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("SAVE LANDMARKS: ");
-        dialog.setMessage("Please insert name and description:");
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View save_layout = inflater.inflate(R.layout.layout_info_figure,null);
-        //final TextInputEditText editTextName = save_layout.findViewById(R.id.txt_name_save);
-        //final TextInputEditText editDescription = save_layout.findViewById(R.id.txt_description_save);
-        dialog.setView(save_layout);
-        dialog.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+    public void openService(){
+        filtersWithProgressBar();
+        MediaType MEDIA_TYPE =
+                MediaType.parse("application/json");
+        final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,
+                TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(
+                60,TimeUnit.SECONDS).build();
+        JSONObject postdata = new JSONObject();
+        try {
+            postdata.put("email",Resource.emailUserLogin);
+            postdata.put("project",Resource.idCarpeta);
+            postdata.put("file",Resource.nameFile);
+            postdata.put("date",Resource.dateFile);
+        } catch(JSONException e){
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(MEDIA_TYPE,
+                postdata.toString());
+        final Request request = new Request.Builder()
+                .url(getString(R.string.url)+"study/selectfile") /*URL ... INDEX PX DE WILMER*/
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast toast;
-                toast = Toast.makeText(getApplicationContext(), "Save Successfully", Toast.LENGTH_SHORT);
-                toast = Toast.makeText(getApplicationContext(), "No Save ", Toast.LENGTH_SHORT);
-                toast.show();
-            }
-        });
-        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onFailure(Call call, IOException e) {
+
                 dialog.dismiss();
+                e.printStackTrace();
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onResponse(Call call, Response response)
+                    throws IOException {
+                if (response.isSuccessful()){
+                    final String responseData = response.body().string();
+                    System.out.println("**************RESPUESTA ****************");
+                    System.out.println(responseData);
+                    try {
+                        JSONObject landMarks = new JSONObject(responseData);
+                        openLandMarks(landMarks);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    dialog.dismiss();
+                }
             }
         });
-        dialog.show();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    public void openLandMarks(){
+    public void openLandMarks(JSONObject landMarks){
         try {
             //String rpta = LandMarkService.readLandMarks();
-            String rpta = loadJSONFromAsset("raw/landmarktest.json");
-            JSONObject landMarks = new JSONObject(rpta);
+            //String rpta = loadJSONFromAsset("raw/landmarktest.json");
+            //JSONObject landMarks = new JSONObject(rpta);
+            System.out.println("********************aQUI ENTRA ******************************+");
             String image = landMarks.getString("image");
             Bitmap bitmap = myListSegmentation.decodeBase64AndSetImage(image);
             int flag = 0;
@@ -1954,7 +1979,19 @@ public class LandMarkModelActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void initialImage(String uri){
         if(Resource.openFile){
-            openLandMarks();
+            int nameImage = R.drawable.fondo_negro_x;
+            try {
+                img = Utils.loadResource(getApplicationContext(),nameImage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inScaled = false;
+            this.original = BitmapFactory.decodeResource(getResources(), nameImage, options);
+            myListSegmentation.loadImage(this.original);
+            openService();
+            nameFileGlobal = Resource.nameFile;
+            descriptionFileGlobal = Resource.descriptionFile;
             Resource.openFile = false;
         }else {
             if (uri != null) {

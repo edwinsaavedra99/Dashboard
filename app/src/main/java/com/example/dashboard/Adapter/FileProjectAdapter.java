@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,8 +31,22 @@ import com.example.dashboard.Resources.Resource;
 import com.example.dashboard.Utils.StringUtil;
 import com.google.android.material.textfield.TextInputEditText;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.FileProjectViewHolder> implements Filterable {
 
@@ -44,6 +59,7 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
         ImageView imageViewFileProject;
         TextView nameFileProject;
         ImageView moreOptionItem;
+        ImageView shareOptionItem;
         TextView dateFileProject;
         TextView timeFileProject;
         TextView descriptionFile;
@@ -56,6 +72,7 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
             descriptionFile = (TextView) v.findViewById(R.id.descriptionFile);
             imageViewFileProject = (ImageView) v.findViewById(R.id.imageFileProject);
             moreOptionItem = (ImageView) v.findViewById(R.id.moreOptionItem);
+            shareOptionItem = (ImageView) v.findViewById(R.id.shareOptionItem);
         }
     }
     public FileProjectAdapter(List<FileProject> items,Context context){
@@ -110,20 +127,16 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
                         System.out.println("SELECT ITEM: "+ item.getTitle()+"position: "+i);
                         if(item.getTitle().equals("Open")){
                             if(Resource.role == 2) { //study
-                                Resource.openFile = true;
-                                Resource.nameFile = items.get(i).getNameFileProject();
-                                Resource.descriptionFile = items.get(i).getDescriptionFileProject();
                                 Intent intent = new Intent(context, LandMarkModelActivity.class);
                                 context.startActivity(intent);
                             }else if (Resource.role == 1){ //doctor
-                                Resource.openFile = true;
-                                Resource.nameFile = items.get(i).getNameFileProject();
-                                Resource.descriptionFile = items.get(i).getDescriptionFileProject();
                                 Intent intent = new Intent(context, FiguresModelActivity.class);
                                 context.startActivity(intent);
                             }
-                            //Intent intent = new Intent(context, ProjectActivity.class);
-                            //context.startActivity(intent);
+                            Resource.openFile = true;
+                            Resource.nameFile = items.get(i).getNameFileProject();
+                            Resource.descriptionFile = items.get(i).getDescriptionFileProject();
+                            Resource.dateFile = items.get(i).getDateAux();
                         }else if(item.getTitle().equals("Edit")){
                             showAlertDialogEdit(items.get(i),i);
                         }else if(item.getTitle().equals("Delete")){
@@ -135,9 +148,118 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
                 popupMenu.show();
             }
         });
-
+        fileViewHolder.shareOptionItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAlertDialogShare(items.get(i).getNameFileProject(),items.get(i).getDateAux());
+            }
+        });
 
     }
+    private void showAlertDialogShare(final String nameF,final String dateF){
+        /*AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        dialog.setTitle("SHARE PROJECT");
+        dialog.setMessage("Insert Email to Share File Project");
+        dialog.setCancelable(false);
+        final LayoutInflater inflater = LayoutInflater.from(context);
+        //final View add_layout = inflater.inflate(R.layout.share_structure_data,null);
+        //final TextInputEditText editEmail = add_layout.findViewById(R.id.txt_shareProject_1);
+        //dialog.setView(add_layout);
+        dialog.setPositiveButton("SHARE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+          //      String emailTo = editEmail.getText().toString().trim();
+            //    if(emailTo.length() == 0){
+              //      editEmail.setError("Error ...");
+                //    editEmail.requestFocus();
+                //}else {
+                    //llamamos al servicio
+                    getInfo(Resource.role,nameF,"edwinsaavedra99@gmail.com",dateF);
+                //}
+            }
+        });
+        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();*/
+        getInfo(Resource.role,nameF,"edwinsaavedra99@gmail.com",dateF);
+    }
+
+    public void getInfo(final int role,final String nameF,final String emailTo,final String dateTo){
+        MediaType MEDIA_TYPE = MediaType.parse("application/json");
+        final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60, TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(60,TimeUnit.SECONDS).build();
+        JSONObject postdata = new JSONObject();
+        String addURL = "";
+        if(role == 1) { //medicine
+            addURL = "medicine/shared/file";
+            try {
+                JSONObject from = new JSONObject();
+                from.put("email", Resource.emailUserLogin);
+                from.put("patient",Resource.idPacient);
+                from.put("record",Resource.idCarpeta);
+                from.put("file",nameF);
+                from.put("date",dateTo);
+                JSONObject to = new JSONObject();
+                to.put("email",emailTo);
+                postdata.put("from",from);
+                postdata.put("to",to);
+            } catch(JSONException e){
+                e.printStackTrace();
+            }
+        }else if(role == 2){ //study
+            addURL = "study/shared/file";
+            try {
+                JSONObject from = new JSONObject();
+                from.put("email", Resource.emailUserLogin);
+                from.put("project",Resource.idCarpeta);
+                from.put("file",nameF);
+                from.put("date",dateTo);
+                JSONObject to = new JSONObject();
+                to.put("email",emailTo);
+                postdata.put("from",from);
+                postdata.put("to",to);
+            } catch(JSONException e){
+                e.printStackTrace();
+            }
+        }
+        RequestBody body = RequestBody.create(MEDIA_TYPE,
+                postdata.toString());
+        final Request request = new Request.Builder()
+                .url(context.getString(R.string.url)+addURL) /*URL ... INDEX PX DE WILMER*/
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+            @Override
+            public void onResponse(Call call, Response response)
+                    throws IOException {
+                if (response.isSuccessful()){
+                    final String responseData = response.body().string();
+                    System.out.println("-------**********-----------"+responseData);
+/*                    context.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                        }
+                    });*/
+                    //Toast.makeText(context,"SHARED",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+
+
+
+
 
     private void showAlertDialogDelete(final int position){
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);

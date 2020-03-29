@@ -45,8 +45,18 @@
             android:src="@drawable/ic_more_vert_black_24dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-
         </ImageView>
+
+        <ImageView
+            android:id="@+id/shareOptionItem"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="38dp"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/share_26px"
+            android:layout_width="15dp"
+            android:layout_height="wrap_content">
+        </ImageView>
+
         <LinearLayout
             android:id="@+id/calendarAcces"
             android:gravity="center"

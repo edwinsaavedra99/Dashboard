@@ -40,6 +40,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opencv.android.OpenCVLoader;
+import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
@@ -197,6 +198,8 @@ public class FiguresModelActivity extends AppCompatActivity {
     private Bitmap auxOriginal3 = null;
     private Mat img;
     private AlertDialog dialog;
+    private String nameFileGlobal="";
+    private String descriptionFileGlobal="";
     //--End Attributes of class
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @SuppressLint("ClickableViewAccessibility")
@@ -1069,24 +1072,21 @@ public class FiguresModelActivity extends AppCompatActivity {
         @SuppressLint("InflateParams") View login_layout = inflater.inflate(R.layout.layout_save_figure,null);
         final TextInputEditText nameDescription = login_layout.findViewById(R.id.txt_nameProject);
         final TextInputEditText editDescription = login_layout.findViewById(R.id.txt_descriptionProject);
-        if(Resource.openFile){
-            nameDescription.setText(Resource.nameFile);
-            editDescription.setText(Resource.descriptionFile);
-        }else{
-            nameDescription.setText("");
-            editDescription.setText("");
-        }
+        nameDescription.setText(nameFileGlobal);
+        editDescription.setText(descriptionFileGlobal);
         dialog.setView(login_layout);
         dialog.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String name = nameDescription.getText().toString().trim();
                 String description = editDescription.getText().toString().trim();
-                if(name.length() == 0){
+                if(name.length() == 0 || name.contains("@")){
                     nameDescription.setError("Error ...");
                     nameDescription.requestFocus();
                 }else {
-                    saveIndicator(name,description);
+                    saveIndicator(description,name);
+                    nameFileGlobal = name;
+                    descriptionFileGlobal = description;
                 }
             }
         });
@@ -1112,9 +1112,9 @@ public class FiguresModelActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (myListFigures.setDescriptionFigure(editDescription.getText()+""))
-                    showToast("Save Successfully");
+                    showToast("Successfully");
                 else
-                    showToast("No Save");
+                    showToast("Error: No Change");
             }
         });
         dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
@@ -1185,9 +1185,6 @@ public class FiguresModelActivity extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(),"Error: The name is already",Toast.LENGTH_SHORT).show();
                             }else{
                                 Toast.makeText(getApplicationContext(),"Save Successfully",Toast.LENGTH_SHORT).show();
-                                Resource.openFile = true;
-                                Resource.nameFile = name;
-                                Resource.descriptionFile = descripcion;
                             }
                         }
                     });
@@ -1196,13 +1193,6 @@ public class FiguresModelActivity extends AppCompatActivity {
         });
     }
 
-    public void saveFigures(){
-        try {
-            FiguresService.sendFigures(myListFigures.getBase64String(),myListFigures);
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-    }
     public String loadJSONFromAsset(String flName){
         String json = null;
         try{
@@ -1219,14 +1209,64 @@ public class FiguresModelActivity extends AppCompatActivity {
         }
         return json;
     }
-
-
-    public void openFigures(){
+    public void openService(){
+        filtersWithProgressBar();
+        MediaType MEDIA_TYPE =
+                MediaType.parse("application/json");
+        final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,
+                TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(
+                60,TimeUnit.SECONDS).build();
+        JSONObject postdata = new JSONObject();
         try {
-            //String rpta = LandMarkService.readLandMarks();
-            String rpta = loadJSONFromAsset("raw/indicator.json");
-            JSONObject landMarks = new JSONObject(rpta);
-            String image = landMarks.getString("image");
+            postdata.put("email",Resource.emailUserLogin);
+            postdata.put("record",Resource.idCarpeta);
+            postdata.put("patient",Resource.idPacient);
+            postdata.put("file",Resource.nameFile);
+        } catch(JSONException e){
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(MEDIA_TYPE,
+                postdata.toString());
+        final Request request = new Request.Builder()
+                .url(getString(R.string.url)+"medicine/selectfile") /*URL ... INDEX PX DE WILMER*/
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                dialog.dismiss(); e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response)
+                    throws IOException {
+                if (response.isSuccessful()){
+                    final String responseData = response.body().string();
+                    System.out.println("**************RESPUESTA ****************");
+                    System.out.println(responseData);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                JSONObject indicators = new JSONObject(responseData);
+                                openFigures(indicators);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            dialog.dismiss();
+                        }
+                    });
+
+                }
+            }
+        });
+    }
+
+    public void openFigures(JSONObject indicators){
+        try {
+            String image = indicators.getString("image");
             Bitmap bitmap = myListFigures.decodeBase64AndSetImage(image);
             int flag = 0;
             FileOutputStream outputStream = null;
@@ -1256,7 +1296,7 @@ public class FiguresModelActivity extends AppCompatActivity {
                     System.out.println("error");
                 }
             }       //
-            JSONObject information = landMarks.getJSONObject("information");
+            JSONObject information = indicators.getJSONObject("information");
             JSONArray jsonArray = information.getJSONArray("indicators");
             float imageX = Float.parseFloat(information.getString("imageX"));
             float imagey = Float.parseFloat(information.getString("imagey"));
@@ -1598,7 +1638,19 @@ public class FiguresModelActivity extends AppCompatActivity {
 
     public void initialImage(String uri){
         if(Resource.openFile){
-            openFigures();
+            int nameImage = R.drawable.fondo_negro_x;
+            try {
+                img = Utils.loadResource(getApplicationContext(),nameImage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inScaled = false;
+            this.original = BitmapFactory.decodeResource(getResources(), nameImage, options);
+            myListFigures.loadImage(this.original);
+            openService();
+            nameFileGlobal = Resource.nameFile;
+            descriptionFileGlobal = Resource.descriptionFile;
             Resource.openFile = false;
         }else {
             if (uri != null) {

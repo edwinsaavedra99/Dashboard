@@ -171,7 +171,7 @@ public class ListSegmentation extends View {
         zoomList = new ListZoomSegmentation(context);
         this.viewZoom.addView(zoomList);
         this.metrics = metrics;
-        invalidate();
+        //invalidate();
     }//Closing the class constructor
     public void loadImage(Bitmap mImage){
         invalidate();
@@ -179,6 +179,7 @@ public class ListSegmentation extends View {
         zoomList.loadImage(mImage,generalHeight,generalWidth);
         this.mImage = mImage;
         mBoard = new BitmapDrawable(getResources(),mImage);
+        System.out.println(mImage);
         invalidate();
 //        getBase64String();
     }
@@ -777,7 +778,7 @@ public class ListSegmentation extends View {
         zoomList.segmentation.clear();
         invalidate();
         zoomList.invalidate();
-        requestLayout();
+//        requestLayout();
         for (int i = 0; i< jsonArray.length(); i++){
             JSONObject aux = jsonArray.getJSONObject(i);
             int[] colour = {Integer.parseInt(aux.getString("r")), Integer.parseInt(aux.getString("g")),Integer.parseInt(aux.getString("b"))};

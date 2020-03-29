@@ -4,7 +4,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">#80000000</item>         <!-- Color de los botones, desplaze, en materail color de bordes de componentes y letras de botonrs -->
         <item name="colorPrimaryDark">#E0000000</item>     <!-- Color de la barra de herramientas. -->
-        <item name="colorAccent">#80ffffff</item>                <!-- Color del Cursor. -->
+        <item name="colorAccent">#80CEEB</item>                <!-- Color del Cursor. -->
         <item name="buttonStyle">@color/colorPrimary</item>
 
     </style>

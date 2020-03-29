@@ -20,6 +20,7 @@ public class Resource {
     public static boolean openFile=false;
     public static String nameFile;
     public static String descriptionFile;
+    public static String dateFile;
 
     public static JSONObject infoStudy;
     public static JSONObject infoMedicine;
