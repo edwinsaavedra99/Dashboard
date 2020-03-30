@@ -1493,6 +1493,16 @@ public class LandMarkModelActivity extends AppCompatActivity {
                     System.out.println("**************RESPUESTA ****************");
                     System.out.println(responseData);
                     System.out.println("**************RESPUESTA ****************");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(responseData.equals("error")){
+                                Toast.makeText(getApplicationContext(),"Error: The name is already",Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(getApplicationContext(),"Save Successfully",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
 
                 }
             }
@@ -1507,8 +1517,16 @@ public class LandMarkModelActivity extends AppCompatActivity {
                 TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(
                 60,TimeUnit.SECONDS).build();
         JSONObject postdata = new JSONObject();
+        String addUrl = "";
         try {
-            postdata.put("email",Resource.emailUserLogin);
+            if(Resource.openShareFile) {
+                postdata.put("email", Resource.emailSharedFrom);
+                addUrl = "study/shared/selectfile";
+                //Resource.openShareFile = false;
+            }else{
+                postdata.put("email", Resource.emailUserLogin);
+                addUrl = "study/selectfile";
+            }
             postdata.put("project",Resource.idCarpeta);
             postdata.put("file",Resource.nameFile);
             postdata.put("date",Resource.dateFile);
@@ -1518,7 +1536,7 @@ public class LandMarkModelActivity extends AppCompatActivity {
         RequestBody body = RequestBody.create(MEDIA_TYPE,
                 postdata.toString());
         final Request request = new Request.Builder()
-                .url(getString(R.string.url)+"study/selectfile") /*URL ... INDEX PX DE WILMER*/
+                .url(getString(R.string.url)+addUrl) /*URL ... INDEX PX DE WILMER*/
                 .post(body)
                 .addHeader("Content-Type", "application/json")
                 .build();
@@ -1554,9 +1572,6 @@ public class LandMarkModelActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void openLandMarks(JSONObject landMarks){
         try {
-            //String rpta = LandMarkService.readLandMarks();
-            //String rpta = loadJSONFromAsset("raw/landmarktest.json");
-            //JSONObject landMarks = new JSONObject(rpta);
             System.out.println("********************aQUI ENTRA ******************************+");
             String image = landMarks.getString("image");
             Bitmap bitmap = myListSegmentation.decodeBase64AndSetImage(image);
@@ -1642,7 +1657,7 @@ public class LandMarkModelActivity extends AppCompatActivity {
         RequestBody body = RequestBody.create(MEDIA_TYPE,
                 postdata.toString());
         final Request request = new Request.Builder()
-                .url("http://18.219.234.29:5000/filters")
+                .url(getString(R.string.url)+"filters")
                 .post(body)
                 .addHeader("Content-Type", "application/json")
                 .build();

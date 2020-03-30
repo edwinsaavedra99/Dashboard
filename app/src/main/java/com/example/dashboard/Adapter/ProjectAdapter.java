@@ -172,7 +172,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
                 dialog.dismiss();
             }
         });
-
+        //context.setTheme(R.style.AppTheme);
         dialog.show();
     }
 

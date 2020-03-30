@@ -720,6 +720,7 @@
                             android:layout_height="wrap_content"
                             >
                             <TextView
+                                android:visibility="gone"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="10dp"
@@ -728,6 +729,7 @@
                                 android:textSize="10sp" />
 
                             <ImageView
+                                android:visibility="gone"
                                 android:id="@+id/load"
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"

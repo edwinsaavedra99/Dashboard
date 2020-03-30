@@ -1217,18 +1217,27 @@ public class FiguresModelActivity extends AppCompatActivity {
                 TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(
                 60,TimeUnit.SECONDS).build();
         JSONObject postdata = new JSONObject();
+        String addUrl = "";
         try {
-            postdata.put("email",Resource.emailUserLogin);
+            if(Resource.openShareFile) {
+                postdata.put("email", Resource.emailSharedFrom);
+                addUrl = "medicine/shared/selectfile";
+                //Resource.openShareFile = false;
+            }else{
+                postdata.put("email", Resource.emailUserLogin);
+                addUrl = "medicine/selectfile";
+            }
             postdata.put("record",Resource.idCarpeta);
             postdata.put("patient",Resource.idPacient);
             postdata.put("file",Resource.nameFile);
+            postdata.put("date",Resource.dateFile);
         } catch(JSONException e){
             e.printStackTrace();
         }
         RequestBody body = RequestBody.create(MEDIA_TYPE,
                 postdata.toString());
         final Request request = new Request.Builder()
-                .url(getString(R.string.url)+"medicine/selectfile") /*URL ... INDEX PX DE WILMER*/
+                .url(getString(R.string.url)+addUrl) /*URL ... INDEX PX DE WILMER*/
                 .post(body)
                 .addHeader("Content-Type", "application/json")
                 .build();

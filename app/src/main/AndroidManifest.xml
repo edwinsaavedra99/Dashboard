@@ -18,7 +18,9 @@
         <activity android:name=".Activity.Study.LandMarkModelActivity"></activity>
         <activity android:name=".Activity.Study.StudyActivity" />
         <activity android:name=".Activity.Doctor.FiguresModelActivity" />
-        <activity android:name=".Activity.FileProjectActivity" />
+        <activity android:name=".Activity.FileProjectActivity" >
+
+        </activity>
         <activity android:name=".Activity.Doctor.DoctorActivity" />
         <activity android:name=".Activity.StudentActivity" />
         <activity android:name=".Activity.HomeActivity">

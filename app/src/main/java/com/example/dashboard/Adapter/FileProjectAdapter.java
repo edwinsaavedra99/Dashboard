@@ -54,7 +54,7 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
     private List<FileProject> itemsFull;
     private Context context;
 
-    static class FileProjectViewHolder extends RecyclerView.ViewHolder{
+    public  static class FileProjectViewHolder extends RecyclerView.ViewHolder{
 
         ImageView imageViewFileProject;
         TextView nameFileProject;
@@ -152,6 +152,7 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
             @Override
             public void onClick(View v) {
                 showAlertDialogShare(items.get(i).getNameFileProject(),items.get(i).getDateAux());
+                Toast.makeText(context,"SHARED",Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -186,10 +187,10 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
         });
 
         dialog.show();*/
-        getInfo(Resource.role,nameF,"edwinsaavedra99@gmail.com",dateF);
+        getInfo(Resource.role,nameF,"edwinsaavedra99@gmail.com",dateF,"lecture");
     }
 
-    public void getInfo(final int role,final String nameF,final String emailTo,final String dateTo){
+    public void getInfo(final int role,final String nameF,final String emailTo,final String dateTo, final String provilege){
         MediaType MEDIA_TYPE = MediaType.parse("application/json");
         final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60, TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(60,TimeUnit.SECONDS).build();
         JSONObject postdata = new JSONObject();
@@ -203,6 +204,7 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
                 from.put("record",Resource.idCarpeta);
                 from.put("file",nameF);
                 from.put("date",dateTo);
+                from.put("privilege",provilege);
                 JSONObject to = new JSONObject();
                 to.put("email",emailTo);
                 postdata.put("from",from);
@@ -218,6 +220,7 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
                 from.put("project",Resource.idCarpeta);
                 from.put("file",nameF);
                 from.put("date",dateTo);
+                from.put("privilege",provilege);
                 JSONObject to = new JSONObject();
                 to.put("email",emailTo);
                 postdata.put("from",from);
@@ -250,7 +253,7 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
 
                         }
                     });*/
-                    //Toast.makeText(context,"SHARED",Toast.LENGTH_SHORT).show();
+                    //
                 }
             }
         });

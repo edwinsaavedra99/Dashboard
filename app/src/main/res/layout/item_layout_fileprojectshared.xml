@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    app:cardCornerRadius="5dp"
+    app:cardBackgroundColor="@android:color/transparent"
+    android:background="@android:color/transparent"
+    app:cardUseCompatPadding="true"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:src="@drawable/rx_image_1"
+                android:layout_centerVertical="true"
+                android:id="@+id/imageFileProject"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:adjustViewBounds="true"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:scaleType="centerCrop">
+            </ImageView>
+        </LinearLayout>
+        <RelativeLayout
+            android:gravity="center"
+            android:background="@android:color/transparent"
+            android:padding="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="RADIOGRAFIA_1"
+                android:id="@+id/nameFileProject"
+                android:textSize="19sp"
+                android:textColor="@android:color/white"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            </TextView>
+            <ImageView
+                android:id="@+id/optionItem"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_open_in_new_black_24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            </ImageView>
+
+
+
+            <LinearLayout
+                android:id="@+id/calendarAcces"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_below="@+id/nameFileProject"
+                android:layout_height="wrap_content">
+
+            </LinearLayout>
+            <TextView
+                android:textColor="@android:color/white"
+                android:text="LA FRACTURA AFECTA PARTE DEL FEMUR , ADEMAS EXISTE DESGARRE"
+                android:layout_marginLeft="5dp"
+                android:layout_below="@+id/calendarAcces"
+                android:id="@+id/descriptionFile"
+                android:textSize="10sp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </TextView>
+            <TextView
+
+            android:textColor="@android:color/white"
+            android:text="by: edwinsaavedra99@gmail.com"
+            android:layout_marginLeft="5dp"
+            android:layout_below="@+id/descriptionFile"
+            android:id="@+id/emailFrom"
+            android:textSize="10sp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </TextView>
+            <TextView
+                android:visibility="gone"
+                android:textColor="@android:color/white"
+                android:text="by: edwinsaavedra99@gmail.com"
+                android:layout_marginLeft="5dp"
+                android:layout_below="@+id/descriptionFile"
+                android:id="@+id/carpeta"
+                android:textSize="10sp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            </TextView>
+            <TextView
+                android:visibility="gone"
+                android:textColor="@android:color/white"
+                android:text="by: edwinsaavedra99@gmail.com"
+                android:layout_marginLeft="5dp"
+                android:layout_below="@+id/descriptionFile"
+                android:id="@+id/patient"
+                android:textSize="10sp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            </TextView>
+        </RelativeLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

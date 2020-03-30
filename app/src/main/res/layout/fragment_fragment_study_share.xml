@@ -25,6 +25,9 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
+        android:paddingLeft="15dp"
+        android:paddingTop="10dp"
+        android:paddingRight="15dp"
         android:id="@+id/recicler_project_file"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,8 +23,10 @@ import android.widget.TextView;
 
 import com.example.dashboard.Adapter.FileProjectAdapter;
 import com.example.dashboard.Adapter.PatientAdapter;
+import com.example.dashboard.Adapter.SharedFileAdapter;
 import com.example.dashboard.Models.FileProject;
 import com.example.dashboard.Models.Patient;
+import com.example.dashboard.Models.SharedFile;
 import com.example.dashboard.R;
 import com.example.dashboard.Resources.Resource;
 import com.example.dashboard.Utils.StringUtil;
@@ -48,7 +51,7 @@ import okhttp3.Response;
 public class FragmentDoctorShare extends Fragment {
 
     private RecyclerView recyclerView;
-    private FileProjectAdapter adapter;
+    private SharedFileAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private SearchView searchView;
     private LinearLayout linearLayout;
@@ -78,7 +81,7 @@ public class FragmentDoctorShare extends Fragment {
 
         recyclerView = (RecyclerView) viewGroup.findViewById(R.id.recicler_project_file);
         recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager = new GridLayoutManager(getActivity(),2);
         recyclerView.setLayoutManager(layoutManager);
         getInfoMedicine();
         return viewGroup;
@@ -117,18 +120,22 @@ public class FragmentDoctorShare extends Fragment {
                                 if(Resource.infoStudy!=null){
                                     list = new ArrayList();
                                     try {
-                                        JSONArray jsonArray = Resource.infoStudy.getJSONArray("files");
+                                        JSONArray jsonArray = Resource.infoStudy.getJSONArray("shared");
                                         for(int k = 0; k < jsonArray.length();k++){
                                             JSONObject jsonObject1 = jsonArray.getJSONObject(k);
-                                            String image = jsonObject1.getString("image");
-                                            String name = jsonObject1.getString("name");
-                                            String description = jsonObject1.getString("description");
-                                            String date = jsonObject1.getString("date");
-                                            list.add(new FileProject(image,name,description,date));
+                                            String image = jsonObject1.getString("image");//
+                                            String name = jsonObject1.getString("name");//
+                                            String description = jsonObject1.getString("description");//
+                                            String date = jsonObject1.getString("date");//
+                                            String email = jsonObject1.getString("email");//
+                                            String id = jsonObject1.getString("id");//
+                                            String privilege = jsonObject1.getString("privilege");
+                                            String record = jsonObject1.getString("record");
+                                            int patient = jsonObject1.getInt("patient");
+                                            list.add(new SharedFile(image,name,description,date,email,privilege,id,record,patient));
                                         }
-                                        adapter =  new FileProjectAdapter(list,getActivity());
+                                        adapter =  new SharedFileAdapter(list,getActivity());
                                         recyclerView.setAdapter(adapter);
-
                                         if(jsonArray.length() == 0)
                                             linearLayout.setVisibility(View.VISIBLE);
                                         else
