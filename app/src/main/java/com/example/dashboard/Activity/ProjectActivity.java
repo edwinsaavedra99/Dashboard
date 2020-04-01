@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -74,10 +75,7 @@ public class ProjectActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project);
         getSupportActionBar().hide();
-        /*DATA VIEW*/
         addProject = findViewById(R.id.addProject);
-        /*DATA BASE*/
-
         addProject.setColorFilter(Color.WHITE);
         cardViewUsuario = (CardView) findViewById(R.id.cardUsuario);
         searchViewProject = findViewById(R.id.searchProject);
@@ -86,7 +84,8 @@ public class ProjectActivity extends AppCompatActivity {
         textViewApp = findViewById(R.id.textApp);
         layoutManager = new GridLayoutManager(getApplicationContext(),2);
         recyclerView.setLayoutManager(layoutManager);
-        getInfoMedicine();
+        //getInfoMedicine();
+        infoMedicine();
         usuarioApp = (ImageView) findViewById(R.id.usuarioApp);
         Glide.with(this).load(Resource.urlImageUserLogin).into(usuarioApp);
         addProject.setOnClickListener(new View.OnClickListener() {
@@ -129,19 +128,17 @@ public class ProjectActivity extends AppCompatActivity {
     }
 
     private void ShowAddDialog(){
-        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.myDialog));
         dialog.setTitle("NEW PROJECT: ");
         dialog.setMessage("Insert Project's Data: " );
         dialog.setCancelable(false);
         final LayoutInflater inflater = LayoutInflater.from(this);
         final View add_layout = inflater.inflate(R.layout.project_structure_data,null);
         final TextInputEditText editName = add_layout.findViewById(R.id.txt_nameProject_1);
-
         dialog.setView(add_layout);
         dialog.setPositiveButton("ADD PROJECT", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
                 String name = editName.getText().toString().trim();
                 if(name.length() != 0){
                     Project project = new Project(editName.getText().toString(),"");
@@ -150,7 +147,6 @@ public class ProjectActivity extends AppCompatActivity {
                     editName.setError("Error ...");
                     editName.requestFocus();
                 }
-
             }
         });
         dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
@@ -159,15 +155,11 @@ public class ProjectActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
-
         dialog.show();
-
     }
 
     public void addProjectService(String email, int patient, final String record){
-
-        MediaType MEDIA_TYPE =
-                MediaType.parse("application/json");
+        MediaType MEDIA_TYPE = MediaType.parse("application/json");
         final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,
                 TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(
                 60,TimeUnit.SECONDS).build();
@@ -196,7 +188,6 @@ public class ProjectActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response)
                     throws IOException {
                 if (response.isSuccessful()){
-
                     final String responseData = response.body().string();
                     runOnUiThread(new Runnable() {
                         @Override
@@ -215,7 +206,14 @@ public class ProjectActivity extends AppCompatActivity {
             }
         });
     }
-
+    public void infoMedicine(){
+        list = new ArrayList();
+        list.add(new Project("voidv"));
+        list.add(new Project("covid"));
+        list.add(new Project("unsa"));
+        adapter =  new ProjectAdapter(list,ProjectActivity.this);
+        recyclerView.setAdapter(adapter);
+    }
 
     public void getInfoMedicine(){
         MediaType MEDIA_TYPE = MediaType.parse("application/json");

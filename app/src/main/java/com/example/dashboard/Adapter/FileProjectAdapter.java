@@ -1,5 +1,6 @@
 package com.example.dashboard.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -133,6 +135,7 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
                                 Intent intent = new Intent(context, FiguresModelActivity.class);
                                 context.startActivity(intent);
                             }
+                            Resource.privilegeFile = "edit";
                             Resource.openFile = true;
                             Resource.nameFile = items.get(i).getNameFileProject();
                             Resource.descriptionFile = items.get(i).getDescriptionFileProject();
@@ -152,31 +155,37 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
             @Override
             public void onClick(View v) {
                 showAlertDialogShare(items.get(i).getNameFileProject(),items.get(i).getDateAux());
-                Toast.makeText(context,"SHARED",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context,"SHARED",Toast.LENGTH_SHORT).show();
             }
         });
 
     }
     private void showAlertDialogShare(final String nameF,final String dateF){
-        /*AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         dialog.setTitle("SHARE PROJECT");
         dialog.setMessage("Insert Email to Share File Project");
         dialog.setCancelable(false);
         final LayoutInflater inflater = LayoutInflater.from(context);
-        //final View add_layout = inflater.inflate(R.layout.share_structure_data,null);
-        //final TextInputEditText editEmail = add_layout.findViewById(R.id.txt_shareProject_1);
-        //dialog.setView(add_layout);
+        final View add_layout = inflater.inflate(R.layout.share_structure_data,null);
+        final TextInputEditText editEmail = add_layout.findViewById(R.id.txt_shareProject_1);
+        final RadioGroup privilegeGroup = add_layout.findViewById(R.id.privilege);
+        dialog.setView(add_layout);
         dialog.setPositiveButton("SHARE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-          //      String emailTo = editEmail.getText().toString().trim();
-            //    if(emailTo.length() == 0){
-              //      editEmail.setError("Error ...");
-                //    editEmail.requestFocus();
-                //}else {
-                    //llamamos al servicio
-                    getInfo(Resource.role,nameF,"edwinsaavedra99@gmail.com",dateF);
-                //}
+                String emailTo = editEmail.getText().toString().trim();
+                String privi="";
+                if(privilegeGroup.getCheckedRadioButtonId() == R.id.radioLecture){
+                    privi="lecture";
+                }else if(privilegeGroup.getCheckedRadioButtonId() == R.id.radioEditer){
+                    privi="edit";
+                }
+                if(emailTo.length() == 0){
+                    editEmail.setError("Error ...");
+                    editEmail.requestFocus();
+                }else {
+                    getInfo(Resource.role,nameF,emailTo,dateF,privi);
+                }
             }
         });
         dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
@@ -185,9 +194,8 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
                 dialog.dismiss();
             }
         });
-
-        dialog.show();*/
-        getInfo(Resource.role,nameF,"edwinsaavedra99@gmail.com",dateF,"lecture");
+        dialog.show();
+        //getInfo(Resource.role,nameF,"edwinsaavedra99@gmail.com",dateF,"lecture");
     }
 
     public void getInfo(final int role,final String nameF,final String emailTo,final String dateTo, final String provilege){
@@ -247,23 +255,18 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
                 if (response.isSuccessful()){
                     final String responseData = response.body().string();
                     System.out.println("-------**********-----------"+responseData);
-/*                    context.runOnUiThread(new Runnable() {
+                    Activity das = (Activity) context;
+                    das.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-
+                            Toast.makeText(context,"SHARED",Toast.LENGTH_SHORT).show();
                         }
-                    });*/
-                    //
+                    });
+
                 }
             }
         });
     }
-
-
-
-
-
-
     private void showAlertDialogDelete(final int position){
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         dialog.setTitle("DELETE FILE PROJECT");

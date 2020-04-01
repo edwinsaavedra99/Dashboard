@@ -89,15 +89,15 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientV
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder( final PatientViewHolder patientViewHolder,final int i){
-        patientViewHolder.name.setText(items.get(i).getName());
-        patientViewHolder.age.setText("Edad: "+items.get(i).getAge() + " , ");
-        patientViewHolder.description.setText("Caso: "+items.get(i).getDescription());
-        patientViewHolder.home.setText("Residencia: "+items.get(i).getResidencia());
+        patientViewHolder.name.setText(items.get(i).getName().toUpperCase());
+        patientViewHolder.age.setText("AGE: "+items.get(i).getAge() + " , ");
+        patientViewHolder.description.setText("DESCRIPTION: "+items.get(i).getDescription().toUpperCase());
+        patientViewHolder.home.setText("RESIDENCY: "+items.get(i).getResidencia().toUpperCase());
         patientViewHolder.dniPatient.setText("DNI: "+ items.get(i).getCod());
         if(items.get(i).isSex())
-            patientViewHolder.sex.setText("Sexo: Masculino ,");
+            patientViewHolder.sex.setText("GENDER: MALE,");
         else
-            patientViewHolder.sex.setText("Sexo: Femenino ,");
+            patientViewHolder.sex.setText("GENDER: FEMALE ,");
         patientViewHolder.menuItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

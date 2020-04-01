@@ -90,9 +90,20 @@ public class FragmentDoctorPatients extends Fragment {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        getInfoMedicine();
+        //getInfoMedicine();
+        auxgetInfo();
         return viewGroup;
     }
+
+    public void auxgetInfo(){
+        list = new ArrayList();
+        list.add(new Patient("edwin","aqp",21,"mi vecino",75586974,true));
+        list.add(new Patient("luis","aqp",21,"covid",75586974,true));
+        list.add(new Patient("wilmer","aqp",21,"mi vecino",75586974,true));
+        adapter =  new PatientAdapter(list,getActivity());
+        recyclerView.setAdapter(adapter);
+    }
+
 
     public void getInfoMedicine(){
         MediaType MEDIA_TYPE = MediaType.parse("application/json");
@@ -164,8 +175,7 @@ public class FragmentDoctorPatients extends Fragment {
 
     private void showAddPatientDialog(){
         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-        dialog.setTitle("NEW PROJECT: ");
-        dialog.setMessage("Insert Project's Data: " );
+        dialog.setTitle("NEW PATIENT: ");
         dialog.setCancelable(false);
         final LayoutInflater inflater = LayoutInflater.from(getActivity());
         final View add_layout = inflater.inflate(R.layout.patient_structure_data,null);

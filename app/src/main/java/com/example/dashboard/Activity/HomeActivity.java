@@ -7,14 +7,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-
+import android.widget.Toast;
 import com.example.dashboard.Activity.Doctor.DoctorActivity;
 import com.example.dashboard.Activity.Study.StudyActivity;
 import com.example.dashboard.R;
 import com.example.dashboard.Resources.Resource;
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 /**
  * This class define the Home Activity : Role of the user
@@ -48,16 +47,21 @@ public class HomeActivity extends AppCompatActivity {
                 getApplicationContext().startActivity(intent);
             }
         });
-        /*exit.setOnClickListener(new View.OnClickListener() {
+        exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Auth.GoogleSignInApi.signOut().setResultCallback(new ResultCallback<Status>() {
+                signOut();
+            }
+        });
+    }
+    private void signOut() {
+        Resource.SignInClient.signOut()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
                     @Override
-                    public void onResult(@NonNull Status status) {
-
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(HomeActivity.this, "Logout", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                 });
-            }
-        });*/
     }
 }

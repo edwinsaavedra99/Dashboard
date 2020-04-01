@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -89,13 +90,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
     }
     @Override
     public void onBindViewHolder( final ProjectViewHolder projectViewHolder,final int i){
-        projectViewHolder.name.setText(items.get(i).getNameProject());
-        projectViewHolder.boxProject.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //paso a nuevo activity
-            }
-        });
+        projectViewHolder.name.setText(items.get(i).getNameProject().toUpperCase());
         projectViewHolder.menuOptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,24 +150,24 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
 
 
     private void showAlertDialogDelete(final int position){
-        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-        dialog.setTitle("DELETE PROJECT");
-        dialog.setMessage("Are you sure to delete  this project ? , All data will be deleted" );
-        dialog.setCancelable(false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("DELETE PROJECT");
+        builder.setMessage("Are you sure to delete  this project ? , All data will be deleted" );
+        builder.setCancelable(false);
         final LayoutInflater inflater = LayoutInflater.from(context);
-        dialog.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 deleteElement(position);
             }
         });
-        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }
         });
-        //context.setTheme(R.style.AppTheme);
+        AlertDialog dialog= builder.create();
         dialog.show();
     }
 

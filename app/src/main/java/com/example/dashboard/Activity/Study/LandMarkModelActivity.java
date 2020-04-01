@@ -1522,7 +1522,7 @@ public class LandMarkModelActivity extends AppCompatActivity {
             if(Resource.openShareFile) {
                 postdata.put("email", Resource.emailSharedFrom);
                 addUrl = "study/shared/selectfile";
-                //Resource.openShareFile = false;
+                Resource.openShareFile = false;
             }else{
                 postdata.put("email", Resource.emailUserLogin);
                 addUrl = "study/selectfile";

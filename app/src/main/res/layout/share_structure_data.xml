@@ -30,5 +30,37 @@
                 android:layout_height="wrap_content"
                 android:text="" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <RadioGroup
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="12dp"
+            android:layout_marginLeft="20dp"
+            android:paddingLeft="13dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/fondo_white"
+            android:tag="sex"
+            android:orientation="horizontal"
+            android:id="@+id/privilege"
+            android:textAlignment="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+            <RadioButton
+                android:layout_gravity="left"
+                android:layout_marginRight="25dp"
+                android:textSize="16sp"
+                android:checked="true"
+                android:buttonTint="#E0000000"
+                android:id="@+id/radioLecture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lecture" />
+            <RadioButton
+                android:textSize="16sp"
+                android:buttonTint="#E0000000"
+                android:id="@+id/radioEditer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Editer" />
+        </RadioGroup>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

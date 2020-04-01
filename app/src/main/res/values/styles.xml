@@ -27,7 +27,9 @@
         <item name="colorAccent">#80CEEB</item>
         <item name="buttonStyle">@color/colorPrimary</item>
     </style>
-
+    <style name="myDialog" parent="Theme.MaterialComponents.Dialog">
+        <item name="android:windowNoTitle">true</item>
+    </style>
 
 </resources>
 

@@ -51,9 +51,9 @@ public class Login extends AppCompatActivity {
         getSupportActionBar().hide();
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
-                //.requestIdToken(getString(R.string.default_web_client_id))
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        Resource.SignInClient = mGoogleSignInClient;
         signInButton = findViewById(R.id.sign_in_button);
         linearLayout = findViewById(R.id.liner_layout_sign);
         textView = findViewById(R.id.txt_title);
@@ -65,7 +65,6 @@ public class Login extends AppCompatActivity {
                 signIn();
             }
         });
-        //se implementara u metodo de revoque acces y ademas un boton de alir
         handleAnimation();
     }
 
@@ -89,7 +88,6 @@ public class Login extends AppCompatActivity {
             Resource.emailUserLogin = account.getEmail();
             Resource.nameUserLogin = account.getDisplayName();
             Resource.urlImageUserLogin = account.getPhotoUrl()+"";
-
             //Llamar al servicio - este servicio veriica el correo electronico
             // - si no hay data crea las carpetas en caso contrario - devulve toda su estructura
             checkEmailService(account.getEmail());
@@ -107,7 +105,6 @@ public class Login extends AppCompatActivity {
             // a listener.
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
-
         }
     }
 

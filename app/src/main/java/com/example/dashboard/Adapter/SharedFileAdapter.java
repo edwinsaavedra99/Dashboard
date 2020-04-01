@@ -83,6 +83,7 @@ public class SharedFileAdapter extends RecyclerView.Adapter<SharedFileAdapter.Sh
                     Intent intent = new Intent(context, FiguresModelActivity.class);
                     context.startActivity(intent);
                 }
+                Resource.privilegeFile = items.get(i).getPrivilege();
                 Resource.emailSharedFrom = items.get(i).getEmailFrom();
                 Resource.openFile = true;
                 Resource.openShareFile = true;
