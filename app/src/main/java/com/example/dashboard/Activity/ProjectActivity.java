@@ -84,8 +84,8 @@ public class ProjectActivity extends AppCompatActivity {
         textViewApp = findViewById(R.id.textApp);
         layoutManager = new GridLayoutManager(getApplicationContext(),2);
         recyclerView.setLayoutManager(layoutManager);
-        //getInfoMedicine();
-        infoMedicine();
+        getInfoMedicine();
+        //infoMedicine();
         usuarioApp = (ImageView) findViewById(R.id.usuarioApp);
         Glide.with(this).load(Resource.urlImageUserLogin).into(usuarioApp);
         addProject.setOnClickListener(new View.OnClickListener() {

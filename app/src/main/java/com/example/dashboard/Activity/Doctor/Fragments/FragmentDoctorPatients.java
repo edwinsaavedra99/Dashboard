@@ -90,8 +90,8 @@ public class FragmentDoctorPatients extends Fragment {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        //getInfoMedicine();
-        auxgetInfo();
+        getInfoMedicine();
+        //auxgetInfo();
         return viewGroup;
     }
 
