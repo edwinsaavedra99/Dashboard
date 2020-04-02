@@ -124,7 +124,7 @@ public class FragmentDoctorShare extends Fragment {
                                         for(int k = 0; k < jsonArray.length();k++){
                                             JSONObject jsonObject1 = jsonArray.getJSONObject(k);
                                             String image = jsonObject1.getString("image");//
-                                            String name = jsonObject1.getString("name");//
+                                            String name = jsonObject1.getString("file");//
                                             String description = jsonObject1.getString("description");//
                                             String date = jsonObject1.getString("date");//
                                             String email = jsonObject1.getString("email");//

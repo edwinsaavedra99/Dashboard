@@ -88,12 +88,14 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
     }
 
     public void editElement(FileProject project, int position){
-        FileProject projectAux = items.get(position);
+        items.get(position).setNameFileProject(project.getNameFileProject());
+        items.get(position).setDescriptionFileProject(project.getDescriptionFileProject());
+       /* FileProject projectAux = items.get(position);
         projectAux.setNameFileProject(project.getNameFileProject());
         projectAux.setDescriptionFileProject(project.getDescriptionFileProject());
         projectAux.DateTimeInitial();
         projectAux.setImageFileProject(project.getImageFileProject());
-        items.set(position,projectAux);
+        items.set(position,projectAux);*/
         notifyDataSetChanged();
     }
     public void deleteElement(int position){
@@ -196,7 +198,6 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
         dialog.show();
         //getInfo(Resource.role,nameF,"edwinsaavedra99@gmail.com",dateF,"lecture");
     }
-
     public void getInfo(final int role,final String nameF,final String emailTo,final String dateTo, final String provilege){
         MediaType MEDIA_TYPE = MediaType.parse("application/json");
         final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60, TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(60,TimeUnit.SECONDS).build();
@@ -287,7 +288,6 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
 
         dialog.show();
     }
-
     public void deleteFileService(final int position,final String name,final String date){
         MediaType MEDIA_TYPE = MediaType.parse("application/json");
         final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60, TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(60,TimeUnit.SECONDS).build();
@@ -354,21 +354,25 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
         dialog.setTitle("EDIT FILE PROJECT");
         dialog.setCancelable(false);
         final LayoutInflater inflater = LayoutInflater.from(context);
-        final View add_layout = inflater.inflate(R.layout.project_structure_data,null);
-        final TextInputEditText editName = add_layout.findViewById(R.id.txt_nameProject_1);
+        final View add_layout = inflater.inflate(R.layout.layout_save_figure,null);
+        final TextInputEditText editName = add_layout.findViewById(R.id.txt_nameProject);
+        final TextInputEditText editDescription = add_layout.findViewById(R.id.txt_descriptionProject);
         editName.setText(project.getNameFileProject());
+        editDescription.setText(project.getDescriptionFileProject());
         dialog.setView(add_layout);
         dialog.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String name = editName.getText().toString().trim();
-                if(name.length() == 0){
+                String description = editDescription.getText().toString().trim();
+                if(name.length() == 0 || name.contains("@") || !nameInList(name)){
+                    Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
                     editName.setError("Error ...");
                     editName.requestFocus();
                 }else {
-                    FileProject project1 = new FileProject(name, "");
-                    project1.setImageFileProject(project.getImageFileProject());
-                    editElement(project1, position);
+                    editFileService(position,items.get(position).getNameFileProject(),items.get(position).getDateAux(),
+                            name,description);
+
                 }
             }
         });
@@ -381,13 +385,85 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
 
         dialog.show();
     }
-
-
+    public void editFileService(final int position,final String name,final String date,final String new_name,final String new_description){
+        MediaType MEDIA_TYPE = MediaType.parse("application/json");
+        final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60, TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(60,TimeUnit.SECONDS).build();
+        JSONObject postdata = new JSONObject();
+        String addURL = "";
+        if(Resource.role == 1) { //medicine
+            addURL = "medicine/updatefile";
+            try {
+                postdata.put("email", Resource.emailUserLogin);
+                postdata.put("patient",Resource.idPacient);
+                postdata.put("record",Resource.idCarpeta);
+                postdata.put("file",name);
+                postdata.put("date",date);
+                postdata.put("file_new",new_name);
+                postdata.put("description_new",new_description);
+            } catch(JSONException e){
+                e.printStackTrace();
+            }
+        }else if(Resource.role  == 2){ //study
+            addURL = "study/updatefile";
+            try {
+                postdata.put("email", Resource.emailUserLogin);
+                postdata.put("project",Resource.idCarpeta);
+                postdata.put("file",name);
+                postdata.put("date",date);
+                postdata.put("file_new",new_name);
+                postdata.put("description_new",new_description);
+            } catch(JSONException e){
+                e.printStackTrace();
+            }
+        }
+        RequestBody body = RequestBody.create(MEDIA_TYPE,
+                postdata.toString());
+        final Request request = new Request.Builder()
+                .url(context.getString(R.string.url)+addURL) /*URL ... INDEX PX DE WILMER*/
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+            @Override
+            public void onResponse(Call call, Response response)
+                    throws IOException {
+                if (response.isSuccessful()){
+                    final String responseData = response.body().string();
+                    System.out.println("-------**********-----------"+responseData);
+                    Activity das = (Activity) context;
+                    das.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(responseData.equals("success")) {
+                                FileProject project1 = new FileProject(new_name, new_description);
+                                editElement(project1, position);
+                                deleteElement(position);
+                                Toast.makeText(context, "Edit", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+    private boolean nameInList(String name){
+        for(int i = 0; i<items.size(); i++){
+            if(name.equals(items.get(i).getNameFileProject())){
+                return true;
+            }
+        }
+        return false;
+    }
     @Override
     public Filter getFilter(){
         return itemsFilter;
     }
-
     private Filter itemsFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
@@ -406,7 +482,6 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
             results.values = filterPatient;
             return results;
         }
-
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             items.clear();
@@ -414,6 +489,4 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
             notifyDataSetChanged();
         }
     };
-
-
 }

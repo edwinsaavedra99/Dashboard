@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xmls="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/fondo_white"
+    android:background="@android:color/black"
     android:orientation="vertical"
     android:id="@+id/boxFileProject"
     android:layout_width="match_parent"
@@ -58,6 +58,7 @@
         </ImageView>
 
         <LinearLayout
+
             android:id="@+id/calendarAcces"
             android:gravity="center"
             android:orientation="horizontal"
@@ -86,6 +87,7 @@
                 android:layout_height="wrap_content">
             </TextView>
             <TextView
+                android:visibility="gone"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:textSize="10sp"
