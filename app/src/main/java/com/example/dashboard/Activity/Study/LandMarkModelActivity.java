@@ -1589,7 +1589,6 @@ public class LandMarkModelActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
                 dialog.dismiss();
                 e.printStackTrace();
             }
