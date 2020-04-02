@@ -145,6 +145,7 @@
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/info_24px" />
                     <TextView
+                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
@@ -153,13 +154,48 @@
                         android:textSize="10sp" />
 
                     <ImageView
+                        android:visibility="gone"
                         android:id="@+id/share"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/share_26px" />
-
                     <TextView
+                        android:id="@+id/textSave"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="Save"
+                        android:textColor="#FFFFFF"
+                        android:textSize="10sp" />
+                    <ImageView
+                        android:id="@+id/saveData"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="15dp"
+                        android:src="@drawable/save_50px" />
+                    <ImageView
+                        android:visibility="gone"
+                        android:id="@+id/sendData"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="15dp"
+                        android:src="@drawable/ic_send_black_24dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="Sync"
+                        android:textColor="#FFFFFF"
+                        android:textSize="10sp" />
+                    <ImageView
+                        android:id="@+id/syncData"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="15dp"
+                        android:src="@drawable/ic_sync_black_24dp" />
+                    <TextView
+                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
@@ -168,6 +204,7 @@
                         android:textSize="9sp" />
 
                     <ImageView
+                        android:visibility="gone"
                         android:id="@+id/galery"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
@@ -740,6 +777,20 @@
                             android:layout_height="wrap_content"
                             >
                             <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="10dp"
+                                android:text="Preview"
+                                android:textColor="#FFFFFF"
+                                android:textSize="10sp" />
+
+                            <ImageView
+                                android:id="@+id/preview"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:layout_marginBottom="15dp"
+                                android:src="@drawable/detective_64px" />
+                            <TextView
                                 android:visibility="gone"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -756,20 +807,7 @@
                                 android:layout_marginBottom="10dp"
                                 android:src="@drawable/ic_open_in_new_black_24dp" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="10dp"
-                                android:text="Save"
-                                android:textColor="#FFFFFF"
-                                android:textSize="10sp" />
 
-                            <ImageView
-                                android:id="@+id/saveData"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:layout_marginBottom="15dp"
-                                android:src="@drawable/save_50px" />
                             <LinearLayout
                                 android:layout_marginBottom="10dp"
                                 android:gravity="center"
@@ -800,20 +838,7 @@
                                     android:layout_marginBottom="15dp"
                                     android:src="@drawable/ic_create_black_24dp" />
                             </LinearLayout>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="10dp"
-                                android:text="Preview"
-                                android:textColor="#FFFFFF"
-                                android:textSize="10sp" />
 
-                            <ImageView
-                                android:id="@+id/preview"
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"
-                                android:layout_marginBottom="15dp"
-                                android:src="@drawable/detective_64px" />
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"

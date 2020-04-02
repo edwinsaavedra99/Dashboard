@@ -128,7 +128,7 @@ public class ProjectActivity extends AppCompatActivity {
     }
 
     private void ShowAddDialog(){
-        AlertDialog.Builder dialog = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.myDialog));
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle("NEW PROJECT: ");
         dialog.setMessage("Insert Project's Data: " );
         dialog.setCancelable(false);

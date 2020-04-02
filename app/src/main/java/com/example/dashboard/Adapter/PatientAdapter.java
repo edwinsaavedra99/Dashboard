@@ -109,6 +109,12 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientV
                         System.out.println("SELECT ITEM: "+ item.getTitle()+"position: "+i);
                         if(item.getTitle().equals("Open")){
                             Resource.idPacient = items.get(i).getCod();
+                            Resource.residecyPatient = items.get(i).getResidencia();
+                            Resource.agePatient = items.get(i).getAge();
+                            if(items.get(i).isSex())
+                                Resource.genderPatient = 0;
+                            else
+                                Resource.genderPatient = 1;
                             Intent intent = new Intent(context, ProjectActivity.class);
                             context.startActivity(intent);
                         }else if(item.getTitle().equals("Edit")){

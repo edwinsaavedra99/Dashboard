@@ -15,10 +15,13 @@ public class Resource {
     public static boolean openFile=false;
     public static boolean openShareFile = false;
     public static String privilegeFile;
-    public static String emailSharedFrom ;
+    public static String emailSharedFrom;
     public static String nameFile;
     public static String descriptionFile;
     public static String dateFile;
+    public static String residecyPatient;
+    public static int agePatient;
+    public static int genderPatient;
     public static JSONObject infoStudy;
     public static JSONObject infoMedicine;
     public static GoogleSignInClient SignInClient;

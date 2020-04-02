@@ -1148,9 +1148,13 @@ public class FiguresModelActivity extends AppCompatActivity {
             posdate123.put("imagey",myListFigures.getGeneralHeight());
             posdate123.put("profileItems",null);
             posdate123.put("indicators",myListFigures.dataFigures());
-            posdate123.put("description",descripcion);
-            posdate123.put("date",infoDate);
-            posdate123.put("name",name);
+            postdata.put("description",descripcion);
+            postdata.put("date",infoDate);
+            postdata.put("name",name);
+            postdata.put("age",Resource.agePatient);
+            postdata.put("dni",Resource.idPacient);
+            postdata.put("residency",Resource.residecyPatient);
+            postdata.put("gender",Resource.genderPatient);
             postdata.put("information",posdate123);
             postdata.put("image", myListFigures.getBase64String());
             System.out.println(posdate123.toString());

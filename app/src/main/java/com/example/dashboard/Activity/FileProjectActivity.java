@@ -283,7 +283,7 @@ public class FileProjectActivity extends AppCompatActivity {
                                                 String date = jsonObject1.getString("date");
                                                 list.add(new FileProject(image,name,description,date));
                                             }
-                                            adapterFileProject =  new FileProjectAdapter(list,getApplicationContext());
+                                            adapterFileProject =  new FileProjectAdapter(list,FileProjectActivity.this);
                                             recyclerViewFileProject.setAdapter(adapterFileProject);
                                         } catch (JSONException e) {
                                             e.printStackTrace();

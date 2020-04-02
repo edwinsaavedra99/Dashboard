@@ -143,7 +143,7 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
                         }else if(item.getTitle().equals("Edit")){
                             showAlertDialogEdit(items.get(i),i);
                         }else if(item.getTitle().equals("Delete")){
-                            showAlertDialogDelete(i);
+                            showAlertDialogDelete(i,items.get(i).getNameFileProject(),items.get(i).getDateAux());
                         }
                         return true;
                     }
@@ -155,7 +155,6 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
             @Override
             public void onClick(View v) {
                 showAlertDialogShare(items.get(i).getNameFileProject(),items.get(i).getDateAux());
-                //Toast.makeText(context,"SHARED",Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -267,7 +266,7 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
             }
         });
     }
-    private void showAlertDialogDelete(final int position){
+    private void showAlertDialogDelete(final int position, final String name,final String date){
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         dialog.setTitle("DELETE FILE PROJECT");
         dialog.setMessage("Are you sure to delete  this file ? , All data will be deleted" );
@@ -276,7 +275,7 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
         dialog.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                deleteElement(position);
+               deleteFileService(position,name,date);
             }
         });
         dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
@@ -289,6 +288,67 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
         dialog.show();
     }
 
+    public void deleteFileService(final int position,final String name,final String date){
+        MediaType MEDIA_TYPE = MediaType.parse("application/json");
+        final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60, TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(60,TimeUnit.SECONDS).build();
+        JSONObject postdata = new JSONObject();
+        String addURL = "";
+        if(Resource.role == 1) { //medicine
+            addURL = "medicine/deletefile";
+            try {
+                postdata.put("email", Resource.emailUserLogin);
+                postdata.put("patient",Resource.idPacient);
+                postdata.put("record",Resource.idCarpeta);
+                postdata.put("file",name);
+                postdata.put("date",date);
+            } catch(JSONException e){
+                e.printStackTrace();
+            }
+        }else if(Resource.role  == 2){ //study
+            addURL = "study/deletefile";
+            try {
+                postdata.put("email", Resource.emailUserLogin);
+                postdata.put("project",Resource.idCarpeta);
+                postdata.put("file",name);
+                postdata.put("date",date);
+            } catch(JSONException e){
+                e.printStackTrace();
+            }
+        }
+        RequestBody body = RequestBody.create(MEDIA_TYPE,
+                postdata.toString());
+        final Request request = new Request.Builder()
+                .url(context.getString(R.string.url)+addURL) /*URL ... INDEX PX DE WILMER*/
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+            @Override
+            public void onResponse(Call call, Response response)
+                    throws IOException {
+                if (response.isSuccessful()){
+                    final String responseData = response.body().string();
+                    System.out.println("-------**********-----------"+responseData);
+                    Activity das = (Activity) context;
+                    das.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(responseData.equals("success")) {
+                                deleteElement(position);
+                                Toast.makeText(context, "Delete", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
     private void showAlertDialogEdit(final FileProject project, final int position){
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         dialog.setTitle("EDIT FILE PROJECT");

@@ -30,6 +30,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dashboard.Animations.MyAnimation;
@@ -87,7 +88,9 @@ public class LandMarkModelActivity extends AppCompatActivity {
     //Load and Save data
     //Insert com.example.dashboard.Figures
     private ImageView saveData;
+    private ImageView syncData;
     private ImageView infoFigures;
+    private ImageView sendData;
     private int[] colour = {183, 149, 11};
     //Zoom Image
     private ImageView extendsImage;
@@ -239,6 +242,7 @@ public class LandMarkModelActivity extends AppCompatActivity {
     private AlertDialog dialog;
     private String nameFileGlobal="";
     private String descriptionFileGlobal="";
+    private TextView textSave;
     //--End Attributes of class
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @SuppressLint("ClickableViewAccessibility")
@@ -257,8 +261,6 @@ public class LandMarkModelActivity extends AppCompatActivity {
         //Initializing Properties
         initialProperties();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-
 
         infoFigures.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -323,18 +325,24 @@ public class LandMarkModelActivity extends AppCompatActivity {
         controlMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!flagControl){
-                    Animation.animationScale(controlMenu, TIME_ANIMATION, SCALE_ANIMATION, SCALE_ANIMATION);
-                    controlMenu.setColorFilter(Color.rgb(255, 127, 80));
-                    control.setVisibility(View.VISIBLE);
-                    flagControl = true;
+                //editorlecture
+                if(Resource.privilegeFile.equals("edit")){
+                    if(!flagControl){
+                        Animation.animationScale(controlMenu, TIME_ANIMATION, SCALE_ANIMATION, SCALE_ANIMATION);
+                        controlMenu.setColorFilter(Color.rgb(255, 127, 80));
+                        control.setVisibility(View.VISIBLE);
+                        flagControl = true;
+                    }else{
+                        control.setVisibility(View.GONE);
+                        controlMenu.setColorFilter(Color.rgb(255, 255, 255));
+                        flagControl = false;
+                    }
+                    myListSegmentation.invalidate();
+                    myListSegmentation.getZoomList().invalidate();
                 }else{
-                    control.setVisibility(View.GONE);
-                    controlMenu.setColorFilter(Color.rgb(255, 255, 255));
-                    flagControl = false;
+                    Toast.makeText(getApplicationContext(), "Read Only", Toast.LENGTH_SHORT).show();
+
                 }
-                myListSegmentation.invalidate();
-                myListSegmentation.getZoomList().invalidate();
             }
         });
         allSortUp.setOnClickListener(new View.OnClickListener() {
@@ -504,69 +512,92 @@ public class LandMarkModelActivity extends AppCompatActivity {
         clearSegments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(Resource.privilegeFile.equals("edit")){
+                    myListSegmentation.clearList();
+                    myListSegmentation.getCardView().setVisibility(View.GONE);
+                }else{
+                    Toast.makeText(getApplicationContext(), "Read Only", Toast.LENGTH_SHORT).show();
+                }
                 Animation.animationScale(clearSegments,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
-                myListSegmentation.clearList();
-                myListSegmentation.getCardView().setVisibility(View.GONE);
+
             }
         });
         eraserSegments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!flagEraserSegmentation) {
-                    Animation.animationScale(eraserSegments, TIME_ANIMATION, SCALE_ANIMATION, SCALE_ANIMATION);
-                    eraserSegments.setColorFilter(Color.rgb(255, 127, 80));
-                    addPointSegment.setColorFilter(Color.rgb(255, 255, 255));
-                    extendsImage.setColorFilter(Color.rgb(255, 255, 255));
-                    pencilSegment.setColorFilter(Color.rgb(255, 255, 255));
-                    aristas.setColorFilter(Color.rgb(255, 255, 255));
-                    myListSegmentation.changeModeTouch(2);
-                    flagEraserSegmentation = true;
+                if(Resource.privilegeFile.equals("edit")){
+                    if(!flagEraserSegmentation) {
+                        Animation.animationScale(eraserSegments, TIME_ANIMATION, SCALE_ANIMATION, SCALE_ANIMATION);
+                        eraserSegments.setColorFilter(Color.rgb(255, 127, 80));
+                        addPointSegment.setColorFilter(Color.rgb(255, 255, 255));
+                        extendsImage.setColorFilter(Color.rgb(255, 255, 255));
+                        pencilSegment.setColorFilter(Color.rgb(255, 255, 255));
+                        aristas.setColorFilter(Color.rgb(255, 255, 255));
+                        myListSegmentation.changeModeTouch(2);
+                        flagEraserSegmentation = true;
+                    }else{
+                        eraserSegments.setColorFilter(Color.rgb(255, 255, 255));
+                        myListSegmentation.changeModeTouch(0);
+                        flagEraserSegmentation = false;
+                    }
                 }else{
-                    eraserSegments.setColorFilter(Color.rgb(255, 255, 255));
-                    myListSegmentation.changeModeTouch(0);
-                    flagEraserSegmentation = false;
+                    Animation.animationScale(eraserSegments, TIME_ANIMATION, SCALE_ANIMATION, SCALE_ANIMATION);
+                    Toast.makeText(getApplicationContext(), "Read Only", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
         addPointSegment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int modeTouch = myListSegmentation.getModeTouch();
-                if(!flagPointSegmentation) {
-                    Animation.animationScale(addPointSegment, TIME_ANIMATION, SCALE_ANIMATION, SCALE_ANIMATION);
-                    eraserSegments.setColorFilter(Color.rgb(255, 255, 255));
-                    pencilSegment.setColorFilter(Color.rgb(255, 255, 255));
-                    extendsImage.setColorFilter(Color.rgb(255, 255, 255));
-                    addPointSegment.setColorFilter(Color.rgb(255, 127, 80));
-                    aristas.setColorFilter(Color.rgb(255, 255, 255));
-                    myListSegmentation.changeModeTouch(3);
-                    flagPointSegmentation = true;
+                if(Resource.privilegeFile.equals("edit")){
+                    int modeTouch = myListSegmentation.getModeTouch();
+                    if(!flagPointSegmentation) {
+                        Animation.animationScale(addPointSegment, TIME_ANIMATION, SCALE_ANIMATION, SCALE_ANIMATION);
+                        eraserSegments.setColorFilter(Color.rgb(255, 255, 255));
+                        pencilSegment.setColorFilter(Color.rgb(255, 255, 255));
+                        extendsImage.setColorFilter(Color.rgb(255, 255, 255));
+                        addPointSegment.setColorFilter(Color.rgb(255, 127, 80));
+                        aristas.setColorFilter(Color.rgb(255, 255, 255));
+                        myListSegmentation.changeModeTouch(3);
+                        flagPointSegmentation = true;
+                    }else{
+                        addPointSegment.setColorFilter(Color.rgb(255, 255, 255));
+                        myListSegmentation.changeModeTouch(0);
+                        flagPointSegmentation = false;
+                    }
                 }else{
-                    addPointSegment.setColorFilter(Color.rgb(255, 255, 255));
-                    myListSegmentation.changeModeTouch(0);
-                    flagPointSegmentation = false;
+                    Animation.animationScale(addPointSegment, TIME_ANIMATION, SCALE_ANIMATION, SCALE_ANIMATION);
+                    Toast.makeText(getApplicationContext(), "Read Only", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
 
         pencilSegment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int modeTouch = myListSegmentation.getModeTouch();
-                if(!flagPencilSegmentation) {
-                    Animation.animationScale(pencilSegment, TIME_ANIMATION, SCALE_ANIMATION, SCALE_ANIMATION);
-                    eraserSegments.setColorFilter(Color.rgb(255, 255, 255));
-                    addPointSegment.setColorFilter(Color.rgb(255, 255, 255));
-                    extendsImage.setColorFilter(Color.rgb(255, 255, 255));
-                    pencilSegment.setColorFilter(Color.rgb(255, 127, 80));
-                    aristas.setColorFilter(Color.rgb(255, 255, 255));
-                    myListSegmentation.changeModeTouch(4);
-                    flagPencilSegmentation = true;
+                if(Resource.privilegeFile.equals("edit")){
+                    int modeTouch = myListSegmentation.getModeTouch();
+                    if(!flagPencilSegmentation) {
+                        Animation.animationScale(pencilSegment, TIME_ANIMATION, SCALE_ANIMATION, SCALE_ANIMATION);
+                        eraserSegments.setColorFilter(Color.rgb(255, 255, 255));
+                        addPointSegment.setColorFilter(Color.rgb(255, 255, 255));
+                        extendsImage.setColorFilter(Color.rgb(255, 255, 255));
+                        pencilSegment.setColorFilter(Color.rgb(255, 127, 80));
+                        aristas.setColorFilter(Color.rgb(255, 255, 255));
+                        myListSegmentation.changeModeTouch(4);
+                        flagPencilSegmentation = true;
+                    }else{
+                        pencilSegment.setColorFilter(Color.rgb(255, 255, 255));
+                        myListSegmentation.changeModeTouch(0);
+                        flagPencilSegmentation = false;
+                    }
                 }else{
-                    pencilSegment.setColorFilter(Color.rgb(255, 255, 255));
-                    myListSegmentation.changeModeTouch(0);
-                    flagPencilSegmentation = false;
+                    Toast.makeText(getApplicationContext(), "Read Only", Toast.LENGTH_SHORT).show();
+                    Animation.animationScale(pencilSegment, TIME_ANIMATION, SCALE_ANIMATION, SCALE_ANIMATION);
                 }
+
             }
         });
         //back menu right
@@ -864,22 +895,28 @@ public class LandMarkModelActivity extends AppCompatActivity {
         deleteSegments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Animation.animationScale(deleteSegments,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
-                Toast toast;
-                if(myListSegmentation.after()) {
-                    toast = Toast.makeText(getApplicationContext(), "Deleted Successfully", Toast.LENGTH_SHORT);
-                    if(myListSegmentation.getFigureSelected()>-1 && !myListSegmentation.getSegmentation().isEmpty()) {
-                        Circle a = (Circle) myListSegmentation.getSegmentation().get(myListSegmentation.getFigureSelected());
-                        Circle a1 = (Circle) myListSegmentation.getZoomList().getSegmentation().get(myListSegmentation.getZoomList().getFigureSelected());
-                        myListSegmentation.getViewZoom().setPivotY((a.getCenterY()-myListSegmentation.getmPositionY()) / myListSegmentation.getmScaleFactor() * myListSegmentation.getViewZoom().getHeight() / myListSegmentation.getHeight());
-                        myListSegmentation.getViewZoom().setPivotX((a.getCenterX()-myListSegmentation.getmPositionX()) / myListSegmentation.getmScaleFactor() * myListSegmentation.getViewZoom().getWidth() / myListSegmentation.getWidth());
-                    }else{
-                        myListSegmentation.getCardView().setVisibility(View.GONE);
+                if(Resource.privilegeFile.equals("edit")){
+                    Animation.animationScale(deleteSegments,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
+                    Toast toast;
+                    if(myListSegmentation.after()) {
+                        toast = Toast.makeText(getApplicationContext(), "Deleted Successfully", Toast.LENGTH_SHORT);
+                        if(myListSegmentation.getFigureSelected()>-1 && !myListSegmentation.getSegmentation().isEmpty()) {
+                            Circle a = (Circle) myListSegmentation.getSegmentation().get(myListSegmentation.getFigureSelected());
+                            Circle a1 = (Circle) myListSegmentation.getZoomList().getSegmentation().get(myListSegmentation.getZoomList().getFigureSelected());
+                            myListSegmentation.getViewZoom().setPivotY((a.getCenterY()-myListSegmentation.getmPositionY()) / myListSegmentation.getmScaleFactor() * myListSegmentation.getViewZoom().getHeight() / myListSegmentation.getHeight());
+                            myListSegmentation.getViewZoom().setPivotX((a.getCenterX()-myListSegmentation.getmPositionX()) / myListSegmentation.getmScaleFactor() * myListSegmentation.getViewZoom().getWidth() / myListSegmentation.getWidth());
+                        }else{
+                            myListSegmentation.getCardView().setVisibility(View.GONE);
+                        }
+                    }else {
+                        toast = Toast.makeText(getApplicationContext(), "Isn't Selected Figure", Toast.LENGTH_SHORT);
                     }
-                }else {
-                    toast = Toast.makeText(getApplicationContext(), "Isn't Selected Figure", Toast.LENGTH_SHORT);
+                    toast.show();
+                }else{
+                    Toast.makeText(getApplicationContext(), "Read Only", Toast.LENGTH_SHORT).show();
+                    Animation.animationScale(deleteSegments,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
                 }
-                toast.show();
+
             }
         });
 
@@ -1130,20 +1167,8 @@ public class LandMarkModelActivity extends AppCompatActivity {
         getOpenCvHttp1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               /* try {
-                    filtersWithProgressBar();
-                    String image = FiltersService.getFilters(myListSegmentation.getBase64String(),"clahe");
-
-                    System.out.println(image);
-                } catch (IOException e) {
-                    dialog.dismiss();
-                    e.printStackTrace();
-                }
-                addFilter(myFilters.filterRGB());*/
-
                 if(auxOriginal == null){
                     getFilterService(myListSegmentation.getBase64String(),"clahe",1);
-
                 }else{
                     addFilter(auxOriginal);
                 }
@@ -1327,6 +1352,12 @@ public class LandMarkModelActivity extends AppCompatActivity {
 
             }
         });*/
+        syncData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //consultar solo landmarks de archivo
+            }
+        });
     }
 
 
@@ -1430,13 +1461,16 @@ public class LandMarkModelActivity extends AppCompatActivity {
         dialog.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast toast;
-                if (myListSegmentation.setDescriptionFigure(editDescription.getText().toString()))
-                    toast = Toast.makeText(getApplicationContext(), "Save Successfully", Toast.LENGTH_SHORT);
-                else
-                    toast = Toast.makeText(getApplicationContext(), "No Save ", Toast.LENGTH_SHORT);
-
-                toast.show();
+                if(Resource.privilegeFile.equals("edit")){
+                    Toast toast;
+                    if (myListSegmentation.setDescriptionFigure(editDescription.getText().toString()))
+                        toast = Toast.makeText(getApplicationContext(), "Save Successfully", Toast.LENGTH_SHORT);
+                    else
+                        toast = Toast.makeText(getApplicationContext(), "No Save ", Toast.LENGTH_SHORT);
+                    toast.show();
+                }else{
+                    Toast.makeText(getApplicationContext(), "Read Only", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
@@ -1465,9 +1499,9 @@ public class LandMarkModelActivity extends AppCompatActivity {
             posdate123.put("imagey",myListSegmentation.getGeneralHeight());
             posdate123.put("profileItems",null);
             posdate123.put("landmarks",myListSegmentation.dataSegments());
-            posdate123.put("name",name);
-            posdate123.put("description",description);
-            posdate123.put("date",infoDate);
+            postdata.put("name",name);
+            postdata.put("description",description);
+            postdata.put("date",infoDate);
             postdata.put("information",posdate123);
         } catch(JSONException e){
             e.printStackTrace();
@@ -1509,6 +1543,16 @@ public class LandMarkModelActivity extends AppCompatActivity {
         });
     }
 
+    private void  privilegeOption(){
+        if(Resource.privilegeFile.equals("edit")){
+            textSave.setText("Send");
+            saveData.setVisibility(View.GONE);
+            sendData.setVisibility(View.VISIBLE);
+        }else{
+            saveData.setVisibility(View.GONE);
+            textSave.setVisibility(View.GONE);
+        }
+    }
     public void openService(){
         filtersWithProgressBar();
         MediaType MEDIA_TYPE =
@@ -1522,6 +1566,7 @@ public class LandMarkModelActivity extends AppCompatActivity {
             if(Resource.openShareFile) {
                 postdata.put("email", Resource.emailSharedFrom);
                 addUrl = "study/shared/selectfile";
+                privilegeOption();
                 Resource.openShareFile = false;
             }else{
                 postdata.put("email", Resource.emailUserLogin);
@@ -1634,12 +1679,6 @@ public class LandMarkModelActivity extends AppCompatActivity {
     }
 
     public void getFilterService(String image, String nameFilter,int cod){
-       /* try {
-            auxOriginal = myListSegmentation.decodeBase64AndSetImage(
-                    FiltersService.getFilters(myListSegmentation.getBase64String(),nameFilter));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
         codHttpFilter = cod;
         filtersWithProgressBar();
         MediaType MEDIA_TYPE =
@@ -1849,6 +1888,9 @@ public class LandMarkModelActivity extends AppCompatActivity {
         menu_left.setBackgroundColor(Color.parseColor("#80000000"));
         menu_right.setBackgroundColor(Color.parseColor("#80000000"));
         getFigures = findViewById(R.id.getFigures);
+        textSave = findViewById(R.id.textSave);
+        sendData = findViewById(R.id.sendData);
+        syncData = findViewById(R.id.syncData);
         //Animation
         Animation = new MyAnimation();
         //Scrolls
