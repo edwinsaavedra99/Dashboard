@@ -365,7 +365,7 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
             public void onClick(DialogInterface dialog, int which) {
                 String name = editName.getText().toString().trim();
                 String description = editDescription.getText().toString().trim();
-                if(name.length() == 0 || name.contains("@") || !nameInList(name)){
+                if(name.length() == 0 || name.contains("@") || nameInList(name)){
                     Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
                     editName.setError("Error ...");
                     editName.requestFocus();
@@ -441,7 +441,6 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
                             if(responseData.equals("success")) {
                                 FileProject project1 = new FileProject(new_name, new_description);
                                 editElement(project1, position);
-                                deleteElement(position);
                                 Toast.makeText(context, "Edit", Toast.LENGTH_SHORT).show();
                             }else{
                                 Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();

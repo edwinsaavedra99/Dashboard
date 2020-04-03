@@ -255,7 +255,7 @@ public class ProjectActivity extends AppCompatActivity {
                                         for(int i = 0; i<jsonArray.length();i++){
                                             list.add(new Project(jsonArray.get(i).toString()));
                                         }
-                                        adapter =  new ProjectAdapter(list,getApplicationContext());
+                                        adapter =  new ProjectAdapter(list,ProjectActivity.this);
                                         recyclerView.setAdapter(adapter);
                                     } catch (JSONException e) {
                                         e.printStackTrace();

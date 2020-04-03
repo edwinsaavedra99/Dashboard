@@ -125,14 +125,14 @@ public class FragmentDoctorShare extends Fragment {
                                             JSONObject jsonObject1 = jsonArray.getJSONObject(k);
                                             String image = jsonObject1.getString("image");//
                                             String name = jsonObject1.getString("file");//
-                                            String description = jsonObject1.getString("description");//
+//                                            String description = jsonObject1.getString("description");//
                                             String date = jsonObject1.getString("date");//
                                             String email = jsonObject1.getString("email");//
                                             String id = jsonObject1.getString("id");//
                                             String privilege = jsonObject1.getString("privilege");
                                             String record = jsonObject1.getString("record");
                                             int patient = jsonObject1.getInt("patient");
-                                            list.add(new SharedFile(image,name,description,date,email,privilege,id,record,patient));
+                                            list.add(new SharedFile(image,name,"",date,email,privilege,id,record,patient));
                                         }
                                         adapter =  new SharedFileAdapter(list,getActivity());
                                         recyclerView.setAdapter(adapter);

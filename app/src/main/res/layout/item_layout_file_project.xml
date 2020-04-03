@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xmls="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/black"
+    android:background="@drawable/fondo_white"
     android:orientation="vertical"
     android:id="@+id/boxFileProject"
     android:layout_width="match_parent"

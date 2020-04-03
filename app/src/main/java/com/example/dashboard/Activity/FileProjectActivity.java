@@ -170,6 +170,7 @@ public class FileProjectActivity extends AppCompatActivity {
                             Intent intent = new Intent(FileProjectActivity.this, FiguresModelActivity.class);
                             startActivity(intent);
                         }
+                        Resource.privilegeFile = "edit";
                     } else {
                         Toast.makeText(FileProjectActivity.this, "Insert-Image, Please", Toast.LENGTH_SHORT).show();
                     }
