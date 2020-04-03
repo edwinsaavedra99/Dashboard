@@ -25,6 +25,7 @@ import com.example.dashboard.Activity.Doctor.FiguresModelActivity;
 import com.example.dashboard.Activity.FileProjectActivity;
 import com.example.dashboard.Activity.ProjectActivity;
 import com.example.dashboard.Activity.Study.LandMarkModelActivity;
+import com.example.dashboard.ListFigures.MemoryFigure;
 import com.example.dashboard.Models.FileProject;
 import com.example.dashboard.Models.Patient;
 import com.example.dashboard.Models.Project;
@@ -115,9 +116,9 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
     }
     @Override
     public void onBindViewHolder(final FileProjectAdapter.FileProjectViewHolder fileViewHolder, final int i){
-        fileViewHolder.nameFileProject.setText(items.get(i).getNameFileProject());
-        fileViewHolder.descriptionFile.setText(items.get(i).getDescriptionFileProject());
-        fileViewHolder.dateFileProject.setText(items.get(i).getDateFileProject());
+        fileViewHolder.nameFileProject.setText(items.get(i).getNameFileProject().toUpperCase());
+        fileViewHolder.descriptionFile.setText(items.get(i).getDescriptionFileProject().toUpperCase());
+        fileViewHolder.dateFileProject.setText("DATE CREATE : "+items.get(i).getDateFileProject());
         fileViewHolder.timeFileProject.setText(items.get(i).getTimeFileProject());
         fileViewHolder.imageViewFileProject.setImageBitmap(StringUtil.decodeBase64AndSetImage(items.get(i).getImageFileProject()));
         fileViewHolder.moreOptionItem.setOnClickListener(new View.OnClickListener() {
@@ -137,8 +138,10 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
                                 Intent intent = new Intent(context, FiguresModelActivity.class);
                                 context.startActivity(intent);
                             }
+                            MemoryFigure.changeSave = true;
                             Resource.privilegeFile = "edit";
                             Resource.openFile = true;
+                            Resource.openShareFile = false;
                             Resource.nameFile = items.get(i).getNameFileProject();
                             Resource.descriptionFile = items.get(i).getDescriptionFileProject();
                             Resource.dateFile = items.get(i).getDateAux();

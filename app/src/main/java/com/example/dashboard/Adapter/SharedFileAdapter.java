@@ -85,7 +85,7 @@ public class SharedFileAdapter extends RecyclerView.Adapter<SharedFileAdapter.Sh
                 }
                 Resource.privilegeFile = items.get(i).getPrivilege();
                 Resource.emailSharedFrom = items.get(i).getEmailFrom();
-                Resource.openFile = true;
+                Resource.openFile = false;
                 Resource.openShareFile = true;
                 Resource.nameFile = items.get(i).getNameFileProject();
                 Resource.descriptionFile = items.get(i).getDescriptionFileProject();

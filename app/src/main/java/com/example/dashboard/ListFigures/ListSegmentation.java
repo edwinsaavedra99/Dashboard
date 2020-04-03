@@ -46,12 +46,18 @@ public class ListSegmentation extends View {
     private Context context;
     private ArrayList<Figure> segmentation;
     private ArrayList<Figure> segmentationMin;
+    private boolean changeSave = false;
     private int[] color = {183, 149, 11};
     public boolean isSelectedFigure(){
 
         return this.figureSelected >= 0 && this.figureSelected<segmentation.size();
     }
-
+    public boolean getChangeSave(){
+        return changeSave;
+    }
+    public void setChangeSave(boolean d){
+       changeSave = d;
+    }
 
     public ArrayList<Figure> getSegmentation() {
         return segmentation;

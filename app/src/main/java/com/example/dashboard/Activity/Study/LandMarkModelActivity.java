@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -36,6 +37,7 @@ import android.widget.Toast;
 import com.example.dashboard.Animations.MyAnimation;
 import com.example.dashboard.Filters.GroupFilters;
 import com.example.dashboard.Filters.MyFilters;
+import com.example.dashboard.ListFigures.MemoryFigure;
 import com.example.dashboard.Resources.Resource;
 import com.example.dashboard.Utils.ControlMenu;
 import com.example.dashboard.R;
@@ -243,6 +245,8 @@ public class LandMarkModelActivity extends AppCompatActivity {
     private String nameFileGlobal="";
     private String descriptionFileGlobal="";
     private TextView textSave;
+    private TextView txtsyncData;
+    private boolean changeSave = false;
     //--End Attributes of class
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @SuppressLint("ClickableViewAccessibility")
@@ -1355,7 +1359,13 @@ public class LandMarkModelActivity extends AppCompatActivity {
         syncData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //consultar solo landmarks de archivo
+                openService();
+            }
+        });
+        sendData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendLandMarks();
             }
         });
     }
@@ -1482,15 +1492,89 @@ public class LandMarkModelActivity extends AppCompatActivity {
         dialog.show();
     }
 
-
-    public void saveLandMarks(String name, String description){
+    public void sendLandMarks(){
+        filtersWithProgressBar();
         MediaType MEDIA_TYPE = MediaType.parse("application/json");
         final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(60,TimeUnit.SECONDS).build();
         JSONObject postdata = new JSONObject();
         try {
-            Date date = new Date();
-            DateFormat hourdateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
-            String infoDate = hourdateFormat.format(date);
+            String infoDate="";
+            postdata.put("image", myListSegmentation.getBase64String());
+            postdata.put("email",Resource.emailSharedFrom);
+            postdata.put("project",Resource.idCarpeta);
+            JSONObject posdate123 = new JSONObject();
+            posdate123.put("imageX",myListSegmentation.getGeneralWidth());
+            posdate123.put("imagey",myListSegmentation.getGeneralHeight());
+            posdate123.put("profileItems",null);
+            posdate123.put("landmarks",myListSegmentation.dataSegments());
+            postdata.put("name",Resource.nameFile);
+            postdata.put("description",Resource.descriptionFile);
+            postdata.put("date",Resource.dateFile);
+            postdata.put("information",posdate123);
+        } catch(JSONException e){
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(MEDIA_TYPE,postdata.toString());
+        final Request request = new Request.Builder()
+                .url(getString(R.string.url)+"/landmark") /*URL ... INDEX Pc DE WILMER*/
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                System.out.println("Wilmer ERROR :" + e);
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response)
+                    throws IOException {
+                if (response.isSuccessful()){
+                    final String responseData = response.body().string();
+                    System.out.println("**************RESPUESTA ****************");
+                    System.out.println(responseData);
+                    System.out.println("**************RESPUESTA ****************");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(responseData.equals("error")){
+                                Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_SHORT).show();
+                            }else{
+                                MemoryFigure.changeSave = true;
+                                Toast.makeText(getApplicationContext(),"Send Successfully",Toast.LENGTH_SHORT).show();
+                                if(Resource.openFile){
+                                    System.out.println("openFile");
+                                }else if(Resource.openShareFile){
+                                    System.out.println("openshareFile");
+                                }else{
+                                    //txtsyncData.setVisibility(View.VISIBLE);
+                                    //syncData.setVisibility(View.VISIBLE);
+                                }
+                            }
+                            dialog.dismiss();
+                        }
+                    });
+
+                }
+            }
+        });
+    }
+
+    public void saveLandMarks(String name, String description){
+        filtersWithProgressBar();
+        MediaType MEDIA_TYPE = MediaType.parse("application/json");
+        final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(60,TimeUnit.SECONDS).build();
+        JSONObject postdata = new JSONObject();
+        try {
+            String infoDate="";
+            if(!Resource.openFile) {
+                Date date = new Date();
+                DateFormat hourdateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+                infoDate = hourdateFormat.format(date);
+            }else{
+                infoDate = Resource.dateFile;
+            }
             postdata.put("image", myListSegmentation.getBase64String());
             postdata.put("email",Resource.emailUserLogin);
             postdata.put("project",Resource.idCarpeta);
@@ -1512,11 +1596,11 @@ public class LandMarkModelActivity extends AppCompatActivity {
                 .post(body)
                 .addHeader("Content-Type", "application/json")
                 .build();
-
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 System.out.println("Wilmer ERROR :" + e);
+                dialog.dismiss();
             }
 
             @Override
@@ -1533,8 +1617,18 @@ public class LandMarkModelActivity extends AppCompatActivity {
                             if(responseData.equals("error")){
                                 Toast.makeText(getApplicationContext(),"Error: The name is already",Toast.LENGTH_SHORT).show();
                             }else{
+                                MemoryFigure.changeSave = true;
                                 Toast.makeText(getApplicationContext(),"Save Successfully",Toast.LENGTH_SHORT).show();
+                                if(Resource.openFile){
+                                    System.out.println("openFile");
+                                }else if(Resource.openShareFile){
+                                    System.out.println("openshareFile");
+                                }else{
+                                    //txtsyncData.setVisibility(View.VISIBLE);
+                                    //syncData.setVisibility(View.VISIBLE);
+                                }
                             }
+                            dialog.dismiss();
                         }
                     });
 
@@ -1567,7 +1661,7 @@ public class LandMarkModelActivity extends AppCompatActivity {
                 postdata.put("email", Resource.emailSharedFrom);
                 addUrl = "study/shared/selectfile";
                 privilegeOption();
-                Resource.openShareFile = false;
+
             }else{
                 postdata.put("email", Resource.emailUserLogin);
                 addUrl = "study/selectfile";
@@ -1890,6 +1984,7 @@ public class LandMarkModelActivity extends AppCompatActivity {
         textSave = findViewById(R.id.textSave);
         sendData = findViewById(R.id.sendData);
         syncData = findViewById(R.id.syncData);
+        txtsyncData = findViewById(R.id.txtsyncData);
         //Animation
         Animation = new MyAnimation();
         //Scrolls
@@ -2025,22 +2120,57 @@ public class LandMarkModelActivity extends AppCompatActivity {
             if(Util.getCollections()[i]!=null)
                 listColors.get(i).setColorFilter(Color.rgb(Util.getCollections()[i][0],Util.getCollections()[i][1],Util.getCollections()[i][2]));
         }
-
+        if(Resource.openFile){
+            System.out.println("openFile");
+        }else if(Resource.openShareFile){
+            System.out.println("openshareFile");
+        }else{
+            txtsyncData.setVisibility(View.GONE);
+            syncData.setVisibility(View.GONE);
+        }
         //--End Initializing
     }//End Method
-
-
+    private boolean flagInit = true;
+    @Override
+    public boolean onKeyDown(int KeyCod, KeyEvent event){
+        if(KeyCod == event.KEYCODE_BACK){
+            if(MemoryFigure.changeSave==false){
+                AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+                dialog.setTitle("EXIT: ");
+                dialog.setMessage("There are unsaved changes, are you sure?");
+                LayoutInflater inflater = LayoutInflater.from(this);
+                dialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        LandMarkModelActivity.this.finish();
+                    }
+                });
+                dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
+            }else{
+                return super.onKeyDown(KeyCod,event);
+            }
+            return true;
+        }
+        return super.onKeyDown(KeyCod,event);
+    }
 
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void initialImage(String uri){
-        if(Resource.openFile){
+        if(Resource.openFile||Resource.openShareFile){
             int nameImage = R.drawable.fondo_negro_x;
             try {
                 img = Utils.loadResource(getApplicationContext(),nameImage);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            MemoryFigure.changeSave = true;
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inScaled = false;
             this.original = BitmapFactory.decodeResource(getResources(), nameImage, options);
@@ -2048,7 +2178,6 @@ public class LandMarkModelActivity extends AppCompatActivity {
             openService();
             nameFileGlobal = Resource.nameFile;
             descriptionFileGlobal = Resource.descriptionFile;
-            Resource.openFile = false;
         }else {
             if (uri != null) {
                 Mat aux = Imgcodecs.imread(uri);
@@ -2064,6 +2193,7 @@ public class LandMarkModelActivity extends AppCompatActivity {
                 myListSegmentation.loadImage(this.original);
                 myFilters = new MyFilters(this.img, this.original);
                 updateFilters(this.original, img);
+                MemoryFigure.changeSave = false;
             }
         }
     }

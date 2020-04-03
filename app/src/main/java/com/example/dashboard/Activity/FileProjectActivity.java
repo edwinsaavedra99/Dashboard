@@ -32,6 +32,7 @@ import com.example.dashboard.Activity.Doctor.FiguresModelActivity;
 import com.example.dashboard.Activity.Study.LandMarkModelActivity;
 import com.example.dashboard.Adapter.FileProjectAdapter;
 import com.example.dashboard.Adapter.ProjectAdapter;
+import com.example.dashboard.ListFigures.MemoryFigure;
 import com.example.dashboard.Models.FileProject;
 import com.example.dashboard.Models.Project;
 import com.example.dashboard.R;
@@ -170,7 +171,10 @@ public class FileProjectActivity extends AppCompatActivity {
                             Intent intent = new Intent(FileProjectActivity.this, FiguresModelActivity.class);
                             startActivity(intent);
                         }
+                        Resource.openFile = false;
+                        Resource.openShareFile = false;
                         Resource.privilegeFile = "edit";
+                        MemoryFigure.changeSave = false;
                     } else {
                         Toast.makeText(FileProjectActivity.this, "Insert-Image, Please", Toast.LENGTH_SHORT).show();
                     }
@@ -319,6 +323,12 @@ public class FileProjectActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        getInfo(Resource.role);
     }
 
 

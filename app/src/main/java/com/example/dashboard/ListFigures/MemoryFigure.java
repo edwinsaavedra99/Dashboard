@@ -3,13 +3,14 @@ import java.util.ArrayList;
 
 import com.example.dashboard.Figures.Figure;
 
-class MemoryFigure {
+public class MemoryFigure {
     static ArrayList<ElementMemory> memoryList = new ArrayList<>();
     static ArrayList<ElementMemory> memoryListCtrlZ = new ArrayList<>();
     static ArrayList<ElementMemory> memoryListCtrlZwithCtrlY = new ArrayList<>();
     static int indexControlZ = -1;
     static int indexControlY = -1;
     static int cont=-1;
+    public static boolean changeSave = true;
     static void addElementMemory(int cod, int index, ArrayList<Figure> figure){
         indexControlZ++;
         if (memoryList.size() > indexControlZ) {
@@ -21,6 +22,7 @@ class MemoryFigure {
         memoryListCtrlZwithCtrlY.clear();
         indexControlY = -1;
         cont = -1;
+        changeSave = false;
     }
 
     static void addElementMemory(int cod, int index, int indexTwo, ArrayList<Figure> figure){
@@ -34,6 +36,7 @@ class MemoryFigure {
         memoryListCtrlZwithCtrlY.clear();
         indexControlY = -1;
         cont = -1;
+        changeSave = false;
     }
 
     static int controlZinMemory(){
@@ -46,6 +49,7 @@ class MemoryFigure {
             memoryListCtrlZ.add(memoryList.get(aux));
         }
         if(aux >=0) {
+            changeSave = false;
             indexControlZ--;
         }
         return aux;
@@ -67,6 +71,7 @@ class MemoryFigure {
             memoryList.add(memoryListCtrlZ.get(indexControlY));
         }
         if(aux >=0) {
+            changeSave = false;
             indexControlY--;
         }
         return aux;
