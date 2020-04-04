@@ -81,7 +81,7 @@ public class FragmentDoctorShare extends Fragment {
 
         recyclerView = (RecyclerView) viewGroup.findViewById(R.id.recicler_project_file);
         recyclerView.setHasFixedSize(true);
-        layoutManager = new GridLayoutManager(getActivity(),2);
+        layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         getInfoMedicine();
         return viewGroup;

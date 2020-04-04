@@ -224,7 +224,7 @@ public class FragmentDoctorPatients extends Fragment {
                 }else{
                     age = Integer.parseInt(editAge.getText().toString().trim());
                 }
-                if(editDNI.getText().toString().trim().length() == 0){
+                if(editDNI.getText().toString().trim().length() != 8){
                     flagAddPatient = false;
                     editDNI.setError("Error ...");
                     editDNI.requestFocus();

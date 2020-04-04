@@ -80,6 +80,7 @@ public class SharedFileAdapter extends RecyclerView.Adapter<SharedFileAdapter.Sh
                     Intent intent = new Intent(context, LandMarkModelActivity.class);
                     context.startActivity(intent);
                 }else if (Resource.role == 1){ //doctor
+                    Resource.changeSaveFigures = true;
                     Intent intent = new Intent(context, FiguresModelActivity.class);
                     context.startActivity(intent);
                 }

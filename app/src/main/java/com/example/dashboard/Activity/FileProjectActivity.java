@@ -168,6 +168,7 @@ public class FileProjectActivity extends AppCompatActivity {
                             Intent intent = new Intent(FileProjectActivity.this, LandMarkModelActivity.class);
                             startActivity(intent);
                         }else if (Resource.role == 1){ //doctor
+                            Resource.changeSaveFigures = false;
                             Intent intent = new Intent(FileProjectActivity.this, FiguresModelActivity.class);
                             startActivity(intent);
                         }

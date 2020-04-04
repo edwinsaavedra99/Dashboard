@@ -34,6 +34,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.dashboard.Activity.Doctor.FiguresModelActivity;
 import com.example.dashboard.Animations.MyAnimation;
 import com.example.dashboard.Filters.GroupFilters;
 import com.example.dashboard.Filters.MyFilters;
@@ -1378,10 +1379,14 @@ public class LandMarkModelActivity extends AppCompatActivity {
     }
     @SuppressLint("ShowToast")
     private void changeColor(int _color){
-        Toast toast=Toast.makeText(getApplicationContext(),"Isn't Selected Figure",Toast.LENGTH_SHORT);
-        if( myListSegmentation.changeColour(Util.getCollections()[_color]))
-            toast = Toast.makeText(getApplicationContext(),"Change Successfully in Segments",Toast.LENGTH_SHORT);
-        toast.show();
+        if(Resource.privilegeFile.equals("edit")){
+            Toast toast=Toast.makeText(getApplicationContext(),"Isn't Selected Figure",Toast.LENGTH_SHORT);
+            if( myListSegmentation.changeColour(Util.getCollections()[_color]))
+                toast = Toast.makeText(getApplicationContext(),"Change Successfully in Segments",Toast.LENGTH_SHORT);
+            toast.show();
+        }else{
+            Toast.makeText(getApplicationContext(), "Read Only", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void notViewFilters(){
@@ -1516,7 +1521,7 @@ public class LandMarkModelActivity extends AppCompatActivity {
         }
         RequestBody body = RequestBody.create(MEDIA_TYPE,postdata.toString());
         final Request request = new Request.Builder()
-                .url(getString(R.string.url)+"/landmark") /*URL ... INDEX Pc DE WILMER*/
+                .url(getString(R.string.url)+"landmark") /*URL ... INDEX Pc DE WILMER*/
                 .post(body)
                 .addHeader("Content-Type", "application/json")
                 .build();
@@ -1587,6 +1592,8 @@ public class LandMarkModelActivity extends AppCompatActivity {
             postdata.put("description",description);
             postdata.put("date",infoDate);
             postdata.put("information",posdate123);
+            System.out.println("************** TEST 1 ****************");
+            System.out.println(posdate123.toString());
         } catch(JSONException e){
             e.printStackTrace();
         }
@@ -1693,8 +1700,8 @@ public class LandMarkModelActivity extends AppCompatActivity {
                     throws IOException {
                 if (response.isSuccessful()){
                     final String responseData = response.body().string();
-                    System.out.println("**************RESPUESTA ****************");
-                    System.out.println(responseData);
+                    //System.out.println("**************RESPUESTA ****************");
+                    //System.out.println(responseData);
                     try {
                         JSONObject landMarks = new JSONObject(responseData);
                         openLandMarks(landMarks);
@@ -1745,6 +1752,8 @@ public class LandMarkModelActivity extends AppCompatActivity {
             myListSegmentation.clearList();
             myListSegmentation.deleteMemory();         //
             JSONObject information = landMarks.getJSONObject("information");
+            System.out.println("************** TEST 2 ****************");
+            System.out.println(information.toString());
             JSONArray jsonArray = information.getJSONArray("landmarks");
             float imageX = Float.parseFloat(information.getString("imageX"));
             float imagey = Float.parseFloat(information.getString("imagey"));
@@ -2130,10 +2139,33 @@ public class LandMarkModelActivity extends AppCompatActivity {
         }
         //--End Initializing
     }//End Method
+
+    private void showDialogERROR(){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("FILE SOURCE ERROR !!");
+        dialog.setMessage("Do you want to cle this file?");
+        LayoutInflater inflater = LayoutInflater.from(this);
+        dialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                LandMarkModelActivity.this.finish();
+            }
+        });
+        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
     private boolean flagInit = true;
     @Override
     public boolean onKeyDown(int KeyCod, KeyEvent event){
         if(KeyCod == event.KEYCODE_BACK){
+            if(Resource.openShareFile && Resource.privilegeFile.equals("lecture")){
+                return super.onKeyDown(KeyCod,event);
+            }
             if(MemoryFigure.changeSave==false){
                 AlertDialog.Builder dialog = new AlertDialog.Builder(this);
                 dialog.setTitle("EXIT: ");

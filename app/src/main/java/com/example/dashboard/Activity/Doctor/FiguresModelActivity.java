@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -27,10 +28,14 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.dashboard.Activity.Study.LandMarkModelActivity;
 import com.example.dashboard.Animations.MyAnimation;
 import com.example.dashboard.Filters.GroupFilters;
 import com.example.dashboard.Filters.MyFilters;
+import com.example.dashboard.ListFigures.MemoryFigure;
 import com.example.dashboard.Resources.Resource;
 import com.example.dashboard.R;
 import com.example.dashboard.Services.FiguresService;
@@ -72,6 +77,11 @@ public class FiguresModelActivity extends AppCompatActivity {
     private ImageView gallery;
     private String currentPhotoPath;
     //Load and Save data
+
+    private TextView txtsyncData;
+    private TextView textSave;
+    private ImageView syncData;
+    private ImageView sendData;
     private ImageView saveFigures;
     private ImageView creatorCircles;
     private ImageView creatorRectangles;
@@ -230,8 +240,13 @@ public class FiguresModelActivity extends AppCompatActivity {
         saveFigures.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Animation.animationScale(saveFigures,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
-                showSaveDialog();
+                if(Resource.privilegeFile.equals("edit")){
+                    Animation.animationScale(saveFigures,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
+                    showSaveDialog();
+                }else{
+                    Toast.makeText(getApplicationContext(), "Read Only", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
         //back menu right
@@ -287,53 +302,84 @@ public class FiguresModelActivity extends AppCompatActivity {
         creatorPoints.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Animation.animationScale(creatorPoints,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
-                myListFigures.addPoint(layoutImageRx.getWidth()/2,layoutImageRx.getHeight()/2);
+                if(Resource.privilegeFile.equals("edit")){
+                    Animation.animationScale(creatorPoints,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
+                    myListFigures.addPoint(layoutImageRx.getWidth()/2,layoutImageRx.getHeight()/2);
+                }else{
+                    Toast.makeText(getApplicationContext(), "Read Only", Toast.LENGTH_SHORT).show();
+
+                }
             }
         });
         //Add Circle
         creatorCircles.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Animation.animationScale(creatorCircles,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
-                myListFigures.addCircle(layoutImageRx.getWidth()/2,layoutImageRx.getHeight()/2,100);
+                if(Resource.privilegeFile.equals("edit")){
+                    Animation.animationScale(creatorCircles,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
+                    myListFigures.addCircle(layoutImageRx.getWidth()/2,layoutImageRx.getHeight()/2,100);
+                }else{
+                    Toast.makeText(getApplicationContext(), "Read Only", Toast.LENGTH_SHORT).show();
+
+                }
             }
         });
         //Add Rectangle
         creatorRectangles.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Animation.animationScale(creatorRectangles,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
-                myListFigures.addRectangle(layoutImageRx.getWidth()/2-200,layoutImageRx.getHeight()/2-150,layoutImageRx.getWidth()/2+200,layoutImageRx.getHeight()/2+150);
+                if(Resource.privilegeFile.equals("edit")){
+                    Animation.animationScale(creatorRectangles,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
+                    myListFigures.addRectangle(layoutImageRx.getWidth()/2-200,layoutImageRx.getHeight()/2-150,layoutImageRx.getWidth()/2+200,layoutImageRx.getHeight()/2+150);
+                }else{
+                    Toast.makeText(getApplicationContext(), "Read Only", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         //Add Line
         creatorLines.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Animation.animationScale(creatorLines,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
-                myListFigures.addLine(layoutImageRx.getWidth()/2-200,layoutImageRx.getHeight()/2-150,layoutImageRx.getWidth()/2+200,layoutImageRx.getHeight()/2+150);
+                 if(Resource.privilegeFile.equals("edit")){
+                     Animation.animationScale(creatorLines,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
+                     myListFigures.addLine(layoutImageRx.getWidth()/2-200,layoutImageRx.getHeight()/2-150,layoutImageRx.getWidth()/2+200,layoutImageRx.getHeight()/2+150);
+                 }else{
+                    Toast.makeText(getApplicationContext(), "Read Only", Toast.LENGTH_SHORT).show();
+
+                }
             }
         });
         //Add Ellipse
         creatorEllipses.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Animation.animationScale(creatorEllipses,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
-                myListFigures.addEllipse(layoutImageRx.getWidth()/2-200,layoutImageRx.getHeight()/2-150,layoutImageRx.getWidth()/2+200,layoutImageRx.getHeight()/2+150);
-            }
+                if(Resource.privilegeFile.equals("edit")){
+                    Animation.animationScale(creatorEllipses,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
+                    myListFigures.addEllipse(layoutImageRx.getWidth()/2-200,layoutImageRx.getHeight()/2-150,layoutImageRx.getWidth()/2+200,layoutImageRx.getHeight()/2+150);
+
+                }else{
+                    Toast.makeText(getApplicationContext(), "Read Only", Toast.LENGTH_SHORT).show();
+
+                }
+                    }
         });
         //Delete Select Figure
         deleteFigures.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Animation.animationScale(deleteFigures,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
-                Toast toast;
-                if(myListFigures.deleteFigure())
-                    toast = Toast.makeText(getApplicationContext(),"Deleted Successfully",Toast.LENGTH_SHORT);
-                else
-                    toast = Toast.makeText(getApplicationContext(),"Isn't Selected Figure",Toast.LENGTH_SHORT);
-                toast.show();
+
+                if(Resource.privilegeFile.equals("edit")){
+                    Animation.animationScale(deleteFigures,TIME_ANIMATION,SCALE_ANIMATION,SCALE_ANIMATION);
+                    Toast toast;
+                    if(myListFigures.deleteFigure())
+                        toast = Toast.makeText(getApplicationContext(),"Deleted Successfully",Toast.LENGTH_SHORT);
+                    else
+                        toast = Toast.makeText(getApplicationContext(),"Isn't Selected Figure",Toast.LENGTH_SHORT);
+                    toast.show();
+                }else{
+                    Toast.makeText(getApplicationContext(), "Read Only", Toast.LENGTH_SHORT).show();
+
+                }
             }
         });
         //Menu of Change Colour of select figure
@@ -811,17 +857,6 @@ public class FiguresModelActivity extends AppCompatActivity {
         getOpenCvHttp1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               /* try {
-                    filtersWithProgressBar();
-                    String image = FiltersService.getFilters(myListSegmentation.getBase64String(),"clahe");
-
-                    System.out.println(image);
-                } catch (IOException e) {
-                    dialog.dismiss();
-                    e.printStackTrace();
-                }
-                addFilter(myFilters.filterRGB());*/
-
                 if(auxOriginal == null){
                     getFilterService(myListFigures.getBase64String(),"clahe",1);
 
@@ -1008,8 +1043,29 @@ public class FiguresModelActivity extends AppCompatActivity {
 
             }
         });
+        syncData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openService();
+            }
+        });
+        sendData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendIndicator();
+            }
+        });
     }
-
+    private void  privilegeOption(){
+        if(Resource.privilegeFile.equals("edit")){
+            textSave.setText("Send");
+            saveFigures.setVisibility(View.GONE);
+            sendData.setVisibility(View.VISIBLE);
+        }else{
+            //saveFigures.setVisibility(View.GONE);
+            //textSave.setVisibility(View.GONE);
+        }
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void addFilter(Bitmap d){
@@ -1017,10 +1073,14 @@ public class FiguresModelActivity extends AppCompatActivity {
     }
     @SuppressLint("ShowToast")
     private void changeColor(int _color){
-        if( myListFigures.changeColour(Util.getCollections()[_color])){
-            showToast("Change Successfully in Figure");
+        if(Resource.privilegeFile.equals("edit")){
+            if( myListFigures.changeColour(Util.getCollections()[_color])){
+                showToast("Change Successfully in Figure");
+            }else{
+                showToast("Isn't Selected Figure");
+            }
         }else{
-            showToast("Isn't Selected Figure");
+            Toast.makeText(getApplicationContext(), "Read Only", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -1111,10 +1171,16 @@ public class FiguresModelActivity extends AppCompatActivity {
         dialog.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (myListFigures.setDescriptionFigure(editDescription.getText()+""))
-                    showToast("Successfully");
-                else
-                    showToast("Error: No Change");
+                if(Resource.privilegeFile.equals("edit")){
+                    if (myListFigures.setDescriptionFigure(editDescription.getText()+""))
+                        showToast("Successfully");
+                    else
+                        showToast("Error: No Change");
+                }else{
+                    Toast.makeText(getApplicationContext(), "Read Only", Toast.LENGTH_SHORT).show();
+
+                }
+
             }
         });
         dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
@@ -1126,10 +1192,8 @@ public class FiguresModelActivity extends AppCompatActivity {
         dialog.show();
     }
 
-
-
-
-    public void saveIndicator(final String descripcion,final String name){
+    public void sendIndicator(){
+        filtersWithProgressBar();
         MediaType MEDIA_TYPE =
                 MediaType.parse("application/json");
         final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,
@@ -1140,6 +1204,84 @@ public class FiguresModelActivity extends AppCompatActivity {
             Date date = new Date();
             DateFormat hourdateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
             String infoDate = hourdateFormat.format(date);
+            postdata.put("patient",Resource.idPacient);
+            postdata.put("email",Resource.emailSharedFrom);
+            postdata.put("record",Resource.idCarpeta);
+            JSONObject posdate123 = new JSONObject();
+            posdate123.put("imageX",myListFigures.getGeneralWidth());
+            posdate123.put("imagey",myListFigures.getGeneralHeight());
+            posdate123.put("profileItems",null);
+            posdate123.put("indicators",myListFigures.dataFigures());
+            postdata.put("name",Resource.nameFile);
+            postdata.put("description",Resource.descriptionFile);
+            postdata.put("date",Resource.dateFile);
+            postdata.put("age",Resource.agePatient);
+            postdata.put("dni",Resource.idPacient);
+            postdata.put("residency",Resource.residecyPatient);
+            postdata.put("gender",Resource.genderPatient);
+            postdata.put("information",posdate123);
+            postdata.put("image", myListFigures.getBase64String());
+            System.out.println("************** TEST 1 ****************");
+            //System.out.println(responseData);
+            System.out.println(posdate123.toString());
+        } catch(JSONException e){
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(MEDIA_TYPE,
+                postdata.toString());
+        final Request request = new Request.Builder()
+                .url(getString(R.string.url)+"/indicator") /*URL ... INDEX PX DE WILMER*/
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                dialog.dismiss(); e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response)
+                    throws IOException {
+                if (response.isSuccessful()){
+                    final String responseData = response.body().string();
+                    //System.out.println("**************RESPUESTA ****************");
+                    //System.out.println(responseData);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(responseData.equals("error")){
+                                Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(getApplicationContext(),"Send Successfully",Toast.LENGTH_SHORT).show();
+                            }
+                            dialog.dismiss();
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+
+    public void saveIndicator(final String descripcion,final String name){
+        filtersWithProgressBar();
+        MediaType MEDIA_TYPE =
+                MediaType.parse("application/json");
+        final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,
+                TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(
+                60,TimeUnit.SECONDS).build();
+        JSONObject postdata = new JSONObject();
+        try {
+            String infoDate="";
+            if(!Resource.openFile) {
+                Date date = new Date();
+                DateFormat hourdateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+                infoDate = hourdateFormat.format(date);
+            }else{
+                infoDate = Resource.dateFile;
+            }
             postdata.put("patient",Resource.idPacient);
             postdata.put("email",Resource.emailUserLogin);
             postdata.put("record",Resource.idCarpeta);
@@ -1157,6 +1299,8 @@ public class FiguresModelActivity extends AppCompatActivity {
             postdata.put("gender",Resource.genderPatient);
             postdata.put("information",posdate123);
             postdata.put("image", myListFigures.getBase64String());
+            System.out.println("************** TEST 1 ****************");
+            //System.out.println(responseData);
             System.out.println(posdate123.toString());
         } catch(JSONException e){
             e.printStackTrace();
@@ -1172,7 +1316,7 @@ public class FiguresModelActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
+                dialog.dismiss(); e.printStackTrace();
             }
 
             @Override
@@ -1180,16 +1324,18 @@ public class FiguresModelActivity extends AppCompatActivity {
                     throws IOException {
                 if (response.isSuccessful()){
                     final String responseData = response.body().string();
-                    System.out.println("**************RESPUESTA ****************");
-                    System.out.println(responseData);
+                    //System.out.println("**************RESPUESTA ****************");
+                    //System.out.println(responseData);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             if(responseData.equals("error")){
-                                Toast.makeText(getApplicationContext(),"Error: The name is already",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_SHORT).show();
                             }else{
+                                Resource.changeSaveFigures = true;
                                 Toast.makeText(getApplicationContext(),"Save Successfully",Toast.LENGTH_SHORT).show();
                             }
+                            dialog.dismiss();
                         }
                     });
                 }
@@ -1227,6 +1373,7 @@ public class FiguresModelActivity extends AppCompatActivity {
                 postdata.put("email", Resource.emailSharedFrom);
                 addUrl = "medicine/shared/selectfile";
                 //Resource.openShareFile = false;
+                privilegeOption();
             }else{
                 postdata.put("email", Resource.emailUserLogin);
                 addUrl = "medicine/selectfile";
@@ -1257,8 +1404,8 @@ public class FiguresModelActivity extends AppCompatActivity {
                     throws IOException {
                 if (response.isSuccessful()){
                     final String responseData = response.body().string();
-                    System.out.println("**************RESPUESTA ****************");
-                    System.out.println(responseData);
+                  //  System.out.println("**************RESPUESTA ****************");
+                   // System.out.println(responseData);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -1310,23 +1457,18 @@ public class FiguresModelActivity extends AppCompatActivity {
                 }
             }       //
             JSONObject information = indicators.getJSONObject("information");
+            System.out.println("************** TEST 2 ****************");
+            System.out.println(information);
             JSONArray jsonArray = information.getJSONArray("indicators");
             float imageX = Float.parseFloat(information.getString("imageX"));
             float imagey = Float.parseFloat(information.getString("imagey"));
             myListFigures.readDataIndicators(jsonArray,imageX,imagey);
-
         }catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
     public void getFilterService(String image, String nameFilter,int cod){
-       /* try {
-            auxOriginal = myListSegmentation.decodeBase64AndSetImage(
-                    FiltersService.getFilters(myListSegmentation.getBase64String(),nameFilter));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
         codHttpFilter = cod;
         filtersWithProgressBar();
         MediaType MEDIA_TYPE =
@@ -1524,6 +1666,7 @@ public class FiguresModelActivity extends AppCompatActivity {
     private void initialProperties(){
         //Initializing properties--
         gallery = findViewById(R.id.galery);
+        textSave = findViewById(R.id.textSave);
         extendsImage = findViewById(R.id.extendsImage);
         backFilters = findViewById(R.id.backFilters);
         iconColors = findViewById(R.id.figuresSet);
@@ -1538,6 +1681,7 @@ public class FiguresModelActivity extends AppCompatActivity {
         deleteFigures = findViewById(R.id.deleteFigures);
         changeColor = findViewById(R.id.changeColor);
         menu_left = findViewById(R.id.contenedor_menu_left);
+        sendData = findViewById(R.id.sendData);
         menu_right = findViewById(R.id.contenedor_menu_right);
         menu_left.setBackgroundColor(Color.parseColor("#80000000"));
         menu_right.setBackgroundColor(Color.parseColor("#80000000"));
@@ -1601,6 +1745,8 @@ public class FiguresModelActivity extends AppCompatActivity {
         getOpenCvHttp3 = findViewById(R.id.openCVhttp3);
         getOpenCvHttp4 = findViewById(R.id.openCVhttp4);
         share = findViewById(R.id.share);
+        syncData = findViewById(R.id.syncData);
+        txtsyncData = findViewById(R.id.txtsyncData);
         //IMAGE
         test1 = findViewById(R.id.test);
         img = null;
@@ -1645,12 +1791,20 @@ public class FiguresModelActivity extends AppCompatActivity {
             if(Util.getCollections()[i]!=null)
                 listColors.get(i).setColorFilter(Color.rgb(Util.getCollections()[i][0],Util.getCollections()[i][1],Util.getCollections()[i][2]));
         }
+        if(Resource.openFile){
+            System.out.println("openFile");
+        }else if(Resource.openShareFile){
+            System.out.println("openshareFile");
+        }else{
+            txtsyncData.setVisibility(View.GONE);
+            syncData.setVisibility(View.GONE);
+        }
         //--End Initializing
     }//End Method
 
 
     public void initialImage(String uri){
-        if(Resource.openFile){
+        if(Resource.openFile || Resource.openShareFile){
             int nameImage = R.drawable.fondo_negro_x;
             try {
                 img = Utils.loadResource(getApplicationContext(),nameImage);
@@ -1664,7 +1818,6 @@ public class FiguresModelActivity extends AppCompatActivity {
             openService();
             nameFileGlobal = Resource.nameFile;
             descriptionFileGlobal = Resource.descriptionFile;
-            Resource.openFile = false;
         }else {
             if (uri != null) {
                 Mat aux = Imgcodecs.imread(uri);
@@ -1684,10 +1837,61 @@ public class FiguresModelActivity extends AppCompatActivity {
         }
     }
 
+    private void showDialogERROR(){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("FILE SOURCE ERROR !!");
+        dialog.setMessage("Do you want to cle this file?");
+        LayoutInflater inflater = LayoutInflater.from(this);
+        dialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                FiguresModelActivity.this.finish();
+            }
+        });
+        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
     public void showToast(String message){
         Toast toast;
         toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
         toast.show();
+    }
+    @Override
+    public boolean onKeyDown(int KeyCod, KeyEvent event){
+        if(KeyCod == event.KEYCODE_BACK){
+            if(Resource.openShareFile && Resource.privilegeFile.equals("lecture")){
+                return super.onKeyDown(KeyCod,event);
+            }
+            if( Resource.changeSaveFigures == false){
+                AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+                dialog.setTitle("EXIT: ");
+                dialog.setMessage("There are unsaved changes, are you sure?");
+                LayoutInflater inflater = LayoutInflater.from(this);
+                dialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FiguresModelActivity.this.finish();
+                    }
+                });
+                dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
+            }else{
+                return super.onKeyDown(KeyCod,event);
+            }
+            return true;
+        }
+        return super.onKeyDown(KeyCod,event);
     }
 
 }//End Class

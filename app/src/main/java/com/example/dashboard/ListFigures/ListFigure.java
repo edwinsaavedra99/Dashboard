@@ -26,6 +26,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import com.example.dashboard.Figures.*;
+import com.example.dashboard.Resources.Resource;
 
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
@@ -80,6 +81,7 @@ public class ListFigure  extends View {
         invalidate();
     }//Closing the class constructor
     public void loadImage(Bitmap mImage){
+        invalidate();
         mBoard = new BitmapDrawable(getResources(),mImage);
         this.mImage = mImage;
         invalidate();
@@ -111,11 +113,12 @@ public class ListFigure  extends View {
         }
         generalWidth = ancho;
         generalHeight = alto;
-        System.out.println("information : generalWidth - "+generalWidth+", generalHeight - "+generalHeight);
+        System.out.println("information 1 : generalWidth - "+generalWidth+", generalHeight - "+generalHeight);
+        System.out.println("information 2 : generalWidth - "+width+", generalHeight - "+height);
         figureSelected = -1;
         myFigures.clear();
         invalidate();
-        requestLayout();
+        //requestLayout();
         for (int i = 0; i< jsonArray.length(); i++){
             JSONObject aux = jsonArray.getJSONObject(i);
             int type = Integer.parseInt(aux.getString("type"));
@@ -296,6 +299,7 @@ public class ListFigure  extends View {
      * @param _centerX Define the position of the point
      * @param _centerY Define the position of the point*/
     public void addPoint(float _centerX, float _centerY) {
+        Resource.changeSaveFigures = false;
         Point aux = new Point(_centerX, _centerY, pencil,figureColour);
         this.myFigures.add(aux);
         figureSelected = myFigures.size()-1;
@@ -307,6 +311,7 @@ public class ListFigure  extends View {
      * @param _startY Define the position of the circle
      * @param _radius Define the radius od the circle*/
     public void addCircle(float _startX, float _startY, float _radius) {
+        Resource.changeSaveFigures = false;
         Circle aux = new Circle(_startX, _startY, _radius, pencil,figureColour);
         this.myFigures.add(aux);
         figureSelected = myFigures.size()-1;
@@ -319,6 +324,7 @@ public class ListFigure  extends View {
      * @param _right Define the position of the rectangle from the right
      * @param _bottom Define the position of the rectangle from the below*/
     public void addRectangle(float _left, float _top, float _right, float _bottom) {
+        Resource.changeSaveFigures = false;
         Rectangle aux = new Rectangle(_left, _top, _right, _bottom, pencil,figureColour);
         this.myFigures.add(aux);
         figureSelected = myFigures.size()-1;
@@ -331,6 +337,7 @@ public class ListFigure  extends View {
      * @param _right Define the position of the ellipse from the right
      * @param _bottom Define the position of the ellipse from the below*/
     public void addEllipse(float _left, float _top, float _right, float _bottom) {
+        Resource.changeSaveFigures = false;
         Ellipse aux = new Ellipse(_left, _top, _right, _bottom, pencil,figureColour);
         this.myFigures.add(aux);
         figureSelected = myFigures.size()-1;
@@ -343,6 +350,7 @@ public class ListFigure  extends View {
      * @param _stopX Define the stop Coordinate X
      * @param _stopY Define the stop Coordinate Y*/
     public void addLine(float _startX , float _startY, float _stopX, float _stopY) {
+        Resource.changeSaveFigures = false;
         Line aux = new Line(_startX, _startY, _stopX, _stopY, pencil,figureColour);
         this.myFigures.add(aux);
         figureSelected = myFigures.size()-1;
@@ -356,6 +364,7 @@ public class ListFigure  extends View {
             myFigures.remove(this.figureSelected);
             figureSelected = -1;
             invalidate(); //Redraw
+            Resource.changeSaveFigures = false;
             return true;
         }else{
             return false;
@@ -384,6 +393,7 @@ public class ListFigure  extends View {
     public boolean setDescriptionFigure(String description){
         if (myFigures.size()>0 && this.figureSelected != -1 ) {
             myFigures.get(this.figureSelected).setDescription(description);
+            Resource.changeSaveFigures = false;
             return true;
         }else{
             return false;
@@ -404,6 +414,7 @@ public class ListFigure  extends View {
             myFigures.get(this.figureSelected).setColour(colour);
             myFigures.get(this.figureSelected).getPaint().setARGB(255,colour[0],colour[1],colour[2]);
             invalidate(); //Redraw
+            Resource.changeSaveFigures = false;
             return true;
         }else {
             return false;
@@ -453,8 +464,10 @@ public class ListFigure  extends View {
      * @param canvas area of draw*/
     @SuppressLint("CanvasSize")
     protected void onDraw(Canvas canvas) {
-        int altoCa = getBottom();
-        int anchoCa = getRight();
+        //int altoCa = getBottom();
+        //int anchoCa = getRight();
+        int altoCa = metrics.heightPixels;
+        int anchoCa = metrics.widthPixels;
         float medioCa = (float) altoCa/anchoCa;
             int altoIm = mBoard.getIntrinsicHeight();
             int anchoIm = mBoard.getIntrinsicWidth();
@@ -893,7 +906,7 @@ public class ListFigure  extends View {
                 final int pointerIndex = event.findPointerIndex(mActivePointerId);
                 getX = event.getX(pointerIndex);
                 getY = event.getY(pointerIndex);
-                if (this.figureSelected > -1 && !scaleGestureDetector.isInProgress()) {
+                if (this.figureSelected > -1 && !scaleGestureDetector.isInProgress() && Resource.privilegeFile.equals("edit")) {
                     if (myFigures.get(figureSelected) instanceof Point) {
                         Point temp = (Point) myFigures.get(figureSelected);
                         //checkPoint check dimensions of the point
@@ -902,6 +915,7 @@ public class ListFigure  extends View {
                                 System.out.println("Error");
                             }
                             if (mode == 2) { //Move
+                                Resource.changeSaveFigures = false;
                                 temp.setCenterX((temp.getCenterX() - (getPastX - (getX))));
                                 temp.setCenterY((temp.getCenterY() - (getPastY - (getY))));
                                 invalidate();
@@ -921,6 +935,7 @@ public class ListFigure  extends View {
                                 }
                             }
                             if (mode == 2) { //Move
+                                Resource.changeSaveFigures = false;
                                 //changeOrderList(getX,getY,figureSelected);
                                 temp.setCenterX(temp.getCenterX() - (getPastX - getX));
                                 temp.setCenterY(temp.getCenterY() - (getPastY - getY));
@@ -974,6 +989,7 @@ public class ListFigure  extends View {
                                 }
                             }
                             if (mode == 2) { //Move
+                                Resource.changeSaveFigures = false;
                                 aux.setRight(getX + aux.getRight() - getPastX);
                                 aux.setBottom(getY + aux.getBottom() - getPastY);
                                 aux.setLeft(getX - (getPastX - aux.getLeft()));
@@ -1024,6 +1040,7 @@ public class ListFigure  extends View {
                                 }
                             }
                             if (mode == 2) { //Move
+                                Resource.changeSaveFigures = false;
                                 temp.setStopX(getX + temp.getStopX() - getPastX);
                                 temp.setStopY(getY + temp.getStopY() - getPastY);
                                 temp.setStartX(getX - (getPastX - temp.getStartX()));
@@ -1088,6 +1105,7 @@ public class ListFigure  extends View {
                                 }
                             }
                             if (mode == 2) { //Move
+                                Resource.changeSaveFigures = false;
                                 temp.setRight(getX + temp.getRight() - getPastX);
                                 temp.updateParameters(temp);
                                 temp.setBottom(getY + temp.getBottom() - getPastY);

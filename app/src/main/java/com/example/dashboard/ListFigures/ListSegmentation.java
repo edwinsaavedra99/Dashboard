@@ -32,6 +32,7 @@ import java.util.ArrayList;
 
 import com.example.dashboard.Activity.Study.LandMarkModelActivity;
 import com.example.dashboard.Figures.*;
+import com.example.dashboard.Resources.Resource;
 
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
@@ -778,7 +779,8 @@ public class ListSegmentation extends View {
         }
         generalWidth = ancho;
         generalHeight = alto;
-        System.out.println("information : generalWidth - "+generalWidth+", generalHeight - "+generalHeight);
+        System.out.println("information 1 : generalWidth - "+generalWidth+", generalHeight - "+generalHeight);
+        System.out.println("information 2 : generalWidth - "+width+", generalHeight - "+height);
         figureSelected = -1;
         segmentation.clear();
         zoomList.segmentation.clear();
@@ -1053,7 +1055,7 @@ public class ListSegmentation extends View {
                 touchY = event.getY(pointerIndex);
                 zoomList.touchX = (event.getX()-mPositionX)/mScaleFactor;
                 zoomList.touchY = (event.getY()-mPositionY)/mScaleFactor;
-                if(modeTouch == 0 || modeTouch == 1 || modeTouch == 4 || modeTouch == 5) { //Touch segments
+                if((modeTouch == 0 || modeTouch == 1 || modeTouch == 4 || modeTouch == 5) && Resource.privilegeFile.equals("edit")) { //Touch segments
                     if(modeTouch == 4 && segmentation.isEmpty()){
                         addCircleSegmentation((getX - mPositionX) / mScaleFactor, (getY - mPositionY) / mScaleFactor, 9,-1,"",color);  //9 is radius acceptable
                         add(getX,getY);

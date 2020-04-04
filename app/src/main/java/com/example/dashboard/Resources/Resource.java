@@ -25,4 +25,5 @@ public class Resource {
     public static JSONObject infoStudy;
     public static JSONObject infoMedicine;
     public static GoogleSignInClient SignInClient;
+    public static boolean changeSaveFigures = false;
 }
