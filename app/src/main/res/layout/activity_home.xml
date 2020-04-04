@@ -18,6 +18,26 @@
 
     </ImageView>
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardUsuario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="20dp"
+        app:cardBackgroundColor="#D0000000"
+        app:cardCornerRadius="18dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:cardMaxElevation="5dp">
+
+        <ImageView
+            android:id="@+id/usuarioApp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/ic_account_circle_black_24dp"></ImageView>
+    </androidx.cardview.widget.CardView>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="152dp"
@@ -83,7 +103,7 @@
             android:layout_width="77dp"
             android:layout_height="34dp"
             android:gravity="center"
-            android:text="STUDY"
+            android:text="RESEARCH"
             android:textColor="@android:color/white"
             android:textSize="15sp"
             android:textStyle="bold"

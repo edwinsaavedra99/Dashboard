@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 import com.example.dashboard.Activity.Doctor.DoctorActivity;
 import com.example.dashboard.Activity.Study.StudyActivity;
 import com.example.dashboard.R;
@@ -23,10 +25,13 @@ import com.google.android.gms.tasks.Task;
 public class HomeActivity extends AppCompatActivity {
     final int DOCTOR_ID = 1;
     final int STUDENT_ID = 2;
+    private ImageView usuarioApp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        usuarioApp = (ImageView) findViewById(R.id.usuarioApp);
+        Glide.with(this).load(Resource.urlImageUserLogin).into(usuarioApp);
         getSupportActionBar().hide();
         ConstraintLayout doctorLayout = findViewById(R.id.constraintLayout);
         ConstraintLayout studentLayout = findViewById(R.id.constraintLayout01);
