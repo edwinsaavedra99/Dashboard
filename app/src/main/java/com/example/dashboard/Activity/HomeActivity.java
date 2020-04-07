@@ -40,16 +40,16 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Resource.role = DOCTOR_ID;
-                Intent intent = new Intent(getApplicationContext(), DoctorActivity.class);
-                getApplicationContext().startActivity(intent);
+                Intent intent = new Intent(HomeActivity.this, DoctorActivity.class);
+                startActivity(intent);
             }
         });
         studentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Resource.role = STUDENT_ID;
-                Intent intent = new Intent(getApplicationContext(), StudyActivity.class);
-                getApplicationContext().startActivity(intent);
+                Intent intent = new Intent(HomeActivity.this, StudyActivity.class);
+                startActivity(intent);
             }
         });
         exit.setOnClickListener(new View.OnClickListener() {
