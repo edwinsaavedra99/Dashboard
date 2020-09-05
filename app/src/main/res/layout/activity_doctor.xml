@@ -1,188 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#D0000000"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:windowTranslucentStatus="false"
     tools:context="com.example.dashboard.Activity.Doctor.DoctorActivity">
 
 
-
-    <RelativeLayout
-        android:id="@+id/navigationTop"
-        android:gravity="center"
-        android:background="#40000000"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/actionbar"
+        app:liftOnScroll="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <androidx.cardview.widget.CardView
-            android:layout_margin="10dp"
-            android:id="@+id/cardOneSearch"
-            app:cardMaxElevation="5dp"
-            app:cardCornerRadius="8dp"
-            app:cardBackgroundColor="#D0000000"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <SearchView
-                android:queryHint="Search Patient"
-                android:id="@+id/searchPatient"
-                android:theme="@style/AppSearchView"
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"/>
-        </androidx.cardview.widget.CardView>
+        android:fitsSystemWindows="true"
+        android:layout_height="128dp">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardTwoSearch"
-            android:visibility="gone"
-            android:layout_margin="10dp"
-            app:cardMaxElevation="5dp"
-            app:cardCornerRadius="8dp"
-            app:cardBackgroundColor="#D0000000"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <SearchView
-                android:queryHint="Search"
-                android:id="@+id/searchProjectShare"
-                android:theme="@style/AppSearchView"
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"/>
-        </androidx.cardview.widget.CardView>
+        <com.google.android.material.appbar.CollapsingToolbarLayout
 
-        <ImageView
-            android:visibility="gone"
-            android:layout_margin="10dp"
-            android:layout_centerVertical="true"
-            android:src="@drawable/ic_arrow_back_black_24dp"
-            android:layout_width="40dp"
-            android:layout_height="30dp">
-
-        </ImageView>
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardUsuario"
-            android:layout_alignParentRight="true"
-            android:layout_margin="10dp"
-            app:cardMaxElevation="5dp"
-            android:layout_centerVertical="true"
-            app:cardCornerRadius="18dp"
-            app:cardBackgroundColor="#D0000000"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:expandedTitleMarginStart="72dp"
+            app:expandedTitleMarginBottom="28dp"
+            android:fitsSystemWindows="true"
+            app:expandedTitleTextAppearance="@style/TextAppearance.App.CollapsingToolbar.Expanded"
+            app:collapsedTitleTextAppearance="@style/TextAppearance.App.CollapsingToolbar.Collapsed"
+            app:layout_scrollFlags="scroll|enterAlways|snap">
             <ImageView
-                android:id="@+id/usuarioApp"
-                android:src="@drawable/ic_account_circle_black_24dp"
-                android:layout_width="35dp"
-                android:layout_height="35dp">
-            </ImageView>
-        </androidx.cardview.widget.CardView>
-        <TextView
-            android:id="@+id/textApp"
-            android:textSize="15sp"
-            android:textColor="@android:color/white"
-            android:text="AFD PROJECT'S"
-            android:textStyle="normal"
-            android:typeface="monospace"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </RelativeLayout>
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/portada"
+                android:scaleType="centerCrop"
+                android:fitsSystemWindows="true"
+                android:contentDescription="ddddddd"
+                />
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/topAppBar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_scrollFlags="scroll|enterAlways|snap"
+                app:layout_collapseMode="pin"
+                android:background="@android:color/transparent"
+                app:title="Pacientes"
+                app:navigationIcon="@drawable/ic_back"
+                android:elevation="0dp"
+                app:menu="@menu/top_app_bar"
+                style="@style/Widget.MaterialComponents.Toolbar.Primary">
 
+            </com.google.android.material.appbar.MaterialToolbar>
 
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.viewpager.widget.ViewPager
-        android:layout_below="@id/navigationTop"
-        android:layout_above="@id/navigationBottom"
         android:id="@+id/doctorPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     </androidx.viewpager.widget.ViewPager>
 
-
-
-
-    <LinearLayout
-        android:background="#40000000"
-        android:gravity="center"
-        android:id="@+id/navigationBottom"
-        android:layout_alignParentBottom="true"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <LinearLayout
-            android:padding="10dp"
-            android:gravity="center"
-            android:layout_marginRight="20dp"
-            android:layout_width="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/fragment1"
-            android:onClick="changeFragment"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/imageGroupFragmentDoctor"
-                android:src="@drawable/ic_group_black_24dp"
-                android:text="CAMBIANDO ACTIVITY"
-                android:layout_width="30dp"
-                android:layout_height="30dp">
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:menu="@menu/menu_doctor" />
 
-            </ImageView>
-            <TextView
-                android:id="@+id/textGroupFragmentDoctor"
-                android:textSize="9sp"
-                android:textColor="@android:color/white"
-                android:text="Patients"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
 
-            </TextView>
-        </LinearLayout>
-    <LinearLayout
-        android:layout_marginLeft="20dp"
-        android:padding="10dp"
-        android:gravity="center"
-        android:layout_width="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/fragment2"
-        android:onClick="changeFragment"
-        android:layout_height="wrap_content">
-        <ImageView
-            android:id="@+id/imageSharedFragmentDoctor"
-            android:src="@drawable/ic_folder_shared_black_24dp"
-            android:text="CAMBIANDO ACTIVITY"
-            android:layout_width="30dp"
-            android:layout_height="30dp">
-
-        </ImageView>
-        <TextView
-            android:id="@+id/textSharedFragmentDoctor"
-            android:textSize="10sp"
-            android:textColor="@android:color/white"
-            android:text="Shared"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-        </TextView>
-    </LinearLayout>
-    </LinearLayout>
-
-    <androidx.cardview.widget.CardView
-        app:cardBackgroundColor="@android:color/black"
-        android:layout_margin="40dp"
-        app:cardMaxElevation="10dp"
-        app:cardPreventCornerOverlap="true"
-        app:cardCornerRadius="30dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:id="@+id/addCardView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <ImageView
-            android:id="@+id/addPatient"
-            android:padding="10dp"
-            android:src="@drawable/ic_group_add_black_24dp"
-            android:layout_width="60dp"
-            android:layout_height="60dp">
-
-        </ImageView>
-    </androidx.cardview.widget.CardView>
-
-</RelativeLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,70 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/carv_project"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
     android:orientation="vertical"
     app:cardCornerRadius="5dp"
-    app:cardBackgroundColor="@android:color/transparent"
-    android:background="@android:color/transparent"
-    app:cardUseCompatPadding="true"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-<LinearLayout
-    android:background="@android:color/transparent"
-    android:layout_width="match_parent"
-    android:id="@+id/boxProject"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <ImageView
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:id="@+id/folderProject"
-            android:paddingTop="10dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:filterTouchesWhenObscured="true"
-            android:src="@drawable/ic_folder_black_24dp"
-            android:layout_width="100dp"
-            android:layout_height="100dp">
-        </ImageView>
-        <ImageView
-            android:id="@+id/menuOptions"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="5dp"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/ic_more_vert_black_24dp"
-            android:layout_width="30dp"
-            android:layout_height="30dp">
+    app:cardUseCompatPadding="true">
 
-        </ImageView>
-
-    </RelativeLayout>
     <LinearLayout
+        android:id="@+id/boxProject"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background="@android:color/transparent"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:paddingRight="10dp"
-        android:paddingLeft="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:gravity="center"
-            android:id="@+id/nameProyect"
-            android:text="PROJECT 01"
-            android:textColor="#D0ffffff"
-            android:textSize="16sp"
-            android:textStyle="normal"
-            android:paddingBottom="8dp"
-            android:layout_width="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        </TextView>
+            <ImageView
+                android:id="@+id/folderProject"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_centerInParent="true"
+                android:filterTouchesWhenObscured="true"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:paddingRight="10dp"
+                android:src="@drawable/directory"></ImageView>
+
+            <ImageView
+                android:id="@+id/menuOptions"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/ic_more_vert_black_24dp">
+
+            </ImageView>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <TextView
+                android:id="@+id/nameProyect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="@color/color_app"
+                android:gravity="center_horizontal|center_vertical"
+                android:padding="2dp"
+                android:text="PROJECT 01"
+                android:textColor="#ffffff"
+                android:textSize="14sp"
+                android:textStyle="normal">
+
+            </TextView>
+
+        </LinearLayout>
 
     </LinearLayout>
-
-</LinearLayout>
 
 
 </androidx.cardview.widget.CardView>

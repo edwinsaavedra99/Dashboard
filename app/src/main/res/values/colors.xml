@@ -3,10 +3,10 @@
     <color name="colorPrimary">#123663</color>
     <color name="colorPrimaryDark">#80000000</color>
     <color name="colorAccent">#123663</color>
-    <color name="color_app_cuerpo">#164f70</color>
+    <color name="color_app_cuerpo">#8000838f</color>
     <color name="bottomText">#6b6b76</color>
     <color name="rippleEffectColor">#f816a463</color>
-    <color name="btnSignIn">#1fbad6</color>
+    <color name="btnSignIn">#E1E1E1</color>
     <color name="btnRegister">#83838c</color>
     <color name="frame">#000000</color>
     <color name="coloApp">#283747</color>
@@ -15,4 +15,9 @@
     <color name="color_new_prject">#071a36</color>
     <color name="color_letas">#b5bbc4</color>
     <color name="colo_fondo">#242424</color>
+
+    <color name="color_app">#00838f</color>
+
+    <color name="blanco">#000000</color>
+    <color name="color_button">#FFFFFF</color>
 </resources>

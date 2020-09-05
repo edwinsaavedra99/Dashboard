@@ -10,95 +10,104 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:hint="Name Patient"
+            android:hint="Nombre Paciente"
             app:endIconMode="clear_text"
-            app:startIconDrawable="@drawable/ic_account_box_black_24dp"
-            app:endIconTint="@color/coloApp">
+            app:endIconTint="@color/coloApp"
+            app:startIconDrawable="@drawable/ic_account_box_black_24dp">
+
             <com.google.android.material.textfield.TextInputEditText
-                android:inputType="text"
                 android:id="@+id/txt_namePatient"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="" />
-        </com.google.android.material.textfield.TextInputLayout>
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="match_parent"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:hint="Description Patient"
-            app:endIconMode="clear_text"
-            app:endIconTint="@color/coloApp"
-            app:startIconDrawable="@drawable/ic_info_black_24dp">
-            <com.google.android.material.textfield.TextInputEditText
                 android:inputType="text"
-                android:id="@+id/txt_descriptionPatient"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="" />
-        </com.google.android.material.textfield.TextInputLayout>
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="match_parent"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:hint="Age Patient"
-            app:endIconMode="clear_text"
-            app:endIconTint="@color/coloApp"
-            app:startIconDrawable="@drawable/ic_info_black_24dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:inputType="text"
-                android:id="@+id/txt_agePatient"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:text="" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:hint="Sex Patient"
+            android:hint="Descripcion Paciente"
             app:endIconMode="clear_text"
             app:endIconTint="@color/coloApp"
             app:startIconDrawable="@drawable/ic_info_black_24dp">
+
             <com.google.android.material.textfield.TextInputEditText
-                android:inputType="text"
-                android:id="@+id/txt_sexPatient"
+                android:id="@+id/txt_descriptionPatient"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="text"
                 android:text="" />
         </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:hint="Residence Patient"
+            android:hint="Edad Paciente"
             app:endIconMode="clear_text"
             app:endIconTint="@color/coloApp"
             app:startIconDrawable="@drawable/ic_info_black_24dp">
+
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txt_agePatient"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:inputType="text"
+                android:text="" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="12dp"
+            android:hint="Genero Paciente"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/coloApp"
+            app:startIconDrawable="@drawable/ic_info_black_24dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txt_sexPatient"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:text="" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="12dp"
+            android:hint="Dirección Paciente"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/coloApp"
+            app:startIconDrawable="@drawable/ic_info_black_24dp">
+
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txt_housePatient"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="text"
                 android:text="" />
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>

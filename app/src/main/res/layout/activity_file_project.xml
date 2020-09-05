@@ -1,100 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="#D0000000"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.dashboard.Activity.FileProjectActivity">
 
-    <RelativeLayout
-        android:id="@+id/navigationTop"
-        android:gravity="center"
-        android:background="#40000000"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/actionbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <androidx.cardview.widget.CardView
-            android:layout_margin="10dp"
-            app:cardMaxElevation="5dp"
-            app:cardCornerRadius="8dp"
-            app:cardBackgroundColor="#D0000000"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <SearchView
-                android:queryHint="Search"
-                android:id="@+id/searchFileProject"
-                android:theme="@style/AppSearchView"
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"/>
-        </androidx.cardview.widget.CardView>
-        <ImageView
-            android:visibility="gone"
-            android:layout_margin="10dp"
-            android:layout_centerVertical="true"
-            android:src="@drawable/ic_arrow_back_black_24dp"
-            android:layout_width="40dp"
-            android:layout_height="30dp">
+        android:layout_height="wrap_content"
+        android:windowTranslucentStatus="false">
 
-        </ImageView>
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardUsuario"
-            android:layout_alignParentRight="true"
-            android:layout_margin="10dp"
-            app:cardMaxElevation="5dp"
-            android:layout_centerVertical="true"
-            app:cardCornerRadius="20dp"
-            app:cardBackgroundColor="#D0000000"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/usuarioApp"
-                android:src="@drawable/ic_account_circle_black_24dp"
-                android:layout_width="35dp"
-                android:layout_height="35dp">
-            </ImageView>
-        </androidx.cardview.widget.CardView>
-        <TextView
-            android:id="@+id/textApp"
-            android:textSize="15sp"
-            android:textColor="@android:color/white"
-            android:text="AFD PROJECT'S"
-            android:textStyle="normal"
-            android:typeface="monospace"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </RelativeLayout>
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:windowTranslucentStatus="false"
+            app:menu="@menu/top_app_bar"
+            app:navigationIcon="@drawable/ic_back"
+            app:title="Imagenes Médicas" />
 
+    </com.google.android.material.appbar.AppBarLayout>
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_below="@id/navigationTop"
-        android:id="@+id/recicler_File"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    </androidx.recyclerview.widget.RecyclerView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    <androidx.cardview.widget.CardView
-        app:cardBackgroundColor="@android:color/black"
-        android:layout_margin="40dp"
-        app:cardMaxElevation="10dp"
-        app:cardPreventCornerOverlap="true"
-        app:cardCornerRadius="30dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:id="@+id/addCardView"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recicler_File"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                >
+
+            </androidx.recyclerview.widget.RecyclerView>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_crear_file"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <ImageView
-            android:id="@+id/addFileProject"
-            android:padding="10dp"
-            android:src="@drawable/ic_add_black_24dp"
-            android:layout_width="60dp"
-            android:layout_height="60dp">
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:text="Crear Archivo"
+        android:textColor="#FFFFFF"
+        app:icon="@drawable/ic_person">
 
-        </ImageView>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.button.MaterialButton>
 
-</RelativeLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

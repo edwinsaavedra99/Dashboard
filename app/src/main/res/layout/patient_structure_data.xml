@@ -11,95 +11,100 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:hint="Name Patient"
+            android:hint="Nombre Paciente"
             app:endIconMode="clear_text"
             app:endIconTint="@color/coloApp">
+
             <com.google.android.material.textfield.TextInputEditText
-                android:inputType="text"
                 android:id="@+id/txt_namePatient"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="text"
                 android:text="" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:hint="Description Patient"
+            android:hint="Descripcion Paciente"
             app:endIconMode="clear_text"
             app:endIconTint="@color/coloApp">
+
             <com.google.android.material.textfield.TextInputEditText
-                android:inputType="text"
                 android:id="@+id/txt_descriptionPatient"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="text"
                 android:text="" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:hint="Age Patient"
+            android:hint="Edad Paciente"
             app:endIconMode="clear_text"
             app:endIconTint="@color/coloApp">
+
             <com.google.android.material.textfield.TextInputEditText
-                android:inputType="number"
                 android:id="@+id/txt_agePatient"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="number"
                 android:text="" />
         </com.google.android.material.textfield.TextInputLayout>
-
 
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:hint="Address Patient"
+            android:hint="Dirección Paciente"
             app:endIconMode="clear_text"
             app:endIconTint="@color/coloApp">
+
             <com.google.android.material.textfield.TextInputEditText
-                android:inputType="text"
                 android:id="@+id/addreesPatient"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="text"
                 android:text="" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:hint="DNI Patient"
+            android:hint="DNI Paciente"
             app:endIconMode="clear_text"
             app:endIconTint="@color/coloApp">
+
             <com.google.android.material.textfield.TextInputEditText
-                android:inputType="number"
                 android:id="@+id/dniPatient"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="number"
                 android:text="" />
         </com.google.android.material.textfield.TextInputLayout>
 

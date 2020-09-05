@@ -7,7 +7,9 @@ import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -43,29 +45,29 @@ public class Login extends AppCompatActivity {
     private static final int RC_SIGN_IN = 0;
     private static final String TAG ="Error" ;
     GoogleSignInClient mGoogleSignInClient;
-    SignInButton signInButton;
+    Button signInButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        getSupportActionBar().hide();
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+
         Resource.SignInClient = mGoogleSignInClient;
-        signInButton = findViewById(R.id.sign_in_button);
-        linearLayout = findViewById(R.id.liner_layout_sign);
-        textView = findViewById(R.id.txt_title);
-        imageView = findViewById(R.id.imageView_hand);
-        signInButton.setColorScheme(SignInButton.COLOR_DARK);
+        signInButton=findViewById(R.id.btn_gmail);
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 signIn();
             }
         });
-        handleAnimation();
+        //handleAnimation();
+
+
     }
 
     @Override
@@ -96,10 +98,12 @@ public class Login extends AppCompatActivity {
             // onExploredClicked();
         }
     }
+
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             // The Task returned from this call is always completed, no need to attach
             // a listener.
@@ -107,6 +111,8 @@ public class Login extends AppCompatActivity {
             handleSignInResult(task);
         }
     }
+
+
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
@@ -154,6 +160,7 @@ public class Login extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                Log.d("wilmersote",e.getMessage());
                 e.printStackTrace();
             }
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)

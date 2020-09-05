@@ -25,8 +25,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,8 +54,10 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -210,6 +214,15 @@ public class FiguresModelActivity extends AppCompatActivity {
     private AlertDialog dialog;
     private String nameFileGlobal="";
     private String descriptionFileGlobal="";
+
+    private String archivo = "test";
+    private String carpeta = "/dataAFD/";
+    String contenido;
+    File file;
+    String file_path = "";
+    EditText texto;
+    String name = "";
+    File localFile;
     //--End Attributes of class
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @SuppressLint("ClickableViewAccessibility")
@@ -220,13 +233,28 @@ public class FiguresModelActivity extends AppCompatActivity {
         //Add Layout Activity XML
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_figures_model);
-        getSupportActionBar().hide();
+
         //Load OpenCV
         OpenCVLoader.initDebug();
         //Initializing Properties
         initialProperties();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        this.file_path = (Environment.getExternalStorageDirectory()+carpeta);
+        localFile = new File(this.file_path);
+        if(!localFile.exists()){
+            localFile.mkdirs();
+        }
+        this.name = (this.archivo+".json");
+        this.file = new File(localFile,this.name);
+        try{
+            this.file.createNewFile();
 
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        if(file.exists()){
+            //leer
+        }
         infoFigures.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1126,16 +1154,17 @@ public class FiguresModelActivity extends AppCompatActivity {
  
     private void showSaveDialog(){
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("SAVE: ");
-        dialog.setMessage("Please insert Name and Description");
+        dialog.setTitle("Guardar: ");
+        dialog.setMessage("Ingrese un Nombre y una Descripción");
         LayoutInflater inflater = LayoutInflater.from(this);
         @SuppressLint("InflateParams") View login_layout = inflater.inflate(R.layout.layout_save_figure,null);
         final TextInputEditText nameDescription = login_layout.findViewById(R.id.txt_nameProject);
         final TextInputEditText editDescription = login_layout.findViewById(R.id.txt_descriptionProject);
+        final RadioGroup gGroup = login_layout.findViewById(R.id.methodSave);
         nameDescription.setText(nameFileGlobal);
         editDescription.setText(descriptionFileGlobal);
         dialog.setView(login_layout);
-        dialog.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+        dialog.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String name = nameDescription.getText().toString().trim();
@@ -1144,13 +1173,20 @@ public class FiguresModelActivity extends AppCompatActivity {
                     nameDescription.setError("Error ...");
                     nameDescription.requestFocus();
                 }else {
-                    saveIndicator(description,name);
-                    nameFileGlobal = name;
-                    descriptionFileGlobal = description;
+                    if(gGroup.getCheckedRadioButtonId() == R.id.radioInternet){
+                        saveIndicator(description,name);
+                        nameFileGlobal = name;
+                        descriptionFileGlobal = description;
+                    }else if(gGroup.getCheckedRadioButtonId() == R.id.radioLocal){
+                        saveLocal(description,name);
+                        nameFileGlobal = name;
+                        descriptionFileGlobal = description;
+                    }
+
                 }
             }
         });
-        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+        dialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -1550,6 +1586,75 @@ public class FiguresModelActivity extends AppCompatActivity {
         });
     }
 
+    public void saveLocal(final String descripcion,final String name){
+        JSONObject postdata = new JSONObject();
+        try {
+            this.archivo = name;
+            this.name = (this.archivo+".json");
+            this.file = new File(localFile,this.name);
+            try{
+                this.file.createNewFile();
+
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+            if(file.exists()){
+                //leer
+            }
+            String infoDate="";
+            if(!Resource.openFile) {
+                Date date = new Date();
+                DateFormat hourdateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+                infoDate = hourdateFormat.format(date);
+            }else{
+                infoDate = Resource.dateFile;
+            }
+            postdata.put("patient",Resource.idPacient);
+            postdata.put("email",Resource.emailUserLogin);
+            postdata.put("record",Resource.idCarpeta);
+            JSONObject posdate123 = new JSONObject();
+            posdate123.put("imageX",myListFigures.getGeneralWidth());
+            posdate123.put("imagey",myListFigures.getGeneralHeight());
+            posdate123.put("profileItems",null);
+            posdate123.put("indicators",myListFigures.dataFigures());
+            postdata.put("description",descripcion);
+            postdata.put("date",infoDate);
+            postdata.put("name",name);
+            postdata.put("age",Resource.agePatient);
+            postdata.put("dni",Resource.idPacient);
+            postdata.put("residency",Resource.residecyPatient);
+            postdata.put("gender",Resource.genderPatient);
+            postdata.put("information",posdate123);
+            postdata.put("image", myListFigures.getBase64String());
+            //System.out.println("************** TEST 1 ****************");
+            //System.out.println(responseData);
+            //System.out.println(posdate123.toString());
+        } catch(JSONException e){
+            e.printStackTrace();
+        }
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        try{
+            fichero = new FileWriter(file);
+            pw = new PrintWriter(fichero);
+            pw.print(postdata.toString());
+            pw.flush();
+            pw.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }finally {
+            try{
+                if(null!=fichero){
+                    fichero.close();
+                }
+            }catch (Exception e2){
+                e2.printStackTrace();
+            }
+        }
+        Toast.makeText(getApplicationContext(),"Data Save Successfully",Toast.LENGTH_SHORT).show();
+
+    }
+
     public void filtersWithProgressBar(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
@@ -1683,8 +1788,8 @@ public class FiguresModelActivity extends AppCompatActivity {
         menu_left = findViewById(R.id.contenedor_menu_left);
         sendData = findViewById(R.id.sendData);
         menu_right = findViewById(R.id.contenedor_menu_right);
-        menu_left.setBackgroundColor(Color.parseColor("#80000000"));
-        menu_right.setBackgroundColor(Color.parseColor("#80000000"));
+        //menu_left.setBackgroundColor(Color.parseColor("#80000000"));
+        //menu_right.setBackgroundColor(Color.parseColor("#80000000"));
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         getFigures = findViewById(R.id.getFigures);
@@ -1870,16 +1975,16 @@ public class FiguresModelActivity extends AppCompatActivity {
             }
             if( Resource.changeSaveFigures == false){
                 AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-                dialog.setTitle("EXIT: ");
-                dialog.setMessage("There are unsaved changes, are you sure?");
+                dialog.setTitle("Salir: ");
+                dialog.setMessage("Hay Cambios sin Guardar, Esta Seguro?");
                 LayoutInflater inflater = LayoutInflater.from(this);
-                dialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                dialog.setPositiveButton("Salir", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         FiguresModelActivity.this.finish();
                     }
                 });
-                dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();

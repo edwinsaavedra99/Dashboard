@@ -53,7 +53,6 @@ public class FragmentDoctorShare extends Fragment {
     private RecyclerView recyclerView;
     private SharedFileAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
-    private SearchView searchView;
     private LinearLayout linearLayout;
     private List list;
     @Nullable
@@ -64,20 +63,6 @@ public class FragmentDoctorShare extends Fragment {
         // Inflate the layout for this fragment
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_fragment_doctor_share, container, false);
         linearLayout = viewGroup.findViewById(R.id.noDataShareDoctor);
-        searchView = getActivity().findViewById(R.id.searchProjectShare);
-        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                adapter.getFilter().filter(newText);
-                return false;
-            }
-        });
 
         recyclerView = (RecyclerView) viewGroup.findViewById(R.id.recicler_project_file);
         recyclerView.setHasFixedSize(true);
@@ -112,6 +97,8 @@ public class FragmentDoctorShare extends Fragment {
                     throws IOException {
                 if (response.isSuccessful()){
                     final String responseData = response.body().string();
+                    if(getActivity() == null)
+                        return;
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

@@ -22,7 +22,7 @@ class ApiCall {
     //POST network request
     static String POST(OkHttpClient client, String url, RequestBody body) throws IOException {
         Request request = new Request.Builder()
-                .url("http://192.168.12.97:5000/"+url)
+                .url("http://192.168.12.97:80/"+url)
                 .post(body)
                 .addHeader("Content-Type", "application/json")
                 .build();

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -21,6 +22,7 @@ import com.example.dashboard.Adapter.ProjectAdapter;
 import com.example.dashboard.Models.Project;
 import com.example.dashboard.R;
 import com.example.dashboard.Resources.Resource;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,32 +43,21 @@ public class FragmentStudyProjects extends Fragment {
     private ProjectAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private List list;
-    private SearchView searchView;
-    private ImageView addProject;
+    private Button addProject;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,@Nullable ViewGroup container,@Nullable Bundle savedInstanceState) {
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_fragment_study, container, false);
-        searchView = getActivity().findViewById(R.id.searchProjectStudy);
-        addProject = (ImageView) getActivity().findViewById(R.id.addProjectStudy);
+
+
+        addProject = viewGroup.findViewById(R.id.btn_crear_proyecto);
         addProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showAddProjectDialog();
             }
         });
-        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                adapter.getFilter().filter(newText);
-                return false;
-            }
-        });
+
         recyclerView = (RecyclerView) viewGroup.findViewById(R.id.recicler_project);
         recyclerView.setHasFixedSize(true);
         layoutManager = new GridLayoutManager(getActivity(),2);

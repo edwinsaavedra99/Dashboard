@@ -57,20 +57,7 @@ public class FragmentStudyShare extends Fragment {
         // Inflate the layout for this fragment
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_fragment_study_share, container, false);
         linearLayout = viewGroup.findViewById(R.id.noDataShareStudy);
-        searchView = getActivity().findViewById(R.id.searchProjectStudyShare);
-        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                adapter.getFilter().filter(newText);
-                return false;
-            }
-        });
         recyclerView = (RecyclerView) viewGroup.findViewById(R.id.recicler_project_file);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());

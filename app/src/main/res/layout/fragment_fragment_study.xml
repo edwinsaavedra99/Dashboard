@@ -1,16 +1,118 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.dashboard.Activity.Study.Fragments.FragmentStudyProjects">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:paddingLeft="15dp"
-        android:paddingTop="10dp"
-        android:paddingRight="15dp"
-        android:id="@+id/recicler_project"
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-</RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <androidx.cardview.widget.CardView
+
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    app:cardCornerRadius="20dp"
+                    app:cardMaxElevation="5dp">
+
+                    <androidx.coordinatorlayout.widget.CoordinatorLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textView4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="90dp"
+                            android:gravity="left"
+                            android:text="Encuentre su Proyecto de una Manera mas Rapida "
+                            android:textColor="#000000"
+                            android:textSize="14sp" />
+
+                        <ImageView
+                            android:id="@+id/img_producto"
+                            android:layout_width="140dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="right"
+                            android:alpha="0.4"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            android:scaleType="fitCenter"
+                            app:srcCompat="@drawable/persona" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+
+                            style="@style/TextInputLayout"
+                            android:layout_width="250dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom|left"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:hint="Nombre Proyecto"
+                            app:counterEnabled="true"
+                            app:counterMaxLength="8"
+                            app:endIconMode="clear_text"
+                            app:helperText="Importante*"
+                            app:helperTextEnabled="true"
+                            app:startIconDrawable="@drawable/ic_search">
+
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edit_search_patient"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:imeOptions="actionSearch"
+                                android:inputType="number"
+                                android:maxLength="8"
+                                android:maxLines="1"
+                                android:textColorHighlight="@color/colorPrimary"
+                                android:textColorHint="@color/colorPrimary"
+                                android:textColorLink="#9BF0FF" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recicler_project"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_crear_proyecto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="70dp"
+        android:text="Crear Paciente"
+        android:textColor="#FFFFFF"
+        app:icon="@drawable/ic_person">
+
+    </com.google.android.material.button.MaterialButton>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

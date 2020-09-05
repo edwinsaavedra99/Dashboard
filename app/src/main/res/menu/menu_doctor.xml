@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/pacientes"
+        android:enabled="true"
+        android:icon="@drawable/ic_search"
+        android:title="Pacientes"/>
+    <item
+        android:id="@+id/compartido"
+        android:enabled="true"
+        android:icon="@drawable/ic_plant"
+        android:title="Comunidad"/>
+</menu>

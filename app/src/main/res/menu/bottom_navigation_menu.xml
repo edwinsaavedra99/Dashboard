@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/ic_project"
+        android:enabled="true"
+        android:icon="@drawable/ic_project"
+        android:title="Home"/>
+    <item
+        android:id="@+id/ic_comunity"
+        android:enabled="true"
+        android:icon="@drawable/ic_comunity"
+        android:title="Comunidad"/>
+    <item
+        android:id="@+id/ic_perfil"
+        android:enabled="true"
+        android:icon="@drawable/ic_perfil"
+        android:title="Usted"/>
+</menu>

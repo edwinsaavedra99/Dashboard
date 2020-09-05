@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,12 +31,10 @@ public class SharedFileAdapter extends RecyclerView.Adapter<SharedFileAdapter.Sh
 
         ImageView imageViewFileProject;
         TextView nameFileProject;
-        ImageView optionItem;
         //TextView dateFileProject;
         //TextView timeFileProject;
         TextView descriptionFile;
         TextView emailFromFile;
-
         SharedFileViewHolder(View v){
             super(v);
             nameFileProject = v.findViewById(R.id.nameFileProject);//
@@ -43,8 +42,8 @@ public class SharedFileAdapter extends RecyclerView.Adapter<SharedFileAdapter.Sh
 //            timeFileProject = (TextView) v.findViewById(R.id.timeFileProject);//
             descriptionFile =  v.findViewById(R.id.descriptionFile);//
             imageViewFileProject =  v.findViewById(R.id.imageFileProject);//
-            optionItem =  v.findViewById(R.id.optionItem);//
             emailFromFile =  v.findViewById(R.id.emailFrom);//
+
         }
     }
     public SharedFileAdapter(List<SharedFile> items, Context context){
@@ -71,11 +70,10 @@ public class SharedFileAdapter extends RecyclerView.Adapter<SharedFileAdapter.Sh
   //      fileViewHolder.dateFileProject.setText(items.get(i).getDateFileProject());
     //    fileViewHolder.timeFileProject.setText(items.get(i).getTimeFileProject());
         fileViewHolder.emailFromFile.setText("by: "+items.get(i).getEmailFrom());
-        fileViewHolder.imageViewFileProject.setImageBitmap(StringUtil.decodeBase64AndSetImage(items.get(i).getImageFileProject()));
-        fileViewHolder.optionItem.setOnClickListener(new View.OnClickListener() {
+
+        fileViewHolder.imageViewFileProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               //open
                 if(Resource.role == 2) { //study
                     Intent intent = new Intent(context, LandMarkModelActivity.class);
                     context.startActivity(intent);
@@ -95,6 +93,9 @@ public class SharedFileAdapter extends RecyclerView.Adapter<SharedFileAdapter.Sh
                 Resource.idPacient = items.get(i).getPatient();
             }
         });
+        fileViewHolder.imageViewFileProject.setImageBitmap(StringUtil.decodeBase64AndSetImage(items.get(i).getImageFileProject()));
+
+
 
     }
     @Override

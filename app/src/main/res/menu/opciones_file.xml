@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+
+        android:iconTint="@color/colorAccent"
+        android:id="@+id/navigation_1"
+        android:icon="@drawable/ic_open_in_new_black_24dp"
+        android:enabled="true"
+        android:title="Abrir" />
+    <item
+        android:id="@+id/navigation_2"
+        android:icon="@drawable/ic_build_black_24dp"
+        android:title="Editar" />
+    <item
+        android:id="@+id/navigation_3"
+        android:icon="@drawable/ic_remove_black_24dp"
+        android:title="Eliminar" />
+    <item
+        android:id="@+id/navigation_4"
+        android:icon="@drawable/ic_remove_black_24dp"
+        android:title="Compartir" />
+    <item
+        android:id="@+id/navigation_5"
+        android:icon="@drawable/ic_remove_black_24dp"
+        android:title="Descargar" />
+
+</menu>

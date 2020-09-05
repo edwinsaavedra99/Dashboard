@@ -21,6 +21,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SearchView;
@@ -38,6 +39,8 @@ import com.example.dashboard.Models.Project;
 import com.example.dashboard.R;
 import com.example.dashboard.Utils.StringUtil;
 import com.example.dashboard.Resources.Resource;
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONArray;
@@ -64,69 +67,34 @@ public class FileProjectActivity extends AppCompatActivity {
     private RecyclerView recyclerViewFileProject;
     private FileProjectAdapter adapterFileProject;
     private RecyclerView.LayoutManager layoutManagerFileProject;
-    private TextView textViewApp;
-    private SearchView searchViewFileProject;
-    private ImageView addFileProject;
-    private ImageView usuarioApp;
-    private CardView cardViewUsuario;
     private List list;
     private Uri imageurl;
     private String currentPhotoPath;
     private ImageButton imageButton;
     private int flag;
-
+    Button btn_crear_file;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_project);
-        getSupportActionBar().hide();
         /*DATA VIEW*/
-        textViewApp = findViewById(R.id.textApp);
-        cardViewUsuario = (CardView) findViewById(R.id.cardUsuario);
-        searchViewFileProject = findViewById(R.id.searchFileProject);
-        addFileProject = findViewById(R.id.addFileProject);
+        MaterialToolbar toolbar =findViewById(R.id.topAppBar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        btn_crear_file = findViewById(R.id.btn_crear_file);
         flag = 0;
-        usuarioApp = (ImageView) findViewById(R.id.usuarioApp);
-        Glide.with(this).load(Resource.urlImageUserLogin).into(usuarioApp);
-        addFileProject.setOnClickListener(new View.OnClickListener() {
+
+        btn_crear_file.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showAddFileProjectDialog();
             }
         });
-
-        searchViewFileProject.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        searchViewFileProject.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                adapterFileProject.getFilter().filter(newText);
-                return false;
-            }
-        });
-        /*DATA BASE*/
-        searchViewFileProject.setOnSearchClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cardViewUsuario.setVisibility(View.GONE);
-                textViewApp.setVisibility(View.GONE);
-
-            }
-        });
-        searchViewFileProject.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                cardViewUsuario.setVisibility(View.VISIBLE);
-                textViewApp.setVisibility(View.VISIBLE);
-                return false;
-            }
-        });
         getInfo(Resource.role);
-        addFileProject.setBackgroundColor(Color.parseColor("#80000000"));
         recyclerViewFileProject = (RecyclerView) findViewById(R.id.recicler_File);
         recyclerViewFileProject.setHasFixedSize(true);
         layoutManagerFileProject = new LinearLayoutManager(getApplicationContext());
@@ -135,8 +103,8 @@ public class FileProjectActivity extends AppCompatActivity {
 
     private void showAddFileProjectDialog(){
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("NEW PROJECT: ");
-        dialog.setMessage("Insert Project's Data: " );
+        dialog.setTitle("Nuevo Archivo: ");
+        dialog.setMessage("Touch para Seleccionar una Imagen" );
         dialog.setCancelable(false);
         final LayoutInflater inflater = LayoutInflater.from(this);
         View add_layout = inflater.inflate(R.layout.data_project,null);
@@ -157,7 +125,7 @@ public class FileProjectActivity extends AppCompatActivity {
             }
         });
         dialog.setView(add_layout);
-        dialog.setPositiveButton("START PROJECT", new DialogInterface.OnClickListener() {
+        dialog.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
@@ -182,7 +150,7 @@ public class FileProjectActivity extends AppCompatActivity {
 
             }
         });
-        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+        dialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();

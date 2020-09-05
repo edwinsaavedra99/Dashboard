@@ -1,118 +1,243 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#E0000000"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.dashboard.Activity.HomeActivity">
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
 
-    <ImageView
-        android:id="@+id/exitApp01"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_margin="20dp"
-        android:src="@drawable/ic_exit_to_app_black_24dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
 
-    </ImageView>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardUsuario"
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/actionbar"
+        app:liftOnScroll="true"
+        android:layout_width="match_parent"
+        android:fitsSystemWindows="true"
+        android:layout_height="128dp">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:expandedTitleMarginStart="72dp"
+            app:expandedTitleMarginBottom="28dp"
+            android:fitsSystemWindows="true"
+            app:expandedTitleTextAppearance="@style/TextAppearance.App.CollapsingToolbar.Expanded"
+            app:collapsedTitleTextAppearance="@style/TextAppearance.App.CollapsingToolbar.Collapsed"
+            app:layout_scrollFlags="scroll|enterAlways|snap">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/portada"
+                android:scaleType="centerCrop"
+                android:fitsSystemWindows="true"
+                android:contentDescription="ddddddd"
+                />
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/topAppBar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_scrollFlags="scroll|enterAlways|snap"
+                app:layout_collapseMode="pin"
+                android:background="@android:color/transparent"
+                app:title="xRayView (xRV)"
+                app:navigationIcon="@drawable/ic_back"
+                android:elevation="0dp"
+                app:menu="@menu/top_app_bar"
+                style="@style/Widget.MaterialComponents.Toolbar.Primary">
+
+            </com.google.android.material.appbar.MaterialToolbar>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Bienvenido a xRayView"
+                    android:textColor="#009688"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <androidx.cardview.widget.CardView
+
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    app:cardCornerRadius="20dp"
+                    app:cardMaxElevation="5dp">
+
+                    <androidx.coordinatorlayout.widget.CoordinatorLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textView4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="90dp"
+                            android:gravity="left"
+                            android:text="Para Profesionales en el Ámbito de la Medicina"
+                            android:textColor="#000000"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/textView5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="50dp"
+                            android:layout_marginRight="90dp"
+                            android:gravity="left"
+                            android:text="Comparte tu opinion con la Comunidad"
+                            android:textColor="#B71C1C"
+                            android:textSize="14sp" />
+
+                        <ImageView
+                            android:id="@+id/img_producto"
+                            android:layout_width="140dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="right"
+                            android:alpha="0.4"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            android:scaleType="fitCenter"
+                            app:srcCompat="@drawable/medico" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_medico"
+                            style="@style/Widget.App.Button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom|left"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:text="Sección Traumatólogo"
+                            android:textSize="12sp"
+                            app:cornerRadius="10dp"
+                            app:strokeColor="#00838f"
+                            app:strokeWidth="2dp" />
+                    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    app:cardCornerRadius="20dp"
+                    app:cardMaxElevation="5dp">
+
+                    <androidx.coordinatorlayout.widget.CoordinatorLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textView4d"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="90dp"
+                            android:gravity="left"
+                            android:text="Para Estudiantes Universitario en el ambito de investigacion"
+                            android:textColor="#000000"
+                            android:textSize="14sp" />
+
+                        <ImageView
+                            android:id="@+id/img_prdoducto"
+                            android:layout_width="140dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="right"
+                            android:alpha="0.4"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            android:scaleType="centerCrop"
+
+                            app:srcCompat="@drawable/persona" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_estudiante"
+                            style="@style/Widget.App.Button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom|left"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:text="Sección Investigador"
+                            android:textSize="12sp"
+                            app:cornerRadius="10dp"
+                            app:strokeColor="#00838f"
+                            app:strokeWidth="2dp" />
+                    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/reciclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"></androidx.recyclerview.widget.RecyclerView>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="20dp"
-        app:cardBackgroundColor="#D0000000"
-        app:cardCornerRadius="18dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:cardMaxElevation="5dp">
+        android:layout_gravity="bottom|right"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="70dp"
+        android:text="Galería"
+        android:textColor="#FFFFFF"
+        app:icon="@drawable/ic_photo">
 
-        <ImageView
-            android:id="@+id/usuarioApp"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:src="@drawable/ic_account_circle_black_24dp"></ImageView>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.button.MaterialButton>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
-        android:layout_width="152dp"
-        android:layout_height="173dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.337">
 
-        <ImageView
-            android:id="@+id/imageDoctor"
-            android:layout_width="153dp"
-            android:layout_height="124dp"
-            android:src="@drawable/ic_local_hospital_black_24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
 
-        </ImageView>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:menu="@menu/bottom_navigation_menu"
+        android:layout_gravity="bottom"/>
 
-        <TextView
-            android:layout_width="77dp"
-            android:layout_height="34dp"
-            android:gravity="center"
-            android:text="MEDICINE"
-            android:textColor="@android:color/white"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageDoctor">
 
-        </TextView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout01"
-        android:layout_width="152dp"
-        android:layout_height="173dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-        app:layout_constraintVertical_bias="0.099">
-
-        <ImageView
-            android:id="@+id/imageStudent"
-            android:layout_width="153dp"
-            android:layout_height="124dp"
-            android:src="@drawable/ic_local_library_black_24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-        </ImageView>
-
-        <TextView
-            android:layout_width="77dp"
-            android:layout_height="34dp"
-            android:gravity="center"
-            android:text="RESEARCH"
-            android:textColor="@android:color/white"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageStudent">
-
-        </TextView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

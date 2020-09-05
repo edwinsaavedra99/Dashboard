@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,19 +21,14 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dashboard.Activity.Doctor.FiguresModelActivity;
-import com.example.dashboard.Activity.FileProjectActivity;
-import com.example.dashboard.Activity.ProjectActivity;
 import com.example.dashboard.Activity.Study.LandMarkModelActivity;
 import com.example.dashboard.ListFigures.MemoryFigure;
 import com.example.dashboard.Models.FileProject;
-import com.example.dashboard.Models.Patient;
-import com.example.dashboard.Models.Project;
 import com.example.dashboard.R;
 import com.example.dashboard.Resources.Resource;
 import com.example.dashboard.Utils.StringUtil;
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -64,18 +58,17 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
         ImageView moreOptionItem;
         ImageView shareOptionItem;
         TextView dateFileProject;
-        TextView timeFileProject;
         TextView descriptionFile;
-
+        LinearLayout boxFileProject;
         FileProjectViewHolder(View v){
             super(v);
             nameFileProject = (TextView) v.findViewById(R.id.nameFileProject);
-            dateFileProject = (TextView) v.findViewById(R.id.dateFileProject);
-            timeFileProject = (TextView) v.findViewById(R.id.timeFileProject);
+            dateFileProject = (TextView) v.findViewById(R.id.agePatient);
             descriptionFile = (TextView) v.findViewById(R.id.descriptionFile);
             imageViewFileProject = (ImageView) v.findViewById(R.id.imageFileProject);
             moreOptionItem = (ImageView) v.findViewById(R.id.moreOptionItem);
             shareOptionItem = (ImageView) v.findViewById(R.id.shareOptionItem);
+            boxFileProject=v.findViewById(R.id.boxFileProject);
         }
     }
     public FileProjectAdapter(List<FileProject> items,Context context){
@@ -117,20 +110,39 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
     @Override
     public void onBindViewHolder(final FileProjectAdapter.FileProjectViewHolder fileViewHolder, final int i){
         fileViewHolder.nameFileProject.setText(items.get(i).getNameFileProject().toUpperCase());
-        fileViewHolder.descriptionFile.setText(items.get(i).getDescriptionFileProject().toUpperCase());
-        fileViewHolder.dateFileProject.setText("DATE CREATE : "+items.get(i).getDateFileProject());
-        fileViewHolder.timeFileProject.setText(items.get(i).getTimeFileProject());
+        fileViewHolder.descriptionFile.setText("Descripcion : "+items.get(i).getDescriptionFileProject().toUpperCase());
+        fileViewHolder.dateFileProject.setText("Fecha : "+items.get(i).getDateFileProject());
+        fileViewHolder.boxFileProject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(Resource.role == 2) { //study
+                    Intent intent = new Intent(context, LandMarkModelActivity.class);
+                    context.startActivity(intent);
+                }else if (Resource.role == 1){ //doctor
+                    Resource.changeSaveFigures = true;
+                    Intent intent = new Intent(context, FiguresModelActivity.class);
+                    context.startActivity(intent);
+                }
+                MemoryFigure.changeSave = true;
+                Resource.privilegeFile = "edit";
+                Resource.openFile = true;
+                Resource.openShareFile = false;
+                Resource.nameFile = items.get(i).getNameFileProject();
+                Resource.descriptionFile = items.get(i).getDescriptionFileProject();
+                Resource.dateFile = items.get(i).getDateAux();
+            }
+        });
         fileViewHolder.imageViewFileProject.setImageBitmap(StringUtil.decodeBase64AndSetImage(items.get(i).getImageFileProject()));
         fileViewHolder.moreOptionItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(v.getContext(),v);
-                popupMenu.getMenuInflater().inflate(R.menu.navigation,popupMenu.getMenu());
+                popupMenu.getMenuInflater().inflate(R.menu.opciones_file,popupMenu.getMenu());
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         System.out.println("SELECT ITEM: "+ item.getTitle()+"position: "+i);
-                        if(item.getTitle().equals("Open")){
+                        if(item.getTitle().equals("Abrir")){
                             if(Resource.role == 2) { //study
                                 Intent intent = new Intent(context, LandMarkModelActivity.class);
                                 context.startActivity(intent);
@@ -146,10 +158,13 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
                             Resource.nameFile = items.get(i).getNameFileProject();
                             Resource.descriptionFile = items.get(i).getDescriptionFileProject();
                             Resource.dateFile = items.get(i).getDateAux();
-                        }else if(item.getTitle().equals("Edit")){
+                        }else if(item.getTitle().equals("Editar")){
                             showAlertDialogEdit(items.get(i),i);
-                        }else if(item.getTitle().equals("Delete")){
+                        }else if(item.getTitle().equals("Eliminar")){
                             showAlertDialogDelete(i,items.get(i).getNameFileProject(),items.get(i).getDateAux());
+                        }
+                        else if(item.getTitle().equals("Compartir")){
+                            showAlertDialogShare(items.get(i).getNameFileProject(),items.get(i).getDateAux());
                         }
                         return true;
                     }
@@ -167,15 +182,15 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
     }
     private void showAlertDialogShare(final String nameF,final String dateF){
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-        dialog.setTitle("SHARE PROJECT");
-        dialog.setMessage("Insert Email to Share File Project");
+        dialog.setTitle("Compartir Proyecto");
+        dialog.setMessage("Ingresar Email Para Compartir");
         dialog.setCancelable(false);
         final LayoutInflater inflater = LayoutInflater.from(context);
         final View add_layout = inflater.inflate(R.layout.share_structure_data,null);
         final TextInputEditText editEmail = add_layout.findViewById(R.id.txt_shareProject_1);
         final RadioGroup privilegeGroup = add_layout.findViewById(R.id.privilege);
         dialog.setView(add_layout);
-        dialog.setPositiveButton("SHARE", new DialogInterface.OnClickListener() {
+        dialog.setPositiveButton("Compartir", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String emailTo = editEmail.getText().toString().trim();
@@ -193,7 +208,7 @@ public class FileProjectAdapter extends RecyclerView.Adapter<FileProjectAdapter.
                 }
             }
         });
-        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+        dialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();

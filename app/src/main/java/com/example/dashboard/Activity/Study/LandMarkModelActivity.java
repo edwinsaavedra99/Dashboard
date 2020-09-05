@@ -28,8 +28,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,8 +57,10 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -76,11 +80,6 @@ import okhttp3.Response;
 
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
-/**
- * This class define the Main Activity Image Ray-X editing space
- * @author Edwin Saavedra
- * @version 3
- */
 public class LandMarkModelActivity extends AppCompatActivity {
     public static int TIME_ANIMATION = 100;
     public static float SCALE_ANIMATION = 1.1f;
@@ -248,25 +247,45 @@ public class LandMarkModelActivity extends AppCompatActivity {
     private TextView textSave;
     private TextView txtsyncData;
     private boolean changeSave = false;
+
+
+    private String archivo = "test";
+    private String carpeta = "/dataAFD/";
+    String contenido;
+    File file;
+    String file_path = "";
+    EditText texto;
+    String name = "";
+    File localFile;
     //--End Attributes of class
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //ORIENTATION FALSE
-        setTheme(R.style.AppTheme);
-        //Add Layout Activity XML
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_land_mark_model);
-        getSupportActionBar().hide();
+
         //Load OpenCV
         OpenCVLoader.initDebug();
         //Initializing Properties
         initialProperties();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        this.file_path = (Environment.getExternalStorageDirectory()+carpeta);
+        localFile = new File(this.file_path);
+        if(!localFile.exists()){
+            localFile.mkdirs();
+        }
+        this.name = (this.archivo+".json");
+        this.file = new File(localFile,this.name);
+        try{
+            this.file.createNewFile();
 
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        if(file.exists()){
+            //leer
+        }
         infoFigures.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -494,6 +513,7 @@ public class LandMarkModelActivity extends AppCompatActivity {
                 showSaveDialog();
             }
         });
+        preview=findViewById(R.id.preview);
         preview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1437,6 +1457,7 @@ public class LandMarkModelActivity extends AppCompatActivity {
         @SuppressLint("InflateParams") View login_layout = inflater.inflate(R.layout.layout_save_figure,null);
         final TextInputEditText nameDescription = login_layout.findViewById(R.id.txt_nameProject);
         final TextInputEditText editDescription = login_layout.findViewById(R.id.txt_descriptionProject);
+        final RadioGroup gGroup = login_layout.findViewById(R.id.methodSave);
         nameDescription.setText(nameFileGlobal);
         editDescription.setText(descriptionFileGlobal);
         dialog.setView(login_layout);
@@ -1449,9 +1470,16 @@ public class LandMarkModelActivity extends AppCompatActivity {
                     nameDescription.setError("Error ...");
                     nameDescription.requestFocus();
                 }else {
-                    saveLandMarks(name,description);
-                    nameFileGlobal = name;
-                    descriptionFileGlobal = description;
+
+                    if(gGroup.getCheckedRadioButtonId() == R.id.radioInternet){
+                        saveLandMarks(name,description);
+                        nameFileGlobal = name;
+                        descriptionFileGlobal = description;
+                    }else if(gGroup.getCheckedRadioButtonId() == R.id.radioLocal){
+                        saveLocal(description,name);
+                        nameFileGlobal = name;
+                        descriptionFileGlobal = description;
+                    }
                 }
             }
         });
@@ -1565,7 +1593,69 @@ public class LandMarkModelActivity extends AppCompatActivity {
             }
         });
     }
+    public void saveLocal(final String description,final String name){
+        JSONObject postdata = new JSONObject();
+        try {
+            this.archivo = name;
+            this.name = (this.archivo+".json");
+            this.file = new File(localFile,this.name);
+            try{
+                this.file.createNewFile();
 
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+            if(file.exists()){
+                //leer
+            }
+            String infoDate="";
+            if(!Resource.openFile) {
+                Date date = new Date();
+                DateFormat hourdateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+                infoDate = hourdateFormat.format(date);
+            }else{
+                infoDate = Resource.dateFile;
+            }
+            postdata.put("image", myListSegmentation.getBase64String());
+            postdata.put("email",Resource.emailUserLogin);
+            postdata.put("project",Resource.idCarpeta);
+            JSONObject posdate123 = new JSONObject();
+            posdate123.put("imageX",myListSegmentation.getGeneralWidth());
+            posdate123.put("imagey",myListSegmentation.getGeneralHeight());
+            posdate123.put("profileItems",null);
+            posdate123.put("landmarks",myListSegmentation.dataSegments());
+            postdata.put("name",name);
+            postdata.put("description",description);
+            postdata.put("date",infoDate);
+            postdata.put("information",posdate123);
+        } catch(JSONException e){
+            e.printStackTrace();
+        }
+
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        try{
+            fichero = new FileWriter(file);
+            pw = new PrintWriter(fichero);
+            pw.print(postdata.toString());
+            pw.flush();
+            pw.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }finally {
+            try{
+                if(null!=fichero){
+                    fichero.close();
+                }
+            }catch (Exception e2){
+                e2.printStackTrace();
+            }
+        }
+
+
+        Toast.makeText(getApplicationContext(),"Data Save Successfully",Toast.LENGTH_SHORT).show();
+
+    }
     public void saveLandMarks(String name, String description){
         filtersWithProgressBar();
         MediaType MEDIA_TYPE = MediaType.parse("application/json");
@@ -1987,8 +2077,8 @@ public class LandMarkModelActivity extends AppCompatActivity {
         clearSegments = findViewById(R.id.clearSegments);
         menu_left = findViewById(R.id.contenedor_menu_left);
         menu_right = findViewById(R.id.contenedor_menu_right);
-        menu_left.setBackgroundColor(Color.parseColor("#80000000"));
-        menu_right.setBackgroundColor(Color.parseColor("#80000000"));
+        //menu_left.setBackgroundColor(Color.parseColor("#80000000"));
+        //menu_right.setBackgroundColor(Color.parseColor("#80000000"));
         getFigures = findViewById(R.id.getFigures);
         textSave = findViewById(R.id.textSave);
         sendData = findViewById(R.id.sendData);

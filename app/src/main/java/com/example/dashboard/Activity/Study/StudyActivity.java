@@ -1,5 +1,6 @@
 package com.example.dashboard.Activity.Study;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +21,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -37,6 +39,9 @@ import com.example.dashboard.Activity.Study.Fragments.FragmentStudyShare;
 import com.example.dashboard.Models.Project;
 import com.example.dashboard.R;
 import com.example.dashboard.Resources.Resource;
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONArray;
@@ -59,93 +64,20 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class StudyActivity extends AppCompatActivity {
-
     private ViewPager pager;
     private PagerAdapter pagerAdapter;
-    private ImageView imagePatients;
-    private TextView tetPatients;
-    private ImageView imageShared;
-    private TextView textShared;
-    private CardView cardView;
-    protected static final int PICK_IMAGE =0;
-    protected static final int REQUEST_IMAGE_CAPTURE = 1;
-    private Uri imageurl;
-    private ImageView import_;
-    private AlertDialog dialog_image;
-    private ImageView camera;
-    private ImageView galery;
-    private TextView txt_camera;
-    private  TextView txt_galery;
-    private int flagimage =0;
-    private String currentPhotoPath;
-    private ImageButton imageButton;
-    private JSONObject respuestaConsulta;
-    private CardView cardViewUsuario;
-    private TextView textViewApp;
-    private SearchView searchView;
-    private ImageView addProject;
-    private SearchView searchViewShare;
-    private CardView cardOne;
-    private CardView cardTwo;
-    private boolean flagSearchOpen1;
-    private boolean flagSearchOpen2;
-    private ImageView usuarioApp;
-
-
+    public BottomNavigationView bottom_navigation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_study);
-        getSupportActionBar().hide();
-        cardView = (CardView) findViewById(R.id.addCardViewStudy);
-        imagePatients = (ImageView) findViewById(R.id.imageGroupFragmentStudy);
-        tetPatients = (TextView) findViewById(R.id.textGroupFragmentStudy);
-        imageShared = (ImageView) findViewById(R.id.imageSharedFragmentStudy);
-        textShared = (TextView) findViewById(R.id.textSharedFragmentStudy);
-        cardViewUsuario = (CardView) findViewById(R.id.cardUsuarioStudy);
-        textViewApp = (TextView) findViewById(R.id.textAppStudy);
-        searchView = (SearchView) findViewById(R.id.searchProjectStudy);
-        cardOne = (CardView) findViewById(R.id.cardOneSearchStudy);
-        cardTwo = (CardView) findViewById(R.id.cardTwoSearchStudy);
-        searchViewShare = (SearchView) findViewById(R.id.searchProjectStudyShare);
-        usuarioApp = (ImageView) findViewById(R.id.usuarioAppStudy);
-        Glide.with(this).load(Resource.urlImageUserLogin).into(usuarioApp);
-        //getInfoStudy();
-        flagSearchOpen1 = false;
-        flagSearchOpen2 = false;
-        searchViewShare.setOnSearchClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cardViewUsuario.setVisibility(View.GONE);
-                textViewApp.setVisibility(View.GONE);
-                flagSearchOpen1 = true;
-            }
-        });
-        searchViewShare .setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                cardViewUsuario.setVisibility(View.VISIBLE);
-                textViewApp.setVisibility(View.VISIBLE);
-                flagSearchOpen1 = false;
-                return false;
-            }
-        });
+        bottom_navigation = findViewById(R.id.bottom_navigation);
 
-        searchView.setOnSearchClickListener(new View.OnClickListener() {
+        MaterialToolbar toolbar =findViewById(R.id.topAppBar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cardViewUsuario.setVisibility(View.GONE);
-                textViewApp.setVisibility(View.GONE);
-                flagSearchOpen2 = true;
-            }
-        });
-        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                cardViewUsuario.setVisibility(View.VISIBLE);
-                textViewApp.setVisibility(View.VISIBLE);
-                flagSearchOpen2 = false;
-                return false;
+                finish();
             }
         });
 
@@ -155,50 +87,18 @@ public class StudyActivity extends AppCompatActivity {
         pager = findViewById(R.id.studyPager);
         pagerAdapter = new StudyPagerAdapter(getSupportFragmentManager(),list);
         pager.setAdapter(pagerAdapter);
-        imageShared.setColorFilter(Color.GRAY);
-        textShared.setTextColor(Color.GRAY);
+        pager.setCurrentItem(0);
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
             }
-
             @Override
             public void onPageSelected(int position) {
                 if (position == 0){
-                    imagePatients.setColorFilter(Color.WHITE);
-                    tetPatients.setTextColor(Color.WHITE);
-                    imageShared.setColorFilter(Color.GRAY);
-                    textShared.setTextColor(Color.GRAY);
-                    searchView.setVisibility(View.VISIBLE);
-                    cardView.setVisibility(View.VISIBLE);
-                    cardOne.setVisibility(View.VISIBLE);
-                    cardTwo.setVisibility(View.GONE);
-                    if(flagSearchOpen1){
-                        cardViewUsuario.setVisibility(View.VISIBLE);
-                        textViewApp.setVisibility(View.VISIBLE);
-                    }
-                    if(flagSearchOpen2){
-                        cardViewUsuario.setVisibility(View.GONE);
-                        textViewApp.setVisibility(View.GONE);
-                    }
+                    bottom_navigation.getMenu().findItem(R.id.proyecto).setChecked(true);
                 }else if( position == 1){
-                    imagePatients.setColorFilter(Color.GRAY);
-                    tetPatients.setTextColor(Color.GRAY);
-                    imageShared.setColorFilter(Color.WHITE);
-                    textShared.setTextColor(Color.WHITE);
-                    cardView.setVisibility(View.GONE);
-                    searchView.setVisibility(View.GONE);
-                    cardOne.setVisibility(View.GONE);
-                    cardTwo.setVisibility(View.VISIBLE);
-                    if(flagSearchOpen2){
-                        cardViewUsuario.setVisibility(View.VISIBLE);
-                        textViewApp.setVisibility(View.VISIBLE);
-                    }
-                    if(flagSearchOpen1){
-                        cardViewUsuario.setVisibility(View.GONE);
-                        textViewApp.setVisibility(View.GONE);
-                    }
+                    bottom_navigation.getMenu().findItem(R.id.compartido).setChecked(true);
                 }
             }
 
@@ -207,65 +107,23 @@ public class StudyActivity extends AppCompatActivity {
 
             }
         });
+        bottom_navigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
+
 
     }
-    public void changeFragment(View view) {
-        switch (view.getId()){
-            case R.id.fragment1Study:{
-                pager.setCurrentItem(0);
-                break;
-            }
-            case R.id.fragment2Study:{
-                pager.setCurrentItem(1);
-                break;
-            }
-        }
-    }
 
-
-    public void getInfoStudy(){
-        MediaType MEDIA_TYPE =
-                MediaType.parse("application/json");
-        final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,
-                TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(
-
-                60,TimeUnit.SECONDS).build();
-        JSONObject postdata = new JSONObject();
-        try {
-            postdata.put("email", Resource.emailUserLogin);
-            //System.out.println(postdata.toString());
-
-        } catch(JSONException e){
-            e.printStackTrace();
-        }
-        RequestBody body = RequestBody.create(MEDIA_TYPE,
-                postdata.toString());
-        final Request request = new Request.Builder()
-                .url(getString(R.string.url)+"study/information") /*URL ... INDEX PX DE WILMER*/
-                .post(body)
-                .addHeader("Content-Type", "application/json")
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                System.out.println("Wilmer ERROR :" + e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response)
-                    throws IOException {
-                if (response.isSuccessful()){
-                    final String responseData = response.body().string();
-                    System.out.println("-------**********-----------"+responseData);
-                    try {
-                        Resource.infoStudy =  new JSONObject(responseData);;
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+    BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.proyecto:
+                            pager.setCurrentItem(0);
+                            return true;
+                        case R.id.compartido:
+                            pager.setCurrentItem(1);
+                            return true;
                     }
+                    return false;
                 }
-            }
-        });
-    }
-
+            };
 }

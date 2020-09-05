@@ -15,11 +15,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.SearchView;
@@ -32,6 +35,7 @@ import com.example.dashboard.Models.Patient;
 import com.example.dashboard.Models.Project;
 import com.example.dashboard.R;
 import com.example.dashboard.Resources.Resource;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONArray;
@@ -57,32 +61,32 @@ public class FragmentDoctorPatients extends Fragment {
     private PatientAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private SearchView searchView;
-    private ImageView addPatient;
+    private Button addPatient;
     private List list;
-
+    public EditText edit_search_patient;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_fragment_doctor, container, false);
-        addPatient = (ImageView) getActivity().findViewById(R.id.addPatient);
+
+        addPatient = viewGroup.findViewById(R.id.btn_crear_paciente);
         addPatient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showAddPatientDialog();
             }
         });
-        searchView = getActivity().findViewById(R.id.searchPatient);
-        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        edit_search_patient=viewGroup.findViewById(R.id.edit_search_patient);
+        edit_search_patient.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                adapter.getFilter().filter(newText);
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    edit_search_patient.clearFocus();
+                    InputMethodManager in = (InputMethodManager)getActivity(). getSystemService(Context.INPUT_METHOD_SERVICE);
+                    in.hideSoftInputFromWindow(edit_search_patient.getWindowToken(), 0);
+                    return true;
+                }
                 return false;
             }
         });
@@ -94,17 +98,6 @@ public class FragmentDoctorPatients extends Fragment {
         //auxgetInfo();
         return viewGroup;
     }
-
-    public void auxgetInfo(){
-        list = new ArrayList();
-        list.add(new Patient("edwin","aqp",21,"mi vecino",75586974,true));
-        list.add(new Patient("luis","aqp",21,"covid",75586974,true));
-        list.add(new Patient("wilmer","aqp",21,"mi vecino",75586974,true));
-        adapter =  new PatientAdapter(list,getActivity());
-        recyclerView.setAdapter(adapter);
-    }
-
-
     public void getInfoMedicine(){
         MediaType MEDIA_TYPE = MediaType.parse("application/json");
         final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(60,TimeUnit.SECONDS).build();
@@ -132,6 +125,8 @@ public class FragmentDoctorPatients extends Fragment {
                 if (response.isSuccessful()){
                     final String responseData = response.body().string();
                     System.out.println("-------**********-----------"+responseData);
+                    if(getActivity() == null)
+                        return;
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -175,7 +170,7 @@ public class FragmentDoctorPatients extends Fragment {
 
     private void showAddPatientDialog(){
         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-        dialog.setTitle("NEW PATIENT: ");
+        dialog.setTitle("Agregar Nuevo Paciente");
         dialog.setCancelable(false);
         final LayoutInflater inflater = LayoutInflater.from(getActivity());
         final View add_layout = inflater.inflate(R.layout.patient_structure_data,null);
@@ -187,7 +182,7 @@ public class FragmentDoctorPatients extends Fragment {
         final RadioGroup genderGroup = add_layout.findViewById(R.id.sexPatient);
         dialog.setView(add_layout);
 
-        dialog.setPositiveButton("ADD PATIENT", new DialogInterface.OnClickListener() {
+        dialog.setPositiveButton("Agregar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String name = editName.getText().toString().trim();//
@@ -241,7 +236,7 @@ public class FragmentDoctorPatients extends Fragment {
 
             }
         });
-        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+        dialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();

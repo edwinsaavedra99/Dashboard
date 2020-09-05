@@ -46,7 +46,9 @@ public class ListSegmentation extends View {
     //Class Attributes
     private Context context;
     private ArrayList<Figure> segmentation;
-    private ArrayList<Figure> segmentationMin;
+    private ArrayList<ArrayList<Figure>> segmentationMin;
+    private ArrayList<ArrayList<Figure>> segmentationPreview;
+    private ArbolNArio arbolNArio;
     private boolean changeSave = false;
     private int[] color = {183, 149, 11};
     public boolean isSelectedFigure(){
@@ -175,6 +177,9 @@ public class ListSegmentation extends View {
         this.cardView.setVisibility(GONE);
         segmentation = new ArrayList<>();
         segmentationMin = new ArrayList<>();
+        segmentationPreview = new ArrayList<>();
+        //Nodo<Figure> nodoRaiz = new Nodo<>(null);
+        arbolNArio = new ArbolNArio();
         zoomList = new ListZoomSegmentation(context);
         this.viewZoom.addView(zoomList);
         this.metrics = metrics;
@@ -245,7 +250,7 @@ public class ListSegmentation extends View {
         }
         return newLista;
     }
-
+    private Nodo<Figure> pivot;
     /**
      * Method addCircleSegmentation add a circle in the list of segments
      * @param _startX Define the position of the segment
@@ -266,12 +271,37 @@ public class ListSegmentation extends View {
         aux.setDescription(description);
         if(index == -1 ) {
             this.segmentation.add(aux);
+            //
+            ArrayList<Figure> aux1 = new ArrayList<>();
+            aux1.add(aux);
+            this.segmentationPreview.add(aux1);
+            //
+            if(arbolNArio.vacio()){
+                pivot = new Nodo<Figure>(aux);
+                arbolNArio.setRaiz(pivot);
+            }else{
+                Nodo<Figure> qwe =  new Nodo<Figure>(aux);
+                pivot.agregarHijo(qwe);
+                pivot =qwe;
+            }
             figureSelected = this.segmentation.size() - 1;
         }else if(index == 0) {
             this.segmentation.add(0,aux);
+            //
+            ArrayList<Figure> aux2 = new ArrayList<>();
+            aux2.add(aux);
+            this.segmentationPreview.add(0,aux2);
+            //
+            if(arbolNArio.vacio()){
+                arbolNArio.setRaiz(new Nodo(aux));
+            }else{
+                arbolNArio.setRaizExistente(new Nodo(aux));
+            }
         }else{
             this.segmentation.add(index,aux);
-
+            //
+            this.segmentationPreview.get(index).add(aux);
+            //
         }
         invalidate();
         zoomList.addCircleSegmentation(_startX,_startY, _radius,pencil,index,description,color01);
@@ -704,7 +734,27 @@ public class ListSegmentation extends View {
             canvas.drawCircle((touchX-mPositionX)/mScaleFactor,(touchY-mPositionY)/mScaleFactor,acceptDistance*2,pencil);
         }
         if(flagPreview && !segmentation.isEmpty()){
-            segmentationMin = segmentation;
+            segmentationMin = segmentationPreview;
+            for(int i=0;i< segmentationMin.size();i++){
+                if ( segmentationMin.get(i).get(0) instanceof Circle) {
+                    Circle temp = (Circle)  segmentationMin.get(i).get(0);
+                    if(i+1!= segmentationMin.size()) {
+                        Circle temp02 = (Circle)  segmentationMin.get(i+1).get(0);
+                        canvas.drawLine( temp.getCenterX(),  temp.getCenterY(), temp02.getCenterX(),  temp02.getCenterY(), Util.Circle(temp.getColour()));
+                    }
+                }
+                if(segmentationMin.get(i).size()!=1){
+                   for(int j = 0;j<segmentationMin.get(i).size();j++){
+                       Circle temp = (Circle)  segmentationMin.get(i).get(j);
+                       if(j+1!= segmentationMin.get(i).size()) {
+                           Circle temp02 = (Circle)  segmentationMin.get(i).get(j+1);
+                           canvas.drawLine( temp.getCenterX(),  temp.getCenterY(), temp02.getCenterX(),  temp02.getCenterY(), Util.Circle(temp.getColour()));
+                       }
+                   }
+                }
+            }
+
+            /*segmentationMin = segmentation;
             for(int i=0;i< segmentationMin.size();i++){
                 if ( segmentationMin.get(i) instanceof Circle) {
                     Circle temp = (Circle)  segmentationMin.get(i);
@@ -712,9 +762,8 @@ public class ListSegmentation extends View {
                         Circle temp02 = (Circle)  segmentationMin.get(i+1);
                         canvas.drawLine( temp.getCenterX(),  temp.getCenterY(), temp02.getCenterX(),  temp02.getCenterY(), Util.Circle(temp.getColour()));
                     }
-
                 }
-            }
+            }*/
         }
         canvas.restore();
     }
@@ -885,6 +934,7 @@ public class ListSegmentation extends View {
         }else
             this.cardView.setTranslationX(0);
     }
+
     public void add(float getX,float getY){ //AQUI HAY ERROR
         ArrayList<Figure> aux01 = new ArrayList<>();
         float[] intervals = new float[]{0.0f, 0.0f};

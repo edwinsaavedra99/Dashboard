@@ -104,6 +104,14 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
     @Override
     public void onBindViewHolder( final ProjectViewHolder projectViewHolder,final int i){
         projectViewHolder.name.setText(items.get(i).getNameProject().toUpperCase());
+        projectViewHolder.boxProject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Resource.idCarpeta = items.get(i).getNameProject();
+                Intent intent = new Intent(context, FileProjectActivity.class);
+                context.startActivity(intent);
+            }
+        });
         projectViewHolder.menuOptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,13 +121,13 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         System.out.println("SELECT ITEM: "+ item.getTitle()+"position: "+i);
-                        if(item.getTitle().equals("Open")){
+                        if(item.getTitle().equals("Abrir")){
                             Resource.idCarpeta = items.get(i).getNameProject();
                             Intent intent = new Intent(context, FileProjectActivity.class);
                             context.startActivity(intent);
-                        }else if(item.getTitle().equals("Edit")){
+                        }else if(item.getTitle().equals("Editar")){
                             showAlertDialogEdit(items.get(i),i);
-                        }else if(item.getTitle().equals("Delete")){
+                        }else if(item.getTitle().equals("Eliminar")){
                             showAlertDialogDelete(i);
                         }
                         return true;
@@ -164,17 +172,17 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
 
     private void showAlertDialogDelete(final int position){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("DELETE PROJECT");
-        builder.setMessage("Are you sure to delete  this project ? , All data will be deleted" );
+        builder.setTitle("Eliminar Proyecto");
+        builder.setMessage("Esta Seguro de Eliminar el Proyecto? , Todos los datos se eliminaran" );
         builder.setCancelable(false);
         final LayoutInflater inflater = LayoutInflater.from(context);
-        builder.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 deleteFileService(position,items.get(position).getNameProject());
             }
         });
-        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -186,21 +194,21 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
 
     private void showAlertDialogEdit(final Project project, final int position){
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-        dialog.setTitle("EDIT PROJECT");
+        dialog.setTitle("Editar Proyecto");
         dialog.setCancelable(false);
         final LayoutInflater inflater = LayoutInflater.from(context);
         final View add_layout = inflater.inflate(R.layout.project_structure_data,null);
         final TextInputEditText editName = add_layout.findViewById(R.id.txt_nameProject_1);
         editName.setText(project.getNameProject());
         dialog.setView(add_layout);
-        dialog.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+        dialog.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String new_name = editName.getText().toString().trim();
                 editFileService(position,items.get(position).getNameProject(),new_name);
             }
         });
-        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+        dialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();

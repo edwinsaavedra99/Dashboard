@@ -1,22 +1,27 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">#80000000</item>         <!-- Color de los botones, desplaze, en materail color de bordes de componentes y letras de botonrs -->
-        <item name="colorPrimaryDark">#E0000000</item>     <!-- Color de la barra de herramientas. -->
-        <item name="colorAccent">#80CEEB</item>                <!-- Color del Cursor. -->
-        <item name="buttonStyle">@color/colorPrimary</item>
-
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="colorPrimary">#00838f</item>
+        <item name="colorPrimaryDark">#00838f</item>
+        <item name="android:textColorPrimary">#000000</item>
+        <item name="colorPrimaryVariant">#00838f</item>
+        <item name="editTextColor">#000000</item>
     </style>
-
+    <style name="AppTheme2" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#00838f</item>
+        <item name="colorPrimaryDark">#00838f</item>
+        <item name="android:textColorPrimary">#00838f</item>
+        <item name="colorPrimaryVariant">#00838f</item>
+    </style>
     <style name="SplashScreen" parent="AppTheme">
         <item name="android:windowBackground">@drawable/splash</item>
     </style>
 
     <style name="AppSearchView" parent="Widget.AppCompat.SearchView">
-        <item name="android:textSize">20sp</item>
-        <item name="android:textColorPrimary">#80ffffff</item>
-        <item name="android:textColorHint">#ffffff</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColorPrimary">#80222222</item>
+        <item name="android:textColorHint">#333333</item>
         <item name="android:tint">#80000000</item>
         <item name="android:textColorHighlight">#ffffff</item>
     </style>
@@ -30,6 +35,64 @@
     <style name="myDialog" parent="Theme.MaterialComponents.Dialog">
         <item name="android:windowNoTitle">true</item>
     </style>
+
+
+    <style name="floating" parent="Widget.Design.FloatingActionButton">
+        <item name="materialThemeOverlay">@style/floating.theme</item>
+    </style>
+    <style name="floating.theme" parent="Widget.Design.FloatingActionButton">
+        <item name="colorPrimary">#00838f</item>
+        <item name="colorPrimaryDark">#00838f</item>
+        <item name="rippleColor">#FFFFFF</item>
+        <item name="tint">#00838f</item>
+        <item name="backgroundTint">#00838f</item>
+    </style>
+    <style name="TextAppearance.App.CollapsingToolbar.Expanded" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+    </style>
+
+    <style name="TextAppearance.App.CollapsingToolbar.Collapsed" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+    </style>
+
+    <style name="TextInputLayoutExposedDropdownMenu" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.TextInputLayoutExposedDropdownMenu</item>
+    </style>
+    <style name="ThemeOverlay.App.TextInputLayoutExposedDropdownMenu" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="android:textColorHint">#228B22</item>
+        <item name="colorPrimaryDark">#228B22</item>
+        <item name="colorAccent">#228B22</item>
+        <item name="colorPrimary">#228B22</item>
+        <item name="colorOnSurface">#145A32</item>
+
+    </style>
+
+
+
+
+    <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.TextInputLayout</item>
+    </style>
+    <style name="ThemeOverlay.App.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <item name="android:textColorHint">#228B22</item>
+        <item name="colorPrimaryDark">#228B22</item>
+        <item name="colorAccent">#228B22</item>
+        <item name="colorPrimary">#228B22</item>
+        <item name="colorOnSurface">#145A32</item>
+        <item name="android:textColor">#000000</item>
+    </style>
+
+    <style name="Widget.App.Button" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Button</item>
+    </style>
+    <style name="ThemeOverlay.App.Button" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">#00838f</item>
+        <item name="colorPrimary">#00838f</item>
+        <item name="colorAccent">#228B22</item>
+        <item name="colorOnPrimary">#641E16</item>
+    </style>
+
 
 </resources>
 

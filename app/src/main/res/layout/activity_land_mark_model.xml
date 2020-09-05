@@ -4,13 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1B1717"
     tools:context="com.example.dashboard.Activity.Study.LandMarkModelActivity">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alignmentMode="alignMargins"
-        android:background="#1B1717"
         android:columnCount="3"
         android:columnOrderPreserved="false"
         android:rowCount="1">
@@ -18,18 +17,17 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#1B1717"
             android:orientation="horizontal">
+
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:cardBackgroundColor="#1B1717">
+                android:layout_height="match_parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/frame"
-                    android:background="#1B1717"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:background="@color/color_button"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -43,23 +41,25 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-                    </LinearLayout>
+                        app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+
                     <androidx.cardview.widget.CardView
                         android:id="@+id/zoomImage_1"
                         android:layout_width="120dp"
                         android:layout_height="120dp"
                         android:layout_marginStart="45dp"
+                        android:layout_marginLeft="0dp"
                         android:layout_marginTop="8dp"
                         android:visibility="gone"
                         app:cardBackgroundColor="@android:color/transparent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:layout_marginLeft="0dp">
+                        app:layout_constraintTop_toTopOf="parent">
+
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="vertical">
+
                             <LinearLayout
                                 android:id="@+id/zoomLayoutImageRx_1"
                                 android:layout_width="0dp"
@@ -78,20 +78,22 @@
 
             </androidx.cardview.widget.CardView>
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/contenedor_menu_right"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
+            android:background="@color/color_app_cuerpo"
             android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            >
+            android:paddingRight="5dp">
+
             <ScrollView
                 android:id="@+id/scrollRight_1"
-                android:paddingTop="15dp"
-                android:paddingBottom="15dp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
                 android:visibility="visible">
 
                 <LinearLayout
@@ -131,6 +133,7 @@
                         android:layout_height="25dp"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/zoom_to_extents_50px" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -138,28 +141,31 @@
                         android:text="Info"
                         android:textColor="#FFFFFF"
                         android:textSize="10sp" />
+
                     <ImageView
                         android:id="@+id/infoFigures"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/info_24px" />
+
                     <TextView
-                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
                         android:text="Share"
                         android:textColor="#FFFFFF"
-                        android:textSize="10sp" />
+                        android:textSize="10sp"
+                        android:visibility="gone" />
 
                     <ImageView
-                        android:visibility="gone"
                         android:id="@+id/share"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginBottom="15dp"
-                        android:src="@drawable/share_26px" />
+                        android:src="@drawable/share_26px"
+                        android:visibility="gone" />
+
                     <TextView
                         android:id="@+id/textSave"
                         android:layout_width="wrap_content"
@@ -168,19 +174,22 @@
                         android:text="Save"
                         android:textColor="#FFFFFF"
                         android:textSize="10sp" />
+
                     <ImageView
                         android:id="@+id/saveData"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/save_50px" />
+
                     <ImageView
-                        android:visibility="gone"
                         android:id="@+id/sendData"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginBottom="15dp"
-                        android:src="@drawable/ic_send_black_24dp" />
+                        android:src="@drawable/ic_send_black_24dp"
+                        android:visibility="gone" />
+
                     <TextView
                         android:id="@+id/txtsyncData"
                         android:layout_width="wrap_content"
@@ -189,40 +198,44 @@
                         android:text="Sync"
                         android:textColor="#FFFFFF"
                         android:textSize="10sp" />
+
                     <ImageView
                         android:id="@+id/syncData"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginBottom="15dp"
                         android:src="@drawable/ic_sync_black_24dp" />
+
                     <TextView
-                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
                         android:text="Image"
                         android:textColor="#FFFFFF"
-                        android:textSize="9sp" />
+                        android:textSize="9sp"
+                        android:visibility="gone" />
 
                     <ImageView
-                        android:visibility="gone"
                         android:id="@+id/galery"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginBottom="15dp"
-                        android:src="@drawable/photo_gallery_24px" />
+                        android:src="@drawable/photo_gallery_24px"
+                        android:visibility="gone" />
 
 
                 </LinearLayout>
 
             </ScrollView>
+
             <ScrollView
                 android:id="@+id/scrollRight_2"
-                android:paddingTop="75dp"
-                android:paddingBottom="15dp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:paddingTop="75dp"
+                android:paddingBottom="15dp"
                 android:visibility="gone">
+
                 <LinearLayout
                     android:id="@+id/menu_right_1"
                     android:layout_width="wrap_content"
@@ -236,8 +249,7 @@
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
                         android:adjustViewBounds="true"
-                        android:scaleType="centerCrop"
-                        />
+                        android:scaleType="centerCrop" />
 
                     <ImageView
                         android:id="@+id/openCV3"
@@ -247,6 +259,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
+
                     <ImageView
                         android:id="@+id/openCV1"
                         android:layout_width="@dimen/icon_filter"
@@ -255,6 +268,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
+
                     <ImageView
                         android:id="@+id/openCV6"
                         android:layout_width="@dimen/icon_filter"
@@ -263,6 +277,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
+
                     <ImageView
                         android:id="@+id/openCV7"
                         android:layout_width="@dimen/icon_filter"
@@ -271,6 +286,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
+
                     <ImageView
                         android:id="@+id/openCV11"
                         android:layout_width="@dimen/icon_filter"
@@ -279,6 +295,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
+
                     <ImageView
                         android:id="@+id/openCV15"
                         android:layout_width="@dimen/icon_filter"
@@ -294,24 +311,24 @@
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
                         android:adjustViewBounds="true"
-                        android:scaleType="centerCrop"
-                        />
+                        android:scaleType="centerCrop" />
+
                     <ImageView
                         android:id="@+id/openCVNormal"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
                         android:adjustViewBounds="true"
-                        android:scaleType="centerCrop"
-                        />
+                        android:scaleType="centerCrop" />
+
                     <ImageView
                         android:id="@+id/openCV"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
                         android:adjustViewBounds="true"
-                        android:scaleType="centerCrop"
-                        />
+                        android:scaleType="centerCrop" />
+
                     <ImageView
                         android:id="@+id/openCV2"
                         android:layout_width="@dimen/icon_filter"
@@ -329,6 +346,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
+
                     <ImageView
                         android:id="@+id/openCV9"
                         android:layout_width="@dimen/icon_filter"
@@ -344,16 +362,16 @@
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
                         android:adjustViewBounds="true"
-                        android:scaleType="centerCrop"
-                        />
+                        android:scaleType="centerCrop" />
+
                     <ImageView
                         android:id="@+id/openCVNormal01"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
-                        android:adjustViewBounds="true"
-                        android:scaleType="centerCrop"
                         android:layout_marginBottom="15dp"
-                        />
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop" />
+
                     <ImageView
                         android:id="@+id/openCV12"
                         android:layout_width="@dimen/icon_filter"
@@ -362,6 +380,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
+
                     <ImageView
                         android:id="@+id/openCV14"
                         android:layout_width="@dimen/icon_filter"
@@ -370,6 +389,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
+
                     <ImageView
                         android:id="@+id/openCV18"
                         android:layout_width="@dimen/icon_filter"
@@ -378,6 +398,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
+
                     <ImageView
                         android:id="@+id/openCV28"
                         android:layout_width="@dimen/icon_filter"
@@ -386,22 +407,22 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
+
                     <ImageView
                         android:id="@+id/openCVGroupColors"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
                         android:adjustViewBounds="true"
-                        android:scaleType="centerCrop"
-                        />
+                        android:scaleType="centerCrop" />
+
                     <ImageView
                         android:id="@+id/openCVNormal02"
                         android:layout_width="@dimen/icon_filter"
                         android:layout_height="@dimen/icon_filter"
                         android:layout_marginBottom="15dp"
                         android:adjustViewBounds="true"
-                        android:scaleType="centerCrop"
-                        />
+                        android:scaleType="centerCrop" />
 
                     <ImageView
                         android:id="@+id/openCV4"
@@ -411,6 +432,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
+
                     <ImageView
                         android:id="@+id/openCV5"
                         android:layout_width="@dimen/icon_filter"
@@ -419,6 +441,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
+
                     <ImageView
                         android:id="@+id/openCV10"
                         android:layout_width="@dimen/icon_filter"
@@ -427,6 +450,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
+
                     <ImageView
                         android:id="@+id/openCV13"
                         android:layout_width="@dimen/icon_filter"
@@ -435,6 +459,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
+
                     <ImageView
                         android:id="@+id/openCV16"
                         android:layout_width="@dimen/icon_filter"
@@ -443,6 +468,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
+
                     <ImageView
                         android:id="@+id/openCV17"
                         android:layout_width="@dimen/icon_filter"
@@ -451,6 +477,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
+
                     <ImageView
                         android:id="@+id/openCV19"
                         android:layout_width="@dimen/icon_filter"
@@ -459,6 +486,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
+
                     <ImageView
                         android:id="@+id/openCV20"
                         android:layout_width="@dimen/icon_filter"
@@ -467,6 +495,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
+
                     <ImageView
                         android:id="@+id/openCV21"
                         android:layout_width="@dimen/icon_filter"
@@ -475,6 +504,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
+
                     <ImageView
                         android:id="@+id/openCV22"
                         android:layout_width="@dimen/icon_filter"
@@ -501,6 +531,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
+
                     <ImageView
                         android:id="@+id/openCV25"
                         android:layout_width="@dimen/icon_filter"
@@ -509,6 +540,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
+
                     <ImageView
                         android:id="@+id/openCV26"
                         android:layout_width="@dimen/icon_filter"
@@ -526,6 +558,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
+
                     <ImageView
                         android:id="@+id/openCVhttp"
                         android:layout_width="@dimen/icon_filter"
@@ -534,6 +567,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/detective_64px" />
+
                     <ImageView
                         android:id="@+id/openCVNormal03"
                         android:layout_width="@dimen/icon_filter"
@@ -551,6 +585,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/ic_collections_black_24dp" />
+
                     <ImageView
                         android:id="@+id/openCVhttp2"
                         android:layout_width="@dimen/icon_filter"
@@ -559,6 +594,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/ic_collections_black_24dp" />
+
                     <ImageView
                         android:id="@+id/openCVhttp3"
                         android:layout_width="@dimen/icon_filter"
@@ -567,6 +603,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/ic_collections_black_24dp" />
+
                     <ImageView
                         android:id="@+id/openCVhttp4"
                         android:layout_width="@dimen/icon_filter"
@@ -579,19 +616,22 @@
                 </LinearLayout>
             </ScrollView>
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/contenedor_menu_left"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
+            android:background="@color/color_app_cuerpo"
             android:paddingLeft="5dp"
             android:paddingRight="5dp">
+
             <ScrollView
-                android:paddingTop="15dp"
-                android:paddingBottom="60dp"
                 android:id="@+id/scrollLeft_3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingTop="15dp"
+                android:paddingBottom="60dp"
                 android:visibility="gone">
 
                 <LinearLayout
@@ -607,48 +647,56 @@
                         android:layout_height="25dp"
                         android:layout_marginBottom="10dp"
                         android:src="@drawable/filled_circle_30px" />
+
                     <ImageView
                         android:id="@+id/color2"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginBottom="10dp"
                         android:src="@drawable/filled_circle_30px" />
+
                     <ImageView
                         android:id="@+id/color3"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginBottom="10dp"
                         android:src="@drawable/filled_circle_30px" />
+
                     <ImageView
                         android:id="@+id/color4"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginBottom="10dp"
                         android:src="@drawable/filled_circle_30px" />
+
                     <ImageView
                         android:id="@+id/color5"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginBottom="10dp"
                         android:src="@drawable/filled_circle_30px" />
+
                     <ImageView
                         android:id="@+id/color6"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginBottom="10dp"
                         android:src="@drawable/filled_circle_30px" />
+
                     <ImageView
                         android:id="@+id/color7"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginBottom="10dp"
                         android:src="@drawable/filled_circle_30px" />
+
                     <ImageView
                         android:id="@+id/color8"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginBottom="10dp"
                         android:src="@drawable/filled_circle_30px" />
+
                     <ImageView
                         android:id="@+id/color9"
                         android:layout_width="25dp"
@@ -662,90 +710,105 @@
                         android:layout_height="25dp"
                         android:layout_marginBottom="10dp"
                         android:src="@drawable/filled_circle_30px" />
+
                     <ImageView
                         android:id="@+id/color11"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginBottom="10dp"
                         android:src="@drawable/filled_circle_30px" />
+
                     <ImageView
                         android:id="@+id/color12"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginBottom="10dp"
                         android:src="@drawable/filled_circle_30px" />
+
                     <ImageView
                         android:id="@+id/color13"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginBottom="10dp"
                         android:src="@drawable/filled_circle_30px" />
+
                     <ImageView
                         android:id="@+id/color14"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginBottom="10dp"
                         android:src="@drawable/filled_circle_30px" />
+
                     <ImageView
                         android:id="@+id/color15"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginBottom="10dp"
                         android:src="@drawable/filled_circle_30px" />
+
                     <ImageView
                         android:id="@+id/color16"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginBottom="10dp"
                         android:src="@drawable/filled_circle_30px" />
+
                     <ImageView
                         android:id="@+id/color17"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginBottom="10dp"
                         android:src="@drawable/filled_circle_30px" />
+
                     <ImageView
                         android:id="@+id/color18"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginBottom="10dp"
                         android:src="@drawable/filled_circle_30px" />
+
                     <ImageView
                         android:id="@+id/color19"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginBottom="10dp"
                         android:src="@drawable/filled_circle_30px" />
+
                     <ImageView
                         android:id="@+id/color20"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginBottom="10dp"
                         android:src="@drawable/filled_circle_30px" />
+
                     <ImageView
                         android:id="@+id/color21"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginBottom="10dp"
                         android:src="@drawable/filled_circle_30px" />
+
                     <ImageView
                         android:id="@+id/color22"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginBottom="10dp"
                         android:src="@drawable/filled_circle_30px" />
+
                     <ImageView
                         android:id="@+id/color23"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginBottom="10dp"
                         android:src="@drawable/filled_circle_30px" />
+
                     <ImageView
                         android:id="@+id/color24"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginBottom="10dp"
                         android:src="@drawable/filled_circle_30px" />
+
                     <ImageView
                         android:id="@+id/color25"
                         android:layout_width="25dp"
@@ -755,12 +818,13 @@
 
                 </LinearLayout>
             </ScrollView>
+
             <ScrollView
-                android:paddingTop="15dp"
                 android:id="@+id/scrollLeft_2"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:fillViewport="true"
+                android:paddingTop="15dp"
                 android:visibility="visible">
 
                 <LinearLayout
@@ -768,15 +832,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
+
                         <LinearLayout
-                            android:gravity="center"
-                            android:orientation="vertical"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            >
+                            android:gravity="center"
+                            android:orientation="vertical">
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -791,36 +857,37 @@
                                 android:layout_height="25dp"
                                 android:layout_marginBottom="15dp"
                                 android:src="@drawable/detective_64px" />
+
                             <TextView
-                                android:visibility="gone"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="10dp"
                                 android:text="Open"
                                 android:textColor="#FFFFFF"
-                                android:textSize="10sp" />
+                                android:textSize="10sp"
+                                android:visibility="gone" />
 
                             <ImageView
-                                android:visibility="gone"
                                 android:id="@+id/openSegments"
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
                                 android:layout_marginBottom="10dp"
-                                android:src="@drawable/ic_open_in_new_black_24dp" />
+                                android:src="@drawable/ic_open_in_new_black_24dp"
+                                android:visibility="gone" />
 
 
                             <LinearLayout
-                                android:layout_marginBottom="10dp"
-                                android:gravity="center"
-                                android:background="@drawable/fondo"
-                                android:orientation="vertical"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content">
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="10dp"
+                                android:background="@drawable/fondo"
+                                android:gravity="center"
+                                android:orientation="vertical">
 
                                 <TextView
-                                    android:layout_marginTop="10dp"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
                                     android:layout_marginBottom="10dp"
                                     android:text="Insert"
                                     android:textColor="#FFFFFF"
@@ -832,6 +899,7 @@
                                     android:layout_height="25dp"
                                     android:layout_marginBottom="15dp"
                                     android:src="@drawable/filled_circle_16px" />
+
                                 <ImageView
                                     android:id="@+id/pencilSegment"
                                     android:layout_width="25dp"
@@ -854,6 +922,7 @@
                                 android:layout_height="30dp"
                                 android:layout_marginBottom="10dp"
                                 android:src="@drawable/delete_bin_64px" />
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -868,6 +937,7 @@
                                 android:layout_height="30dp"
                                 android:layout_marginBottom="10dp"
                                 android:src="@drawable/broom_30px" />
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -882,6 +952,7 @@
                                 android:layout_height="30dp"
                                 android:layout_marginBottom="10dp"
                                 android:src="@drawable/eraser_24px" />
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -898,15 +969,16 @@
                                 android:src="@drawable/automatic_100px" />
 
                         </LinearLayout>
+
                         <LinearLayout
-                            android:layout_marginLeft="2dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingBottom="15dp"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginLeft="2dp"
                             android:gravity="center"
                             android:orientation="vertical"
-                            android:layout_alignParentBottom="true"
-                            >
+                            android:paddingBottom="15dp">
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -925,17 +997,18 @@
                 </LinearLayout>
             </ScrollView>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
             android:gravity="center"
+            android:orientation="horizontal"
             android:paddingLeft="5dp"
             android:paddingRight="8dp"
-            android:paddingBottom="15dp"
-            android:orientation="horizontal"
-            >
+            android:paddingBottom="15dp">
+
             <ImageView
                 android:id="@+id/test"
                 android:layout_width="25dp"
@@ -950,33 +1023,34 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentBottom="true"
             android:gravity="center"
+            android:orientation="vertical"
             android:paddingLeft="5dp"
-            android:paddingBottom="15dp"
             android:paddingTop="13dp"
             android:paddingRight="5dp"
-            android:orientation="vertical"
-            android:visibility="gone"
-            >
+            android:paddingBottom="15dp"
+            android:visibility="gone">
+
             <ImageView
                 android:id="@+id/figuresSet"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:src="@drawable/maintenance_24px"/>
+                android:src="@drawable/maintenance_24px" />
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/backFilters"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
             android:gravity="center"
+            android:orientation="vertical"
             android:paddingLeft="43dp"
-            android:paddingBottom="5dp"
             android:paddingTop="15dp"
             android:paddingRight="43dp"
-            android:orientation="vertical"
-            android:visibility="gone"
-            >
+            android:paddingBottom="5dp"
+            android:visibility="gone">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -995,102 +1069,118 @@
 
 
         <LinearLayout
-            android:background="@drawable/thumb_drawable"
             android:id="@+id/control"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/thumb_drawable"
             android:gravity="center"
             android:orientation="vertical"
             android:visibility="gone"
 
             >
+
             <ImageView
                 android:id="@+id/uppAll"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:src="@drawable/double_up_26px" />
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
+
                 <ImageView
-                    android:layout_marginRight="20dp"
                     android:id="@+id/controlZ"
                     android:layout_width="25dp"
-                    android:src="@drawable/undo_26px"
-                    android:layout_height="25dp" />
+                    android:layout_height="25dp"
+                    android:layout_marginRight="20dp"
+                    android:src="@drawable/undo_26px" />
+
                 <ImageView
                     android:id="@+id/upp"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:src="@drawable/sort_up_24px" />
+
                 <ImageView
-                    android:layout_marginLeft="20dp"
                     android:id="@+id/arista"
-                    android:src="@drawable/increase_profits_32px"
                     android:layout_width="25dp"
-                    android:layout_height="25dp" />
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="20dp"
+                    android:src="@drawable/increase_profits_32px" />
             </LinearLayout>
+
             <LinearLayout
-                android:layout_gravity="center"
-                android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
                 <ImageView
-                    android:layout_marginTop="10dp"
                     android:id="@+id/izquierdaAll"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:src="@drawable/double_left_26px" />
-                <ImageView
                     android:layout_marginTop="10dp"
+                    android:src="@drawable/double_left_26px" />
+
+                <ImageView
                     android:id="@+id/izquierda"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:layout_marginTop="10dp"
                     android:src="@drawable/sort_left_24px" />
+
                 <ImageView
                     android:id="@+id/move"
                     android:layout_width="45dp"
                     android:layout_height="45dp" />
+
                 <ImageView
-                    android:layout_marginTop="10dp"
                     android:id="@+id/derecha"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:src="@drawable/sort_right_24px" />
-                <ImageView
                     android:layout_marginTop="10dp"
+                    android:src="@drawable/sort_right_24px" />
+
+                <ImageView
                     android:id="@+id/derechaAll"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:layout_marginTop="10dp"
                     android:src="@drawable/double_right_26px" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
+
                 <ImageView
-                    android:layout_marginRight="20dp"
                     android:id="@+id/closeControl1"
                     android:layout_width="25dp"
-                    android:src="@drawable/delete_16px"
-                    android:layout_height="25dp" />
+                    android:layout_height="25dp"
+                    android:layout_marginRight="20dp"
+                    android:src="@drawable/delete_16px" />
+
                 <ImageView
                     android:id="@+id/boot"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:src="@drawable/sort_down_24px" />
+
                 <ImageView
-                    android:layout_marginLeft="20dp"
                     android:id="@+id/controlY"
                     android:layout_width="25dp"
-                    android:src="@drawable/redo_26px"
-                    android:layout_height="25dp" />
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="20dp"
+                    android:src="@drawable/redo_26px" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_gravity="center"
-                android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
                 <ImageView
                     android:id="@+id/downAll"
                     android:layout_width="25dp"

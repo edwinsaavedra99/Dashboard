@@ -69,6 +69,7 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientV
         public RelativeLayout cardLayout;
         public LinearLayout boxPatient;
         public TextView dniPatient;
+
         public PatientViewHolder(View v){
             super(v);
             name = (TextView) v.findViewById(R.id.namePatient);
@@ -118,14 +119,28 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientV
     @Override
     public void onBindViewHolder( final PatientViewHolder patientViewHolder,final int i){
         patientViewHolder.name.setText(items.get(i).getName().toUpperCase());
-        patientViewHolder.age.setText("AGE: "+items.get(i).getAge() + " , ");
-        patientViewHolder.description.setText("DESCRIPTION: "+items.get(i).getDescription().toUpperCase());
-        patientViewHolder.home.setText("RESIDENCY: "+items.get(i).getResidencia().toUpperCase());
+        patientViewHolder.age.setText("Edad: "+items.get(i).getAge());
+        patientViewHolder.description.setText("Descripción: "+items.get(i).getDescription().toUpperCase());
+        patientViewHolder.home.setText("Dirección: "+items.get(i).getResidencia().toUpperCase());
         patientViewHolder.dniPatient.setText("DNI: "+ items.get(i).getCod());
+        patientViewHolder.boxPatient.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Resource.idPacient = items.get(i).getCod();
+                Resource.residecyPatient = items.get(i).getResidencia();
+                Resource.agePatient = items.get(i).getAge();
+                if(items.get(i).isSex())
+                    Resource.genderPatient = 0;
+                else
+                    Resource.genderPatient = 1;
+                Intent intent = new Intent(context, ProjectActivity.class);
+                context.startActivity(intent);
+            }
+        });
         if(items.get(i).isSex())
-            patientViewHolder.sex.setText("GENDER: MALE,");
+            patientViewHolder.sex.setText("Genero: Masculino,");
         else
-            patientViewHolder.sex.setText("GENDER: FEMALE ,");
+            patientViewHolder.sex.setText("GENDER: Femenino ,");
         patientViewHolder.menuItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,7 +150,7 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientV
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         System.out.println("SELECT ITEM: "+ item.getTitle()+"position: "+i);
-                        if(item.getTitle().equals("Open")){
+                        if(item.getTitle().equals("Abrir")){
                             Resource.idPacient = items.get(i).getCod();
                             Resource.residecyPatient = items.get(i).getResidencia();
                             Resource.agePatient = items.get(i).getAge();
@@ -145,9 +160,9 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientV
                                 Resource.genderPatient = 1;
                             Intent intent = new Intent(context, ProjectActivity.class);
                             context.startActivity(intent);
-                        }else if(item.getTitle().equals("Edit")){
+                        }else if(item.getTitle().equals("Editar")){
                             showAlertDialogEdit(items.get(i),i);
-                        }else if(item.getTitle().equals("Delete")){
+                        }else if(item.getTitle().equals("Eliminar")){
                             showAlertDialogDelete(i);
                         }
                         return true;
@@ -298,17 +313,17 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientV
 
     private void showAlertDialogDelete(final int position){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("DELETE PATIENT");
-        builder.setMessage("Are you sure to delete  this patient? , All data will be deleted" );
+        builder.setTitle("Eliminar Paciente");
+        builder.setMessage("Esta Seguro Eliminar al Paciente? , Todos sus datos se Elimaran" );
         builder.setCancelable(false);
         final LayoutInflater inflater = LayoutInflater.from(context);
-        builder.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 deleteFileService(position,items.get(position).getCod());
             }
         });
-        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();

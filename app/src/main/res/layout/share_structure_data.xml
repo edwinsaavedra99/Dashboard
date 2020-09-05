@@ -12,22 +12,24 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:hint="Email to Share"
+            android:hint="Email"
             app:endIconMode="clear_text"
             app:endIconTint="@color/coloApp"
             app:startIconDrawable="@drawable/email">
+
             <com.google.android.material.textfield.TextInputEditText
-                android:inputType="textWebEmailAddress"
                 android:id="@+id/txt_shareProject_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="textWebEmailAddress"
                 android:text="" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -44,23 +46,25 @@
             android:textAlignment="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
+
             <RadioButton
-                android:layout_gravity="left"
-                android:layout_marginRight="25dp"
-                android:textSize="16sp"
-                android:checked="true"
-                android:buttonTint="#E0000000"
                 android:id="@+id/radioLecture"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Lecture" />
-            <RadioButton
-                android:textSize="16sp"
+                android:layout_gravity="left"
+                android:layout_marginRight="25dp"
                 android:buttonTint="#E0000000"
+                android:checked="true"
+                android:text="Modo Lectura"
+                android:textSize="16sp" />
+
+            <RadioButton
                 android:id="@+id/radioEditer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Editer" />
+                android:buttonTint="#E0000000"
+                android:text="Modo Editor"
+                android:textSize="16sp" />
         </RadioGroup>
     </LinearLayout>
 </androidx.cardview.widget.CardView>
