@@ -6,5 +6,9 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="bienvenido_a_xrayview">Bienvenido a xRayView</string>
+    <string name="para_profesionales_en_el_mbito_de_la_medicina">Para Profesionales en el Ámbito de la Medicina</string>
+    <string name="comparte_tu_opinion_con_la_comunidad">Comparte tu opinion con la Comunidad</string>
+    <string name="todo">TODO</string>
 
 </resources>
