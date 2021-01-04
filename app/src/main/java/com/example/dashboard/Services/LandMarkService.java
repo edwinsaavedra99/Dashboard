@@ -14,8 +14,8 @@ import okhttp3.RequestBody;
 
 public class LandMarkService {
 
-    public static String sendLandMarks(final String imageBase64, ListSegmentation listSegmentation) throws IOException {
-        MediaType MEDIA_TYPE = MediaType.parse("application/json");
+    public static void sendLandMarks(final String imageBase64, ListSegmentation listSegmentation) throws IOException {
+        /*MediaType MEDIA_TYPE = MediaType.parse("application/json");
         final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,
                 TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(
                 60,TimeUnit.SECONDS).build();
@@ -30,17 +30,17 @@ public class LandMarkService {
             e.printStackTrace();
         }
         RequestBody body = RequestBody.create(MEDIA_TYPE,postData.toString());
-        return ApiCall.POST(client,"landmark",body);
+        return ApiCall.POST(client,"landmark",body);*/
     }
 
-    public static String readLandMarks() throws IOException {
-        MediaType MEDIA_TYPE = MediaType.parse("application/json");
+    public static void readLandMarks() throws IOException {
+        /*MediaType MEDIA_TYPE = MediaType.parse("application/json");
         final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,
                 TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(
                 60,TimeUnit.SECONDS).build();
         JSONObject postData = new JSONObject();
         RequestBody body = RequestBody.create(MEDIA_TYPE,postData.toString());
-        return ApiCall.GET(client,"landmark");
+        return ApiCall.GET(client,"landmark");*/
     }
 
 }

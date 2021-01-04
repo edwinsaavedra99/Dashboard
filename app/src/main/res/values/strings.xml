@@ -2,7 +2,7 @@
     <string name="app_name">AFD</string>
 
     <string name="text_title_login">AFD Project</string>
-    <string name="url">http://35.171.84.55:5000/</string>
+    <string name="url">http://34.204.87.129:5000/</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

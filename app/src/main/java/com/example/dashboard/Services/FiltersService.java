@@ -10,8 +10,8 @@ import okhttp3.RequestBody;
 
 public class FiltersService {
 
-   public static String getFilters(final String imageBase64, String nameFilter) throws IOException {
-        MediaType MEDIA_TYPE = MediaType.parse("application/json");
+   public static void getFilters(final String imageBase64, String nameFilter) throws IOException {
+        /*MediaType MEDIA_TYPE = MediaType.parse("application/json");
         final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,
                 TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(
                 60,TimeUnit.SECONDS).build();
@@ -23,6 +23,6 @@ public class FiltersService {
             e.printStackTrace();
         }
         RequestBody body = RequestBody.create(MEDIA_TYPE,postData.toString());
-        return ApiCall.POST(client,"filters",body);
+        return ApiCall.POST(client,"filters",body);*/
     }
 }

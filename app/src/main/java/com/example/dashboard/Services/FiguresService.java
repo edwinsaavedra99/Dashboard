@@ -14,8 +14,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 
 public class FiguresService {
-    public static String sendFigures(final String imageBase64, ListFigure listFigure) throws IOException {
-        MediaType MEDIA_TYPE = MediaType.parse("application/json");
+    public static void sendFigures(final String imageBase64, ListFigure listFigure) throws IOException {
+        /*MediaType MEDIA_TYPE = MediaType.parse("application/json");
         final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,
                 TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(
                 60,TimeUnit.SECONDS).build();
@@ -30,16 +30,16 @@ public class FiguresService {
             e.printStackTrace();
         }
         RequestBody body = RequestBody.create(MEDIA_TYPE,postData.toString());
-        return ApiCall.POST(client,"figures",body);
+        return ApiCall.POST(client,"figures",body);*/
     }
 
-    public static String readFigures() throws IOException {
-        MediaType MEDIA_TYPE = MediaType.parse("application/json");
+    public static void readFigures() throws IOException {
+        /*MediaType MEDIA_TYPE = MediaType.parse("application/json");
         final OkHttpClient client = new OkHttpClient.Builder().connectTimeout(60,
                 TimeUnit.SECONDS).readTimeout(60,TimeUnit.SECONDS).writeTimeout(
                 60,TimeUnit.SECONDS).build();
         JSONObject postData = new JSONObject();
         RequestBody body = RequestBody.create(MEDIA_TYPE,postData.toString());
-        return ApiCall.GET(client,"figures");
+        return ApiCall.GET(client,"figures");*/
     }
 }

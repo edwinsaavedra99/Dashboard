@@ -16,6 +16,9 @@ import com.example.dashboard.Activity.Doctor.DoctorActivity;
 import com.example.dashboard.Activity.Study.StudyActivity;
 import com.example.dashboard.R;
 import com.example.dashboard.Resources.Resource;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -73,16 +76,13 @@ public class HomeActivity extends AppCompatActivity {
         });*/
     }
     private void signOut() {
-
-        Resource.SignInClient.signOut()
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(HomeActivity.this, "Logout", Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                });
-
-
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build();
+        GoogleSignInClient googleSignInClient=GoogleSignIn.getClient(getApplicationContext(),gso);
+        googleSignInClient.signOut().addOnCompleteListener(this, task -> {
+            Toast.makeText(HomeActivity.this, "Logout", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(HomeActivity.this, Login.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        });
     }
 }
